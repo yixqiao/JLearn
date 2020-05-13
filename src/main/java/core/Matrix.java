@@ -21,7 +21,7 @@ public class Matrix {
         if (randomize) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    mat[i][j] = random.nextDouble() * 2 - 1;
+                    mat[i][j] = random.nextDouble();
                 }
             }
         }
