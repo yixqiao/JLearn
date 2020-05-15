@@ -1,7 +1,7 @@
 ## TODO:
 
 ### Core:
-- [ ] Add bias
+- [ ] **Add bias**
 - [ ] Add training in minibatches
 - [ ] Custom loss functions
 - [ ] Get loss from model
