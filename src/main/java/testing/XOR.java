@@ -8,25 +8,36 @@ import models.Model;
 import java.util.ArrayList;
 
 public class XOR {
-    private static ArrayList<Matrix> inputs;
-    private static ArrayList<Matrix> outputs;
+    private ArrayList<Matrix> inputs;
+    private ArrayList<Matrix> outputs;
+    Model model;
 
     public static void main(String[] args) {
-        initInputs();
-        Model model = new Model();
-        model.addLayer(2).addLayer(16).addLayer(1).buildModel(new ReLU(), 0.1);
+        XOR xor = new XOR();
+        xor.initInputs();
+        xor.buildModel();
+        xor.train();
+    }
 
-        System.out.println(model.predict(inputs.get(0)).mat[0][0]);
-        System.out.println(model.predict(inputs.get(2)).mat[0][0]);
+    private void buildModel() {
+        model = new Model();
+        model.addLayer(2).addLayer(16).addLayer(1);
+        model.buildModel(new ReLU(), 0.01);
+    }
 
+    private void train() {
         for (int i = 0; i < 1000; i++) {
             for (int j = 0; j < inputs.size(); j++) {
                 model.fitSingle(inputs.get(j), outputs.get(j));
             }
             if (i % 100 == 0) {
-                System.out.println(i);
+                System.out.println("\n" + i);
+                printPredictions();
             }
         }
+    }
+
+    private void printPredictions() {
         for (int i = 0; i < inputs.size(); i++) {
             for (int j = 0; j < inputs.get(i).cols; j++) {
                 System.out.print(inputs.get(i).mat[0][j]);
@@ -36,7 +47,7 @@ public class XOR {
         }
     }
 
-    private static void initInputs() {
+    private void initInputs() {
         inputs = new ArrayList<>();
         outputs = new ArrayList<>();
 
