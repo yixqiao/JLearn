@@ -21,10 +21,22 @@ public class Matrix {
         if (randomize) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
-                    mat[i][j] = random.nextDouble();
+                    mat[i][j] = (random.nextDouble() * 2 - 1) * Math.sqrt(2);
                 }
             }
         }
+    }
+
+    public Matrix(int rows, int cols, double rFactor) {
+        this.rows = rows;
+        this.cols = cols;
+        mat = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mat[i][j] = (random.nextGaussian()) * rFactor;
+            }
+        }
+
     }
 
     public Matrix dot(Matrix m2) {
@@ -75,7 +87,7 @@ public class Matrix {
         return out;
     }
 
-    public Matrix add(int x){
+    public Matrix add(int x) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
