@@ -102,14 +102,6 @@ public class Matrix {
         }
     }
 
-    public void relu() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mat[i][j] = Math.max(mat[i][j], 0);
-            }
-        }
-    }
-
     public void randomize(double rChance, double rAmount, double rPAmount) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

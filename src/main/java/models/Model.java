@@ -49,7 +49,8 @@ public class Model {
         Matrix activationsLocal = input.clone();
         activationsLocal.applyEach(activation.getActivation());
         neurons.add(activationsLocal.clone());
-        for (Matrix layer : network) {
+        for (int lNum = 0; lNum < network.size(); lNum++) {
+            Matrix layer = network.get(lNum);
             Matrix newActivations = activationsLocal.dot(layer);
             newActivations.applyEach(activation.getActivation());
             activationsLocal = newActivations.clone();
