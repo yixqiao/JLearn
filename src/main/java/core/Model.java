@@ -6,7 +6,7 @@ public class Model {
     private static ArrayList<Matrix> network = new ArrayList<>();
     private static ArrayList<Matrix> activations = new ArrayList<>();
     private static ArrayList<Matrix> activationsNoS = new ArrayList<>();
-    private static double learningRate = 0.08;
+    private static double learningRate = 1;
     private static Matrix input = new Matrix(1, 2, true);
     private static ArrayList<Matrix> errors;
     private static ArrayList<Matrix> inputs;
@@ -17,13 +17,13 @@ public class Model {
         initInputs();
         System.out.println(forwardPropagate(inputs.get(0)).mat[0][0]);
         System.out.println(forwardPropagate(inputs.get(2)).mat[0][0]);
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < inputs.size(); j++) {
                 singlePass(inputs.get(j), outputs.get(j));
             }
-            if (i % 500000 == 0) {
+            if (i % 10000 == 0) {
                 System.out.println();
-                System.out.println(i + ": " + activationsNoS.get(2).mat[0][0] + "," + errors.get(0).mat[0][0]);
+                System.out.println(i + ": " + activations.get(2).mat[0][0] + "," + errors.get(0).mat[0][0]);
 //                System.out.println(forwardPropagate(inputs.get(0)).mat[0][0]);
 //                System.out.println(forwardPropagate(inputs.get(2)).mat[0][0]);
             }
@@ -101,7 +101,7 @@ public class Model {
             activationsLocal = newActivations.clone();
             Model.activations.add(activationsLocal.clone());
         }
-        return activationsNoS.get(activationsNoS.size() - 1);
+        return activations.get(activations.size() - 1);
     }
 
     private static ArrayList<Matrix> backPropagate(Matrix expected) {
