@@ -7,7 +7,7 @@ group 'org.example'
 version '0.1.0'
 
 application {
-    mainClassName = "core.Model"
+    mainClassName = "testing.XOR"
 }
 
 repositories {
