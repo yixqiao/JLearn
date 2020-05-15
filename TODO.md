@@ -1,7 +1,7 @@
 ## TODO:
 
 ### Core:
-- [ ] **Add bias**
+- [ ] Add bias
 - [ ] Add training in minibatches
 - [ ] Custom loss functions
 - [ ] Get loss from model
@@ -11,6 +11,7 @@
 - [ ] Option for evolving
 - [x] Average outputs instead of single-neuron output
 
-### Documentation:
+### Library:
 - [ ] Try on a real dataset
+- [ ] Package as a library
 - [ ] Add Javadocs
