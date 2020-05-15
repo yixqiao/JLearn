@@ -62,21 +62,29 @@ public class Model {
     private ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
 
-        Matrix first = new Matrix(1, 1);
-        first.mat[0][0] = (expected.mat[0][0] - neurons.get(layerCount - 1).mat[0][0]);
-        first.mat[0][0] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layerCount - 1).mat[0][0]);
-        errors.add(first);
+//        Matrix lastLayer = new Matrix(1, layerSizes.get(1));
+//        lastLayer.mat[0][0] = (expected.mat[0][0] - neurons.get(layerCount - 1).mat[0][0]);
+//        lastLayer.mat[0][0] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layerCount - 1).mat[0][0]);
+//        errors.add(lastLayer);
 
-        for (int layer = layerCount - 2; layer >= 0; layer--) {
+        for (int layer = layerCount - 1; layer >= 0; layer--) {
             Matrix curError = new Matrix(1, layerSizes.get(layer));
-            for (int curN = 0; curN < layerSizes.get(layer); curN++) {
-                double error = 0;
-                for (int prevN = 0; prevN < layerSizes.get(layer + 1); prevN++) {
-                    error += network.get(layer).mat[curN][prevN]
-                            * errors.get(layerCount - 2 - layer).mat[0][prevN];
+            if (layer == layerCount - 1) {
+                for (int curN = 0; curN < layerSizes.get(layer); curN++) {
+                    curError.mat[0][curN] = (expected.mat[0][curN] - neurons.get(layerCount - 1).mat[0][curN]);
+                    curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layerCount - 1).mat[0][curN]);
                 }
-                curError.mat[0][curN] = error * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+            } else {
+                for (int curN = 0; curN < layerSizes.get(layer); curN++) {
+                    double error = 0;
+                    for (int prevN = 0; prevN < layerSizes.get(layer + 1); prevN++) {
+                        error += network.get(layer).mat[curN][prevN]
+                                * errors.get(layerCount - 2 - layer).mat[0][prevN];
+                    }
+                    curError.mat[0][curN] = error * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+                }
             }
+
             errors.add(curError);
         }
 

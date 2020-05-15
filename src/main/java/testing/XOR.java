@@ -21,7 +21,7 @@ public class XOR {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(2).addLayer(16).addLayer(1);
+        model.addLayer(2).addLayer(16).addLayer(2);
         model.buildModel(new ReLU(), 0.01);
     }
 
@@ -39,11 +39,18 @@ public class XOR {
 
     private void printPredictions() {
         for (int i = 0; i < inputs.size(); i++) {
-            for (int j = 0; j < inputs.get(i).cols; j++) {
-                System.out.print(inputs.get(i).mat[0][j]);
-                if (j != inputs.get(i).cols - 1) System.out.print(",");
+            Matrix input = inputs.get(i);
+            for (int j = 0; j < input.cols; j++) {
+                System.out.print(input.mat[0][j]);
+                if (j != input.cols - 1) System.out.print(",");
             }
-            System.out.println(" : " + model.predict(inputs.get(i)).mat[0][0]);
+            System.out.print(" :  ");
+            Matrix output = model.predict(inputs.get(i));
+            for (int j = 0; j < output.cols; j++) {
+                System.out.print(String.format("%.3f", output.mat[0][j]));
+                if (j != output.cols - 1) System.out.print(",");
+            }
+            System.out.println();
         }
     }
 
@@ -52,15 +59,15 @@ public class XOR {
         outputs = new ArrayList<>();
 
         inputs.add(new Matrix(new double[][]{{0.0, 0.0}}));
-        outputs.add(new Matrix(new double[][]{{0.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
 
         inputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
-        outputs.add(new Matrix(new double[][]{{1.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
 
         inputs.add(new Matrix(new double[][]{{1.0, 1.0}}));
-        outputs.add(new Matrix(new double[][]{{0.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
 
         inputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
-        outputs.add(new Matrix(new double[][]{{1.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
     }
 }
