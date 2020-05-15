@@ -1,5 +1,6 @@
 package testing;
 
+import activations.Sigmoid;
 import core.Matrix;
 import models.Model;
 
@@ -12,7 +13,7 @@ public class XOR {
     public static void main(String[] args) {
         initInputs();
         Model model = new Model();
-        model.addLayer(2).addLayer(16).addLayer(1).buildModel(0.1);
+        model.addLayer(2).addLayer(16).addLayer(1).buildModel(new Sigmoid(), 0.1);
 
         System.out.println(model.predict(inputs.get(0)).mat[0][0]);
         System.out.println(model.predict(inputs.get(2)).mat[0][0]);

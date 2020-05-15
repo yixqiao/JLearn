@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
 
 public class Matrix {
     public int rows, cols;
@@ -91,10 +93,11 @@ public class Matrix {
         return out;
     }
 
-    public void sigmoid() {
+    public void applyEach(ToDoubleFunction<Double> function){
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                mat[i][j] = 1.0 / (1.0 + Math.exp(-mat[i][j]));
+                function.applyAsDouble(mat[i][j]);
+                mat[i][j] = function.applyAsDouble(mat[i][j]);
             }
         }
     }
