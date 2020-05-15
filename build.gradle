@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-group 'org.example'
+group 'me.yixqiao'
 version '0.1.0'
 
 application {

@@ -1,7 +1,7 @@
 package testing;
 
 import core.Matrix;
-import core.Model;
+import models.Model;
 
 import java.util.ArrayList;
 
@@ -12,10 +12,7 @@ public class XOR {
     public static void main(String[] args) {
         initInputs();
         Model model = new Model();
-        model.addLayer(2);
-        model.addLayer(4);
-        model.addLayer(1);
-        model.buildModel(0.1);
+        model.addLayer(2).addLayer(16).addLayer(1).buildModel(0.1);
 
         System.out.println(model.predict(inputs.get(0)).mat[0][0]);
         System.out.println(model.predict(inputs.get(2)).mat[0][0]);
@@ -37,35 +34,17 @@ public class XOR {
     private static void initInputs() {
         inputs = new ArrayList<>();
         outputs = new ArrayList<>();
-        Matrix in = new Matrix(1, 2);
-        Matrix out = new Matrix(1, 1);
-        {
-            in.mat[0][0] = 0;
-            in.mat[0][1] = 0;
-            out.mat[0][0] = 0;
-            inputs.add(in.clone());
-            outputs.add(out.clone());
-        }
-        {
-            in.mat[0][0] = 1;
-            in.mat[0][1] = 0;
-            out.mat[0][0] = 1;
-            inputs.add(in.clone());
-            outputs.add(out.clone());
-        }
-        {
-            in.mat[0][0] = 1;
-            in.mat[0][1] = 1;
-            out.mat[0][0] = 0;
-            inputs.add(in.clone());
-            outputs.add(out.clone());
-        }
-        {
-            in.mat[0][0] = 0;
-            in.mat[0][1] = 1;
-            out.mat[0][0] = 1;
-            inputs.add(in.clone());
-            outputs.add(out.clone());
-        }
+
+        inputs.add(new Matrix(new double[][]{{0.0, 0.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0}}));
+
+        inputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0}}));
+
+        inputs.add(new Matrix(new double[][]{{1.0, 1.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0}}));
+
+        inputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0}}));
     }
 }

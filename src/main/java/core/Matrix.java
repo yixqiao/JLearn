@@ -6,37 +6,31 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Matrix {
-    int rows, cols;
+    public int rows, cols;
     public double[][] mat;
     Random random = new Random();
 
     public Matrix(int rows, int cols) {
-        this(rows, cols, false);
-    }
-
-    public Matrix(int rows, int cols, boolean randomize) {
-        this.rows = rows;
-        this.cols = cols;
-        mat = new double[rows][cols];
-        if (randomize) {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    mat[i][j] = (random.nextDouble() * 2 - 1) * Math.sqrt(2);
-                }
-            }
-        }
+        this(rows, cols, 0);
     }
 
     public Matrix(int rows, int cols, double rFactor) {
         this.rows = rows;
         this.cols = cols;
         mat = new double[rows][cols];
+        if (rFactor == 0)
+            return;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 mat[i][j] = (random.nextGaussian()) * rFactor;
             }
         }
+    }
 
+    public Matrix(double[][] mat){
+        this.rows = mat.length;
+        this.cols = mat[0].length;
+        this.mat = mat;
     }
 
     public Matrix dot(Matrix m2) {

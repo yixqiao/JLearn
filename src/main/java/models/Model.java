@@ -1,4 +1,6 @@
-package core;
+package models;
+
+import core.Matrix;
 
 import java.util.ArrayList;
 
@@ -14,8 +16,9 @@ public class Model {
         network = new ArrayList<>();
     }
 
-    public void addLayer(int layerSize) {
+    public Model addLayer(int layerSize) {
         layerSizes.add(layerSize);
+        return this;
     }
 
     public void buildModel(double learningRate) {
@@ -89,9 +92,5 @@ public class Model {
     private static double transferDerivative(double x) {
         // return (x < 0) ? 0 : 1;
         return x * (1 - x);
-    }
-
-    private static double sigmoid(double x) {
-        return 1.0 / (1.0 + Math.exp(-x));
     }
 }

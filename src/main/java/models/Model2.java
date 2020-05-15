@@ -1,4 +1,6 @@
-package core;
+package models;
+
+import core.Matrix;
 
 import java.util.ArrayList;
 
@@ -7,7 +9,7 @@ public class Model2 {
     private static ArrayList<Matrix> activations = new ArrayList<>();
     private static ArrayList<Matrix> activationsNoS = new ArrayList<>();
     private static double learningRate = 1;
-    private static Matrix input = new Matrix(1, 2, true);
+    private static Matrix input = new Matrix(1, 2, 1);
     private static ArrayList<Matrix> errors;
     private static ArrayList<Matrix> inputs;
     private static ArrayList<Matrix> outputs;
