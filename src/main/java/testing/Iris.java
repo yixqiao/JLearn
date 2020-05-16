@@ -34,13 +34,13 @@ public class Iris {
     private void train() {
         // model.forwardPropagate(inputs).printMatrix();
 
-        model.fit(inputs, outputs, 32, 10000);
+        model.fit(inputs, outputs, 32, 50000);
 
         printPredictions();
     }
 
     private void printPredictions() {
-        for (int i = 0; i < inputsAL.size(); i++) {
+        for (int i = 0; i < inputsAL.size(); i+=10) {
             Matrix input = inputsAL.get(i);
             for (int j = 0; j < input.cols; j++) {
                 System.out.print(input.mat[0][j]);
@@ -58,7 +58,6 @@ public class Iris {
                 System.out.print(String.format("%.3f", outputs.mat[i][j]));
                 if (j != outputs.cols - 1) System.out.print("\t");
             }
-            System.out.println();
 
             System.out.println();
         }

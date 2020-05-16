@@ -45,6 +45,8 @@ public class Model {
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
 
+        ArrayList<Matrix> errors = null;
+
         for (int epoch = 0; epoch < epochs; epoch++) {
             Collections.shuffle(indices);
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
@@ -59,8 +61,12 @@ public class Model {
                     }
                 }
                 forwardPropagate(batchInput);
-                ArrayList<Matrix> errors = backPropagate(batchExpected);
+                errors = backPropagate(batchExpected);
                 update(errors);
+            }
+
+            if ((epoch + 1) % (epochs / 10) == 0) {
+                System.out.println(String.format("E %d: Loss: %.5f", epoch + 1, getLoss(errors)));
             }
         }
     }
@@ -128,6 +134,15 @@ public class Model {
         }
 
         return errors;
+    }
+
+    public double getLoss(ArrayList<Matrix> errors) {
+        double loss = 0;
+        for (int i = 0; i < errors.get(0).cols; i++) {
+            loss += errors.get(0).mat[0][i];
+        }
+        loss /= errors.get(0).cols;
+        return loss;
     }
 
     private void update(ArrayList<Matrix> errors) {
