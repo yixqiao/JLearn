@@ -1,6 +1,6 @@
 # JLearn
 Java library for machine learning.  
-Emphasizes being easy to use and configure.
+Focuses on being easy to use and configure.
 
 ***STILL IN DEVELOPMENT.***
 
