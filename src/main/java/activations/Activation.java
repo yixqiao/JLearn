@@ -1,8 +1,10 @@
 package activations;
 
+import core.Matrix;
+
 import java.util.function.ToDoubleFunction;
 
 public abstract class Activation {
-    public abstract ToDoubleFunction<Double> getActivation();
-    public abstract ToDoubleFunction<Double> getTransferDerivative();
+    public abstract ToDoubleFunction<Matrix> getActivation();
+    public abstract ToDoubleFunction<Matrix> getTransferDerivative();
 }

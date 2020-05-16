@@ -2,7 +2,7 @@ package activations;
 
 import java.util.function.ToDoubleFunction;
 
-public class Sigmoid extends Activation {
+public class Sigmoid extends ElementwiseActivation {
     @Override
     public ToDoubleFunction<Double> getActivation() {
         return x -> 1.0 / (1.0 + Math.exp(-x));

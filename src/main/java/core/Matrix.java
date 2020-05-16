@@ -93,13 +93,22 @@ public class Matrix {
         return out;
     }
 
-    public void applyEach(ToDoubleFunction<Double> function){
+    public void applyEachIP(ToDoubleFunction<Double> function){
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                function.applyAsDouble(mat[i][j]);
                 mat[i][j] = function.applyAsDouble(mat[i][j]);
             }
         }
+    }
+
+    public Matrix applyEach(ToDoubleFunction<Double> function){
+        Matrix out = clone();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                out.mat[i][j] = function.applyAsDouble(mat[i][j]);
+            }
+        }
+        return out;
     }
 
     public void randomize(double rChance, double rAmount, double rPAmount) {

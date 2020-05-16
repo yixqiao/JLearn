@@ -1,6 +1,6 @@
 package models;
 
-import activations.Activation;
+import activations.ElementwiseActivation;
 import activations.Sigmoid;
 import core.Matrix;
 
@@ -12,7 +12,7 @@ public class Model {
     private ArrayList<Matrix> weights;
     private ArrayList<Matrix> biases;
     private ArrayList<Matrix> neurons;
-    private Activation activation = new Sigmoid();
+    private ElementwiseActivation activation = new Sigmoid();
     private int layerCount;
     private double learningRate;
 
@@ -27,7 +27,7 @@ public class Model {
         return this;
     }
 
-    public void buildModel(Activation activation, double learningRate) {
+    public void buildModel(ElementwiseActivation activation, double learningRate) {
         this.activation = activation;
 
         layerCount = layerSizes.size();
@@ -66,7 +66,7 @@ public class Model {
             }
 
             if ((epoch + 1) % (epochs / 10) == 0) {
-                System.out.println(String.format("E %d: Loss: %.5f", epoch + 1, getLoss(errors)));
+                System.out.println(String.format("E: %d, L: %.5f", epoch + 1, getLoss(errors)));
             }
         }
     }
@@ -81,6 +81,8 @@ public class Model {
         return forwardPropagate(input);
     }
 
+    // return np.exp(x) / np.sum(np.exp(x), axis=0)
+
     public Matrix forwardPropagate(Matrix input) {
         neurons = new ArrayList<>();
         Matrix activationsLocal = input.clone();
@@ -94,7 +96,19 @@ public class Model {
                     newActivations.mat[row][col] += biases.get(layerNum).mat[0][col];
                 }
             }
-            newActivations.applyEach(activation.getActivation());
+            if (layerNum == layerCount - 2) {
+                // TODO: Stabilize (https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
+                Matrix exps = newActivations.applyEach(Math::exp);
+                for (int row = 0; row < newActivations.rows; row++) {
+                    double sum = 0;
+                    for (int col = 0; col < newActivations.cols; col++)
+                        sum += exps.mat[row][col];
+                    for (int col = 0; col < newActivations.cols; col++) {
+                        newActivations.mat[row][col] = exps.mat[row][col] / sum;
+                    }
+                }
+            } else
+                newActivations.applyEachIP(activation.getActivation());
             activationsLocal = newActivations.clone();
             neurons.add(activationsLocal.clone());
         }
@@ -104,14 +118,10 @@ public class Model {
     private ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
 
-//        Matrix lastLayer = new Matrix(1, layerSizes.get(1));
-//        lastLayer.mat[0][0] = (expected.mat[0][0] - neurons.get(layerCount - 1).mat[0][0]);
-//        lastLayer.mat[0][0] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layerCount - 1).mat[0][0]);
-//        errors.add(lastLayer);
-
         for (int layer = layerCount - 1; layer >= 0; layer--) {
             Matrix curError = new Matrix(1, layerSizes.get(layer));
             if (layer == layerCount - 1) {
+
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
                     for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
                         curError.mat[0][curN] += (expected.mat[inputNum][curN] - neurons.get(layer).mat[inputNum][curN]);
@@ -139,7 +149,7 @@ public class Model {
     public double getLoss(ArrayList<Matrix> errors) {
         double loss = 0;
         for (int i = 0; i < errors.get(0).cols; i++) {
-            loss += errors.get(0).mat[0][i];
+            loss += Math.abs(errors.get(0).mat[0][i]);
         }
         loss /= errors.get(0).cols;
         return loss;

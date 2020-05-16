@@ -2,7 +2,7 @@ package activations;
 
 import java.util.function.ToDoubleFunction;
 
-public class LeakyReLU extends Activation {
+public class LeakyReLU extends ElementwiseActivation {
     double alpha;
 
     public LeakyReLU(double alpha) {

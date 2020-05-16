@@ -32,7 +32,7 @@ public class Iris {
     }
 
     private void train() {
-        // model.forwardPropagate(inputs).printMatrix();
+        printPredictions();
 
         model.fit(inputs, outputs, 32, 50000);
 

@@ -2,7 +2,7 @@ package activations;
 
 import java.util.function.ToDoubleFunction;
 
-public class Linear extends Activation {
+public class Linear extends ElementwiseActivation {
     @Override
     public ToDoubleFunction<Double> getActivation() {
         return x -> x;
