@@ -7,7 +7,7 @@ group 'me.yixqiao'
 version '0.1.0'
 
 application {
-    mainClassName = "testing.XOR"
+    mainClassName = "testing.Iris"
 }
 
 repositories {

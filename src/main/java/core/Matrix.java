@@ -51,7 +51,7 @@ public class Matrix {
         return nMatrix;
     }
 
-    public void add(Matrix m2) {
+    public void addIP(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols) {
             System.out.println("Matrix mismatch!");
             return;
@@ -63,7 +63,7 @@ public class Matrix {
         }
     }
 
-    public Matrix mult(double x) {
+    public Matrix multiply(double x) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -73,7 +73,7 @@ public class Matrix {
         return out;
     }
 
-    public Matrix mult(Matrix m2) {
+    public Matrix multiply(Matrix m2) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

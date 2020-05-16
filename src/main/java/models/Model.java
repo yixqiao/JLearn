@@ -52,12 +52,12 @@ public class Model {
     private Matrix forwardPropagate(Matrix input) {
         neurons = new ArrayList<>();
         Matrix activationsLocal = input.clone();
-        activationsLocal.applyEach(activation.getActivation());
+        // activationsLocal.applyEach(activation.getActivation());
         neurons.add(activationsLocal.clone());
         for (int layerNum = 0; layerNum < layerCount - 1; layerNum++) {
             Matrix layer = weights.get(layerNum);
             Matrix newActivations = activationsLocal.dot(layer);
-            newActivations.add(biases.get(layerNum));
+            newActivations.addIP(biases.get(layerNum));
             newActivations.applyEach(activation.getActivation());
             activationsLocal = newActivations.clone();
             neurons.add(activationsLocal.clone());
@@ -106,7 +106,7 @@ public class Model {
                             * (neurons.get(layer).mat[0][curN]);
                 }
             }
-            biases.get(layer).add(errors.get(eLayer).mult(learningRate));
+            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
         }
     }
 }
