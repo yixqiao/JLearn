@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Iris {
-    private ArrayList<Matrix> inputs;
-    private ArrayList<Matrix> outputs;
+    ArrayList<Matrix> inputsAL = new ArrayList<>();
+    ArrayList<Matrix> outputsAL = new ArrayList<>();
+    private Matrix inputs;
+    private Matrix outputs;
     Model model;
 
     public static void main(String[] args) {
@@ -30,39 +32,39 @@ public class Iris {
     }
 
     private void train() {
-        for (int i = 0; i < 10000; i++) {
-            for (int j = 0; j < inputs.size(); j++) {
-                model.fitSingle(inputs.get(j), outputs.get(j));
-            }
-            if (i % 1000 == 0) {
-                System.out.println("\n" + i);
-                // printPredictions();
-            }
-        }
+        // model.forwardPropagate(inputs).printMatrix();
+
+        model.fit(inputs, outputs, 32, 10000);
+
         printPredictions();
     }
 
     private void printPredictions() {
-        for (int i = 0; i < inputs.size(); i++) {
-            Matrix input = inputs.get(i);
+        for (int i = 0; i < inputsAL.size(); i++) {
+            Matrix input = inputsAL.get(i);
             for (int j = 0; j < input.cols; j++) {
                 System.out.print(input.mat[0][j]);
                 if (j != input.cols - 1) System.out.print(",");
             }
-            System.out.print(" :  ");
-            Matrix output = model.predict(inputs.get(i));
+            System.out.print(" :\t");
+            Matrix output = model.predict(inputsAL.get(i));
             for (int j = 0; j < output.cols; j++) {
                 System.out.print(String.format("%.3f", output.mat[0][j]));
-                if (j != output.cols - 1) System.out.print(",");
+                if (j != output.cols - 1) System.out.print("\t");
             }
+
+            System.out.print("\t-\t");
+            for (int j = 0; j < outputs.cols; j++) {
+                System.out.print(String.format("%.3f", outputs.mat[i][j]));
+                if (j != outputs.cols - 1) System.out.print("\t");
+            }
+            System.out.println();
+
             System.out.println();
         }
     }
 
     private void initInputs() {
-        inputs = new ArrayList<>();
-        outputs = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new FileReader("datasets/IRIS.csv"))) {
             String line;
             br.readLine(); // Discard first line
@@ -82,13 +84,25 @@ public class Iris {
                         output.mat[0][2] = 1;
                         break;
                 }
-                inputs.add(input);
-                outputs.add(output);
+                inputsAL.add(input);
+                outputsAL.add(output);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        inputs = new Matrix(inputsAL.size(), inputsAL.get(0).cols);
+        outputs = new Matrix(outputsAL.size(), outputsAL.get(0).cols);
+
+        for (int i = 0; i < inputsAL.size(); i++) {
+            for (int j = 0; j < inputsAL.get(i).cols; j++) {
+                inputs.mat[i][j] = inputsAL.get(i).mat[0][j];
+            }
+            for (int j = 0; j < outputsAL.get(i).cols; j++) {
+                outputs.mat[i][j] = outputsAL.get(i).mat[0][j];
+            }
         }
     }
 }
