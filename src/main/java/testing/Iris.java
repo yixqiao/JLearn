@@ -1,6 +1,9 @@
 package testing;
 
 import activations.LeakyReLU;
+import activations.Linear;
+import activations.ReLU;
+import activations.Sigmoid;
 import core.Matrix;
 import models.Model;
 
@@ -28,7 +31,7 @@ public class Iris {
     private void buildModel() {
         model = new Model();
         model.addLayer(4).addLayer(32).addLayer(3);
-        model.buildModel(new LeakyReLU(0.01), 0.01);
+        model.buildModel(new ReLU(), 0.01);
     }
 
     private void train() {

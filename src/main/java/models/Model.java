@@ -127,7 +127,7 @@ public class Model {
                         curError.mat[0][curN] += (expected.mat[inputNum][curN] - neurons.get(layer).mat[inputNum][curN]);
                     }
                     curError.mat[0][curN] /= expected.rows;
-                    curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+                    // curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
                 }
             } else {
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
@@ -136,7 +136,7 @@ public class Model {
                         error += weights.get(layer).mat[curN][prevN]
                                 * errors.get(layerCount - 2 - layer).mat[0][prevN];
                     }
-                    curError.mat[0][curN] = error * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+                    curError.mat[0][curN] = error;// * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
                 }
             }
 
