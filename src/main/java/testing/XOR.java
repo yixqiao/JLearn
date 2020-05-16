@@ -1,5 +1,7 @@
 package testing;
 
+import activations.LeakyReLU;
+import activations.Linear;
 import activations.ReLU;
 import activations.Sigmoid;
 import core.Matrix;
@@ -22,15 +24,15 @@ public class XOR {
     private void buildModel() {
         model = new Model();
         model.addLayer(2).addLayer(16).addLayer(2);
-        model.buildModel(new ReLU(), 0.01);
+        model.buildModel(new LeakyReLU(0.01), 0.001);
     }
 
     private void train() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < inputs.size(); j++) {
                 model.fitSingle(inputs.get(j), outputs.get(j));
             }
-            if (i % 100 == 0) {
+            if (i % 10000 == 0) {
                 System.out.println("\n" + i);
                 printPredictions();
             }

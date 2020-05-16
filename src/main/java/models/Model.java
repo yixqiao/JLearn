@@ -8,7 +8,8 @@ import java.util.ArrayList;
 
 public class Model {
     private ArrayList<Integer> layerSizes;
-    private ArrayList<Matrix> network;
+    private ArrayList<Matrix> weights;
+    private ArrayList<Matrix> biases;
     private ArrayList<Matrix> neurons;
     private Activation activation = new Sigmoid();
     private int layerCount;
@@ -16,7 +17,8 @@ public class Model {
 
     public Model() {
         layerSizes = new ArrayList<>();
-        network = new ArrayList<>();
+        weights = new ArrayList<>();
+        biases = new ArrayList<>();
     }
 
     public Model addLayer(int layerSize) {
@@ -27,11 +29,14 @@ public class Model {
     public void buildModel(Activation activation, double learningRate) {
         this.activation = activation;
 
-        for (int i = 0; i < layerSizes.size() - 1; i++) {
-            network.add(new Matrix(layerSizes.get(i), layerSizes.get(i + 1), Math.sqrt(2.0 / layerSizes.get(i))));
+        layerCount = layerSizes.size();
+
+        for (int i = 0; i < layerCount - 1; i++) {
+            weights.add(new Matrix(layerSizes.get(i), layerSizes.get(i + 1), Math.sqrt(2.0 / layerSizes.get(i))));
+            biases.add(new Matrix(1, layerSizes.get(i + 1)));
         }
         this.learningRate = learningRate;
-        layerCount = layerSizes.size();
+
     }
 
     public void fitSingle(Matrix input, Matrix expected) {
@@ -49,9 +54,10 @@ public class Model {
         Matrix activationsLocal = input.clone();
         activationsLocal.applyEach(activation.getActivation());
         neurons.add(activationsLocal.clone());
-        for (int lNum = 0; lNum < network.size(); lNum++) {
-            Matrix layer = network.get(lNum);
+        for (int layerNum = 0; layerNum < layerCount - 1; layerNum++) {
+            Matrix layer = weights.get(layerNum);
             Matrix newActivations = activationsLocal.dot(layer);
+            newActivations.add(biases.get(layerNum));
             newActivations.applyEach(activation.getActivation());
             activationsLocal = newActivations.clone();
             neurons.add(activationsLocal.clone());
@@ -71,14 +77,14 @@ public class Model {
             Matrix curError = new Matrix(1, layerSizes.get(layer));
             if (layer == layerCount - 1) {
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
-                    curError.mat[0][curN] = (expected.mat[0][curN] - neurons.get(layerCount - 1).mat[0][curN]);
-                    curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layerCount - 1).mat[0][curN]);
+                    curError.mat[0][curN] = (expected.mat[0][curN] - neurons.get(layer).mat[0][curN]);
+                    curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
                 }
             } else {
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
                     double error = 0;
                     for (int prevN = 0; prevN < layerSizes.get(layer + 1); prevN++) {
-                        error += network.get(layer).mat[curN][prevN]
+                        error += weights.get(layer).mat[curN][prevN]
                                 * errors.get(layerCount - 2 - layer).mat[0][prevN];
                     }
                     curError.mat[0][curN] = error * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
@@ -96,10 +102,11 @@ public class Model {
             int eLayer = layerCount - 2 - layer;
             for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
                 for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
-                    network.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
+                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
                             * (neurons.get(layer).mat[0][curN]);
                 }
             }
+            biases.get(layer).add(errors.get(eLayer).mult(learningRate));
         }
     }
 }

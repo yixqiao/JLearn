@@ -2,14 +2,14 @@ package activations;
 
 import java.util.function.ToDoubleFunction;
 
-public class ReLU extends Activation {
+public class Linear extends Activation {
     @Override
     public ToDoubleFunction<Double> getActivation() {
-        return x -> Math.max(0, x);
+        return x -> x;
     }
 
     @Override
     public ToDoubleFunction<Double> getTransferDerivative() {
-        return x -> (x <= 0 ? 0 : 1);
+        return x -> 1;
     }
 }
