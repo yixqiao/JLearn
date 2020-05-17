@@ -1,16 +1,19 @@
 package activations;
 
-import java.util.function.ToDoubleFunction;
+import core.Matrix;
 
-public class Softmax extends ElementwiseActivation {
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+public class Softmax extends Activation {
 
     @Override
-    public ToDoubleFunction<Double> getActivation() {
+    public Consumer<Matrix> getActivation() {
         return null;
     }
 
     @Override
-    public ToDoubleFunction<Double> getTransferDerivative() {
+    public Consumer<Matrix> getTransferDerivative() {
         return null;
     }
 }

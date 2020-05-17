@@ -1,5 +1,6 @@
 package models;
 
+import activations.Activation;
 import activations.ElementwiseActivation;
 import activations.Sigmoid;
 import core.Matrix;
@@ -12,7 +13,7 @@ public class Model {
     private ArrayList<Matrix> weights;
     private ArrayList<Matrix> biases;
     private ArrayList<Matrix> neurons;
-    private ElementwiseActivation activation = new Sigmoid();
+    private Activation activation;
     private int layerCount;
     private double learningRate;
 
@@ -108,7 +109,7 @@ public class Model {
                     }
                 }
             } else
-                newActivations.applyEachIP(activation.getActivation());
+                activation.getActivation().accept(newActivations);
             activationsLocal = newActivations.clone();
             neurons.add(activationsLocal.clone());
         }

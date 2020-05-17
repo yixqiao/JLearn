@@ -10,12 +10,12 @@ public class LeakyReLU extends ElementwiseActivation {
     }
 
     @Override
-    public ToDoubleFunction<Double> getActivation() {
+    public ToDoubleFunction<Double> getEActivation() {
         return x -> (x <= 0 ? x * alpha : x);
     }
 
     @Override
-    public ToDoubleFunction<Double> getTransferDerivative() {
+    public ToDoubleFunction<Double> getETransferDerivative() {
         return x -> (x <= 0 ? alpha : 1);
     }
 }
