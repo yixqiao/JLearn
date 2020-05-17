@@ -1,9 +1,6 @@
 package testing;
 
 import activations.LeakyReLU;
-import activations.Linear;
-import activations.ReLU;
-import activations.Sigmoid;
 import core.Matrix;
 import models.Model;
 
@@ -30,7 +27,7 @@ public class XOR {
     private void train() {
         for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < inputs.size(); j++) {
-                model.fitSingle(inputs.get(j), outputs.get(j));
+                model.trainOnBatch(inputs.get(j), outputs.get(j));
             }
             if (i % 10000 == 0) {
                 System.out.println("\n" + i);

@@ -6,6 +6,7 @@ import activations.Sigmoid;
 import core.Matrix;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Model {
@@ -66,13 +67,13 @@ public class Model {
                 update(errors);
             }
 
-            if ((epoch + 1) % (epochs / 10) == 0) {
-                System.out.println(String.format("E: %d, L: %.5f", epoch + 1, getLoss(errors)));
+            if ((epoch + 1) % (epochs / 20) == 0) {
+                System.out.println(String.format("E: %d, L: %.5f", epoch + 1, getLoss(forwardPropagate(input), expected)));
             }
         }
     }
 
-    public void fitSingle(Matrix input, Matrix expected) {
+    public void trainOnBatch(Matrix input, Matrix expected) {
         forwardPropagate(input);
         ArrayList<Matrix> errors = backPropagate(expected);
         update(errors);
@@ -147,12 +148,29 @@ public class Model {
         return errors;
     }
 
-    public double getLoss(ArrayList<Matrix> errors) {
+    public double getLoss(Matrix input, Matrix expected) {
+        ArrayList<Matrix> inputAL = new ArrayList<>();
+        inputAL.add(input);
+        ArrayList<Matrix> expectedAL = new ArrayList<>();
+        expectedAL.add(expected);
+        return getLoss(inputAL, expectedAL);
+    }
+
+    public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         double loss = 0;
-        for (int i = 0; i < errors.get(0).cols; i++) {
-            loss += Math.abs(errors.get(0).mat[0][i]);
+        int total = 0;
+        for (int inputNum = 0; inputNum < output.size(); inputNum++) {
+            for (int row = 0; row < output.get(inputNum).rows; row++) {
+                for (int col = 0; col < output.get(inputNum).cols; col++) {
+                    if (expected.get(inputNum).mat[row][col] == 1)
+                        loss += -Math.log(output.get(inputNum).mat[row][col]);
+                    else
+                        loss += -Math.log(1 - output.get(inputNum).mat[row][col]);
+                    total++;
+                }
+            }
         }
-        loss /= errors.get(0).cols;
+        loss /= total;
         return loss;
     }
 
