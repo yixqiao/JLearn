@@ -9,6 +9,7 @@ public class Dense extends Layer {
     private int size, nextSize;
     private Matrix weights, biases;
     private Activation activation;
+    private Matrix neurons;
 
     public Dense(int size, int nextSize, Activation activation) {
         this.size = size;
@@ -27,6 +28,7 @@ public class Dense extends Layer {
             }
         }
         activation.getActivation().accept(output);
+        neurons = output;
         return output;
     }
 
@@ -57,5 +59,16 @@ public class Dense extends Layer {
             curError.mat[0][curN] *= derivative.mat[0][curN];
         }
         return curError;
+    }
+
+    @Override
+    public void update(Matrix errors, double learningRate) {
+        for (int curN = 0; curN < size; curN++) {
+            for (int nextN = 0; nextN < nextSize; nextN++) {
+                weights.mat[curN][nextN] += learningRate * errors.mat[0][nextN]
+                        * (neurons.mat[0][curN]);
+            }
+        }
+        biases.addIP(errors.multiply(learningRate));
     }
 }
