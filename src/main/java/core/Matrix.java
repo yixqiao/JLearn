@@ -111,6 +111,16 @@ public class Matrix {
         return out;
     }
 
+    public double getMax(){
+        double max = -Double.MAX_VALUE;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                max = Math.max(max, mat[i][j]);
+            }
+        }
+        return max;
+    }
+
     public void randomize(double rChance, double rAmount, double rPAmount) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

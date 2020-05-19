@@ -3,6 +3,7 @@ package models;
 import activations.Activation;
 import activations.ElementwiseActivation;
 import activations.Sigmoid;
+import activations.Softmax;
 import core.Matrix;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Model {
     private ArrayList<Matrix> biases;
     private ArrayList<Matrix> neurons;
     private Activation activation;
+    private Activation softmax = new Softmax();
     private int layerCount;
     private double learningRate;
 
@@ -99,16 +101,7 @@ public class Model {
                 }
             }
             if (layerNum == layerCount - 2) {
-                // TODO: Stabilize (https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
-                Matrix exps = newActivations.applyEach(Math::exp);
-                for (int row = 0; row < newActivations.rows; row++) {
-                    double sum = 0;
-                    for (int col = 0; col < newActivations.cols; col++)
-                        sum += exps.mat[row][col];
-                    for (int col = 0; col < newActivations.cols; col++) {
-                        newActivations.mat[row][col] = exps.mat[row][col] / sum;
-                    }
-                }
+                softmax.getActivation().accept(newActivations);
             } else
                 activation.getActivation().accept(newActivations);
             activationsLocal = newActivations.clone();
@@ -122,14 +115,14 @@ public class Model {
 
         for (int layer = layerCount - 1; layer >= 0; layer--) {
             Matrix curError = new Matrix(1, layerSizes.get(layer));
+            Matrix derivative = activation.getTransferDerivative().apply(neurons.get(layer));
             if (layer == layerCount - 1) {
-
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
                     for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
                         curError.mat[0][curN] += (expected.mat[inputNum][curN] - neurons.get(layer).mat[inputNum][curN]);
                     }
                     curError.mat[0][curN] /= expected.rows;
-                    // curError.mat[0][curN] *= activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+                    curError.mat[0][curN] *= derivative.mat[0][curN];
                 }
             } else {
                 for (int curN = 0; curN < layerSizes.get(layer); curN++) {
@@ -138,7 +131,7 @@ public class Model {
                         error += weights.get(layer).mat[curN][prevN]
                                 * errors.get(layerCount - 2 - layer).mat[0][prevN];
                     }
-                    curError.mat[0][curN] = error;// * activation.getTransferDerivative().applyAsDouble(neurons.get(layer).mat[0][curN]);
+                    curError.mat[0][curN] = error * derivative.mat[0][curN];
                 }
             }
 

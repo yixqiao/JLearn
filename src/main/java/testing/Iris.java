@@ -30,14 +30,14 @@ public class Iris {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(4).addLayer(32).addLayer(3);
+        model.addLayer(4).addLayer(32).addLayer(8).addLayer(3);
         model.buildModel(new ReLU(), 0.01);
     }
 
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 32, 80000);
+        model.fit(inputs, outputs, 32, 60000);
 
         printPredictions();
     }

@@ -11,7 +11,7 @@ public abstract class ElementwiseActivation extends Activation {
         return x -> x.applyEach(getEActivation());
     }
 
-    public Consumer<Matrix> getTransferDerivative() {
+    public Function<Matrix, Matrix> getTransferDerivative() {
         return x -> x.applyEach(getETransferDerivative());
     }
 

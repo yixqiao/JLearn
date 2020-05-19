@@ -9,5 +9,5 @@ import java.util.function.ToDoubleFunction;
 public abstract class Activation {
     public abstract Consumer<Matrix> getActivation();
 
-    public abstract Consumer<Matrix> getTransferDerivative();
+    public abstract Function<Matrix, Matrix> getTransferDerivative();
 }
