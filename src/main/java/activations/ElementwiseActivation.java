@@ -8,7 +8,7 @@ import java.util.function.ToDoubleFunction;
 
 public abstract class ElementwiseActivation extends Activation {
     public Consumer<Matrix> getActivation() {
-        return x -> x.applyEach(getEActivation());
+        return x -> x.applyEachIP(getEActivation());
     }
 
     public Function<Matrix, Matrix> getTransferDerivative() {
