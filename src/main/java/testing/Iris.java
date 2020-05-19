@@ -1,10 +1,8 @@
 package testing;
 
-import activations.LeakyReLU;
-import activations.Linear;
-import activations.ReLU;
-import activations.Sigmoid;
+import activations.*;
 import core.Matrix;
+import layers.Dense;
 import models.Model;
 
 import java.io.BufferedReader;
@@ -17,9 +15,9 @@ import java.util.HashMap;
 public class Iris {
     ArrayList<Matrix> inputsAL = new ArrayList<>();
     ArrayList<Matrix> outputsAL = new ArrayList<>();
+    Model model;
     private Matrix inputs;
     private Matrix outputs;
-    Model model;
 
     public static void main(String[] args) {
         Iris iris = new Iris();
@@ -30,8 +28,10 @@ public class Iris {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(4).addLayer(32).addLayer(8).addLayer(3);
-        model.buildModel(new ReLU(), 0.01);
+        model.addLayer(new Dense(4, 32, new ReLU()))
+                .addLayer(new Dense(32, 8, new ReLU()))
+                .addLayer(new Dense(8, 3, new Softmax()));
+        model.buildModel(0.01);
     }
 
     private void train() {
@@ -43,7 +43,7 @@ public class Iris {
     }
 
     private void printPredictions() {
-        for (int i = 0; i < inputsAL.size(); i+=10) {
+        for (int i = 0; i < inputsAL.size(); i += 10) {
             Matrix input = inputsAL.get(i);
             for (int j = 0; j < input.cols; j++) {
                 System.out.print(input.mat[0][j]);

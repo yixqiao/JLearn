@@ -5,43 +5,29 @@ import activations.ElementwiseActivation;
 import activations.Sigmoid;
 import activations.Softmax;
 import core.Matrix;
+import layers.Layer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 public class Model {
-    private ArrayList<Integer> layerSizes;
-    private ArrayList<Matrix> weights;
-    private ArrayList<Matrix> biases;
-    private ArrayList<Matrix> neurons;
-    private Activation activation;
-    private Activation softmax = new Softmax();
+    private ArrayList<Layer> layers;
     private int layerCount;
     private double learningRate;
 
     public Model() {
-        layerSizes = new ArrayList<>();
-        weights = new ArrayList<>();
-        biases = new ArrayList<>();
+        layers = new ArrayList<>();
     }
 
-    public Model addLayer(int layerSize) {
-        layerSizes.add(layerSize);
+    public Model addLayer(Layer layer) {
+        layers.add(layer);
         return this;
     }
 
-    public void buildModel(ElementwiseActivation activation, double learningRate) {
-        this.activation = activation;
-
-        layerCount = layerSizes.size();
-
-        for (int i = 0; i < layerCount - 1; i++) {
-            weights.add(new Matrix(layerSizes.get(i), layerSizes.get(i + 1), Math.sqrt(2.0 / layerSizes.get(i))));
-            biases.add(new Matrix(1, layerSizes.get(i + 1)));
-        }
+    public void buildModel(double learningRate) {
         this.learningRate = learningRate;
-
+        layerCount = layers.size();
     }
 
     public void fit(Matrix input, Matrix expected, int batchSize, int epochs) {
@@ -49,7 +35,7 @@ public class Model {
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
 
-        ArrayList<Matrix> errors = null;
+        ArrayList<Matrix> errors;
 
         for (int epoch = 0; epoch < epochs; epoch++) {
             Collections.shuffle(indices);
@@ -88,56 +74,23 @@ public class Model {
     // return np.exp(x) / np.sum(np.exp(x), axis=0)
 
     public Matrix forwardPropagate(Matrix input) {
-        neurons = new ArrayList<>();
-        Matrix activationsLocal = input.clone();
-        // activationsLocal.applyEach(activation.getActivation());
-        neurons.add(activationsLocal.clone());
-        for (int layerNum = 0; layerNum < layerCount - 1; layerNum++) {
-            Matrix layer = weights.get(layerNum);
-            Matrix newActivations = activationsLocal.dot(layer);
-            for (int row = 0; row < newActivations.rows; row++) {
-                for (int col = 0; col < newActivations.cols; col++) {
-                    newActivations.mat[row][col] += biases.get(layerNum).mat[0][col];
-                }
-            }
-            if (layerNum == layerCount - 2) {
-                softmax.getActivation().accept(newActivations);
-            } else
-                activation.getActivation().accept(newActivations);
-            activationsLocal = newActivations.clone();
-            neurons.add(activationsLocal.clone());
+        Matrix activations = input.clone();
+        for (int layerNum = 0; layerNum < layerCount; layerNum++) {
+            activations = layers.get(layerNum).forwardPropagate(activations);
         }
-        return neurons.get(neurons.size() - 1);
+        return activations;
     }
 
     private ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
-
         for (int layer = layerCount - 1; layer >= 0; layer--) {
-            Matrix curError = new Matrix(1, layerSizes.get(layer));
-            Matrix derivative = activation.getTransferDerivative().apply(neurons.get(layer));
             if (layer == layerCount - 1) {
-                for (int curN = 0; curN < layerSizes.get(layer); curN++) {
-                    for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
-                        curError.mat[0][curN] += (expected.mat[inputNum][curN] - neurons.get(layer).mat[inputNum][curN]);
-                    }
-                    curError.mat[0][curN] /= expected.rows;
-                    curError.mat[0][curN] *= derivative.mat[0][curN];
-                }
+                errors.add(layers.get(layer).getErrorsExpected(expected));
+                errors.add(layers.get(layer).getErrors(errors.get(errors.size() - 1)));
             } else {
-                for (int curN = 0; curN < layerSizes.get(layer); curN++) {
-                    double error = 0;
-                    for (int prevN = 0; prevN < layerSizes.get(layer + 1); prevN++) {
-                        error += weights.get(layer).mat[curN][prevN]
-                                * errors.get(layerCount - 2 - layer).mat[0][prevN];
-                    }
-                    curError.mat[0][curN] = error * derivative.mat[0][curN];
-                }
+                errors.add(layers.get(layer).getErrors(errors.get(errors.size() - 1)));
             }
-
-            errors.add(curError);
         }
-
         return errors;
     }
 
@@ -168,15 +121,9 @@ public class Model {
     }
 
     private void update(ArrayList<Matrix> errors) {
-        for (int layer = 0; layer < layerCount - 1; layer++) {
-            int eLayer = layerCount - 2 - layer;
-            for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
-                for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
-                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
-                            * (neurons.get(layer).mat[0][curN]);
-                }
-            }
-            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
+        for (int layer = 0; layer < layerCount; layer++) {
+            int eLayer = layerCount - 1 - layer;
+            layers.get(layer).update(errors.get(eLayer), learningRate);
         }
     }
 }

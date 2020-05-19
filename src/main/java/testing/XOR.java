@@ -1,15 +1,18 @@
 package testing;
 
 import activations.LeakyReLU;
+import activations.ReLU;
+import activations.Softmax;
 import core.Matrix;
+import layers.Dense;
 import models.Model;
 
 import java.util.ArrayList;
 
 public class XOR {
+    Model model;
     private ArrayList<Matrix> inputs;
     private ArrayList<Matrix> outputs;
-    Model model;
 
     public static void main(String[] args) {
         XOR xor = new XOR();
@@ -20,8 +23,9 @@ public class XOR {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(2).addLayer(16).addLayer(2);
-        model.buildModel(new LeakyReLU(0.01), 0.001);
+        model.addLayer(new Dense(2, 16, new ReLU()))
+                .addLayer(new Dense(16, 2, new ReLU()));
+        model.buildModel(0.001);
     }
 
     private void train() {
