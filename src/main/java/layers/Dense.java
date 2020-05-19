@@ -41,7 +41,11 @@ public class Dense extends Layer {
             for (int prevN = 0; prevN < nextSize; prevN++) {
                 error += weights.mat[curN][prevN] * prevErrors.mat[0][prevN];
             }
-            curError.mat[0][curN] = error * derivative.mat[0][curN];
+            curError.mat[0][curN] = error;// * derivative.mat[0][curN];
+            // FIXME last weight layer has two different activations, so derivative transfer does not work currently
+            // Might have to make end user put in each neuron layer
+            // And then the model will generate all of the weight layers
+            // Somewhat like how Keras's interface works
         }
         return curError;
     }
