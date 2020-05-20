@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Iris {
     ArrayList<Matrix> inputsAL = new ArrayList<>();
@@ -40,7 +39,7 @@ public class Iris {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 32, 20000);
+        model.fit(inputs, outputs, 32, 30000);
 
         printPredictions();
     }

@@ -9,7 +9,7 @@ import java.util.function.ToDoubleFunction;
 
 public class Matrix {
     public int rows, cols;
-    public double[][] mat;
+    public final double[][] mat;
     Random random = new Random();
 
     public Matrix(int rows, int cols) {
