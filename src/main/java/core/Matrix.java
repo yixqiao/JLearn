@@ -97,6 +97,14 @@ public class Matrix {
         return out;
     }
 
+    public void multiplyIP(double x) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mat[i][j] *= x;
+            }
+        }
+    }
+
     public Matrix add(int x) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
@@ -115,7 +123,7 @@ public class Matrix {
         }
     }
 
-    public double sum(){
+    public double sum() {
         double sum = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

@@ -1,3 +1,6 @@
+# MNIST dataset
+datasets/mnist/csv/*
+
 # Gradle
 .gradle
 **/build/
