@@ -4,6 +4,8 @@ import activations.*;
 import core.Matrix;
 import layers.Dense;
 import layers.InputLayer;
+import losses.CrossEntropy;
+import metrics.Accuracy;
 import models.Model;
 
 import java.io.BufferedReader;
@@ -33,13 +35,13 @@ public class Iris {
                 .addLayer(new Dense(8, new ReLU()))
                 .addLayer(new Dense(3, new Softmax()));
 
-        model.buildModel();
+        model.buildModel(new CrossEntropy());
     }
 
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.004, 32, 30000);
+        model.fit(inputs, outputs, 0.004, 32, 30000, 1000, new Accuracy());
 
         printPredictions();
     }

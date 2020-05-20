@@ -6,6 +6,8 @@ import activations.Softmax;
 import core.Matrix;
 import layers.Dense;
 import layers.InputLayer;
+import losses.CrossEntropy;
+import losses.MeanSquaredError;
 import models.Model;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class XOR {
         model.addLayer(new InputLayer(2))
                 .addLayer(new Dense(16, new LeakyReLU(0.02)))
                 .addLayer(new Dense(1, new LeakyReLU(0.02)));
-        model.buildModel();
+        model.buildModel(new MeanSquaredError());
     }
 
     private void train() {

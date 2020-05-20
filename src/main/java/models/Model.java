@@ -13,6 +13,7 @@ import java.util.Collections;
 public class Model {
     private ArrayList<Layer> layers;
     private int layerCount;
+    private Loss loss;
 
     public Model() {
         layers = new ArrayList<>();
@@ -23,15 +24,20 @@ public class Model {
         return this;
     }
 
-    public void buildModel() {
+    public void buildModel(Loss loss) {
         layerCount = layers.size();
         // TODO check that first layer is an input layer
         for (int layer = 0; layer < layerCount - 1; layer++) {
             layers.get(layer + 1).initLayer(layers.get(layer).getOutSize());
         }
+        this.loss = loss;
     }
 
-    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs) {
+    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, Metric metric) {
+        fit(input, expected, learningRate, batchSize, epochs, metric);
+    }
+
+    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval, Metric metric) {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
@@ -56,10 +62,10 @@ public class Model {
                 update(errors, learningRate);
             }
 
-            if (epoch % (epochs / 20) == 0) {
+            if ((epoch + 1) % logInterval == 0) {
                 Matrix output = forwardPropagate(input);
-                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(new CrossEntropy(), input, expected),
-                        getMetric(new Accuracy(), output, expected) * 100));
+                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(loss, input, expected),
+                        getMetric(metric, output, expected) * 100));
             }
         }
     }
