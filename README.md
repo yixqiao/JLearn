@@ -3,7 +3,8 @@ Java library for machine learning.
 Focuses on being easy to use and configure.
 
 ***STILL IN EARLY DEVELOPMENT.***  
-Packaged library should be available in about 2 weeks.
+Basic library might be put out in 2-3 days.  
+Polished library should be available in about 2 weeks.
 
 ### Goals
 - Create and train a neural network in a few lines of intuitive code
