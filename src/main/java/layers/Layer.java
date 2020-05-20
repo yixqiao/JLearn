@@ -5,6 +5,10 @@ import core.Matrix;
 import java.util.ArrayList;
 
 public abstract class Layer {
+    public abstract void initLayer(int prevSize);
+
+    public abstract int getOutSize();
+
     public abstract Matrix forwardPropagate(Matrix input);
 
     public abstract Matrix getErrors(Matrix prevErrors);

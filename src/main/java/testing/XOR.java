@@ -5,6 +5,7 @@ import activations.ReLU;
 import activations.Softmax;
 import core.Matrix;
 import layers.Dense;
+import layers.InputLayer;
 import models.Model;
 
 import java.util.ArrayList;
@@ -23,8 +24,9 @@ public class XOR {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(new Dense(2, 16, new ReLU()))
-                .addLayer(new Dense(16, 2, new ReLU()));
+        model.addLayer(new InputLayer(2))
+                .addLayer(new Dense(16, new LeakyReLU(0.02)))
+                .addLayer(new Dense(1, new LeakyReLU(0.02)));
         model.buildModel(0.001);
     }
 

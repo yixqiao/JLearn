@@ -3,6 +3,7 @@ package testing;
 import activations.*;
 import core.Matrix;
 import layers.Dense;
+import layers.InputLayer;
 import models.Model;
 
 import java.io.BufferedReader;
@@ -28,10 +29,12 @@ public class Iris {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(new Dense(4, 32, new ReLU()))
-                .addLayer(new Dense(32, 8, new ReLU()))
-                .addLayer(new Dense(8, 3, new Softmax()));
-        model.buildModel(0.01);
+        model.addLayer(new InputLayer(4))
+                .addLayer(new Dense(32, new ReLU()))
+                .addLayer(new Dense(8, new ReLU()))
+                .addLayer(new Dense(3, new Softmax()));
+
+        model.buildModel(0.004);
     }
 
     private void train() {

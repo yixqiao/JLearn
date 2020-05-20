@@ -28,6 +28,10 @@ public class Model {
     public void buildModel(double learningRate) {
         this.learningRate = learningRate;
         layerCount = layers.size();
+        // TODO check that first layer is an input layer
+        for (int layer = 0; layer < layerCount - 1; layer++) {
+            layers.get(layer + 1).initLayer(layers.get(layer).getOutSize());
+        }
     }
 
     public void fit(Matrix input, Matrix expected, int batchSize, int epochs) {
@@ -122,8 +126,22 @@ public class Model {
 
     private void update(ArrayList<Matrix> errors) {
         for (int layer = 0; layer < layerCount; layer++) {
+//            System.out.println(errors.size() + ", " + layerCount);
             int eLayer = layerCount - 1 - layer;
             layers.get(layer).update(errors.get(eLayer), learningRate);
         }
     }
+
+//    private void update(ArrayList<Matrix> errors) {
+//        for (int layer = 0; layer < layerCount - 2; layer++) {
+//            int eLayer = layerCount - 2 - layer;
+//            for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
+//                for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
+//                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
+//                            * (neurons.get(layer).mat[0][curN]);
+//                }
+//            }
+//            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
+//        }
+//    }
 }

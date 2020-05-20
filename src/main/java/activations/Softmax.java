@@ -10,6 +10,7 @@ public class Softmax extends Activation {
     @Override
     public Consumer<Matrix> getActivation() {
         // Stabilized (https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
+        // TODO Stabilization seems to produce a ton of NANs, not stabilizing for now
         return x -> {
             double max = x.getMax();
             Matrix shiftx = x.applyEach(xd -> xd - max);
@@ -27,6 +28,7 @@ public class Softmax extends Activation {
 
     @Override
     public Function<Matrix, Matrix> getTransferDerivative() {
-        return x -> x.applyEach(xd -> xd * (1 - xd));
+        return x -> x;
+        // return x -> x.applyEach(xd -> xd * (1 - xd));
     }
 }
