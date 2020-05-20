@@ -1,17 +1,13 @@
 package models;
 
-import activations.Activation;
-import activations.ElementwiseActivation;
-import activations.Sigmoid;
-import activations.Softmax;
 import core.Matrix;
 import layers.Layer;
 import losses.CrossEntropy;
 import losses.Loss;
-import losses.MeanSquaredError;
+import metrics.Accuracy;
+import metrics.Metric;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class Model {
@@ -62,10 +58,10 @@ public class Model {
                 update(errors);
             }
 
-            if ((epoch + 1) % (epochs / 20) == 0) {
+            if (epoch % (epochs / 20) == 0) {
                 Matrix output = forwardPropagate(input);
                 System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(new CrossEntropy(), input, expected),
-                        getAcc(output, expected) * 100));
+                        getMetric(new Accuracy(), output, expected) * 100));
             }
         }
     }
@@ -104,47 +100,19 @@ public class Model {
     }
 
     public double getLoss(Loss loss, Matrix input, Matrix expected) {
-        ArrayList<Matrix> inputAL = new ArrayList<>();
-        inputAL.add(input);
-        ArrayList<Matrix> expectedAL = new ArrayList<>();
-        expectedAL.add(expected);
-        return loss.getLoss(this, inputAL, expectedAL);
-    }
-
-    public double getLoss(Loss loss, ArrayList<Matrix> input, ArrayList<Matrix> expected) {
         return loss.getLoss(this, input, expected);
     }
 
-    public double getAcc(Matrix output, Matrix expected) {
-        ArrayList<Matrix> outputAL = new ArrayList<>();
-        outputAL.add(output);
-        ArrayList<Matrix> expectedAL = new ArrayList<>();
-        expectedAL.add(expected);
-        return getAcc(outputAL, expectedAL);
+    public double getLoss(Loss loss, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
+        return loss.getLoss(this, output, expected);
     }
 
-    public double getAcc(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
-        int correct = 0, total = 0;
-        for (int batchNum = 0; batchNum < output.size(); batchNum++) {
-            for (int row = 0; row < output.get(batchNum).rows; row++) {
-                int maxIO = -1, maxIE = -1;
-                double maxVO = -Double.MAX_VALUE, maxVE = -Double.MAX_VALUE;
-                for (int col = 0; col < output.get(batchNum).cols; col++) {
-                    if (output.get(batchNum).mat[row][col] > maxVO) {
-                        maxVO = output.get(batchNum).mat[row][col];
-                        maxIO = col;
-                    }
-                    if (expected.get(batchNum).mat[row][col] > maxVE) {
-                        maxVE = output.get(batchNum).mat[row][col];
-                        maxIE = col;
-                    }
-                }
-                if (maxIO == maxIE)
-                    correct++;
-                total++;
-            }
-        }
-        return (double) (correct) / total;
+    public double getMetric(Metric metric, Matrix output, Matrix expected) {
+        return metric.getMetric(output, expected);
+    }
+
+    public double getMetric(Metric metric, ArrayList<Matrix> input, ArrayList<Matrix> expected) {
+        return metric.getMetric(input, expected);
     }
 
     private void update(ArrayList<Matrix> errors) {
