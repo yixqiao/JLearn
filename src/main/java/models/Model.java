@@ -6,6 +6,9 @@ import activations.Sigmoid;
 import activations.Softmax;
 import core.Matrix;
 import layers.Layer;
+import losses.CrossEntropy;
+import losses.Loss;
+import losses.MeanSquaredError;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +64,8 @@ public class Model {
 
             if ((epoch + 1) % (epochs / 20) == 0) {
                 Matrix output = forwardPropagate(input);
-                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(output, expected), getAcc(output, expected)*100));
+                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(new CrossEntropy(), input, expected),
+                        getAcc(output, expected) * 100));
             }
         }
     }
@@ -86,7 +90,7 @@ public class Model {
         return activations;
     }
 
-    private ArrayList<Matrix> backPropagate(Matrix expected) {
+    public ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
         for (int layer = layerCount - 1; layer > 0; layer--) {
             if (layer == layerCount - 1) {
@@ -99,30 +103,16 @@ public class Model {
         return errors;
     }
 
-    public double getLoss(Matrix output, Matrix expected) {
-        ArrayList<Matrix> outputAL = new ArrayList<>();
-        outputAL.add(output);
+    public double getLoss(Loss loss, Matrix input, Matrix expected) {
+        ArrayList<Matrix> inputAL = new ArrayList<>();
+        inputAL.add(input);
         ArrayList<Matrix> expectedAL = new ArrayList<>();
         expectedAL.add(expected);
-        return getLoss(outputAL, expectedAL);
+        return loss.getLoss(this, inputAL, expectedAL);
     }
 
-    public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
-        double loss = 0;
-        int total = 0;
-        for (int batchNum = 0; batchNum < output.size(); batchNum++) {
-            for (int row = 0; row < output.get(batchNum).rows; row++) {
-                for (int col = 0; col < output.get(batchNum).cols; col++) {
-                    if (expected.get(batchNum).mat[row][col] == 1)
-                        loss += -Math.log(output.get(batchNum).mat[row][col]);
-                    else
-                        loss += -Math.log(1 - output.get(batchNum).mat[row][col]);
-                    total++;
-                }
-            }
-        }
-        loss /= total;
-        return loss;
+    public double getLoss(Loss loss, ArrayList<Matrix> input, ArrayList<Matrix> expected) {
+        return loss.getLoss(this, input, expected);
     }
 
     public double getAcc(Matrix output, Matrix expected) {

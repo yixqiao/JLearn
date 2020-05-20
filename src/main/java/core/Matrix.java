@@ -8,8 +8,8 @@ import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
 public class Matrix {
-    public int rows, cols;
     public final double[][] mat;
+    public int rows, cols;
     Random random = new Random();
 
     public Matrix(int rows, int cols) {
@@ -29,7 +29,7 @@ public class Matrix {
         }
     }
 
-    public Matrix(double[][] mat){
+    public Matrix(double[][] mat) {
         this.rows = mat.length;
         this.cols = mat[0].length;
         this.mat = mat;
@@ -63,6 +63,20 @@ public class Matrix {
         }
     }
 
+    public Matrix subtract(Matrix m2) {
+        Matrix out = new Matrix(rows, cols);
+        if (rows != m2.rows || cols != m2.cols) {
+            System.out.println("Matrix mismatch!");
+            return null;
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                out.mat[i][j] = mat[i][j] - m2.mat[i][j];
+            }
+        }
+        return out;
+    }
+
     public Matrix multiply(double x) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
@@ -93,7 +107,7 @@ public class Matrix {
         return out;
     }
 
-    public void applyEachIP(ToDoubleFunction<Double> function){
+    public void applyEachIP(ToDoubleFunction<Double> function) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 mat[i][j] = function.applyAsDouble(mat[i][j]);
@@ -101,7 +115,17 @@ public class Matrix {
         }
     }
 
-    public Matrix applyEach(ToDoubleFunction<Double> function){
+    public double sum(){
+        double sum = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                sum += mat[i][j];
+            }
+        }
+        return sum;
+    }
+
+    public Matrix applyEach(ToDoubleFunction<Double> function) {
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -111,17 +135,17 @@ public class Matrix {
         return out;
     }
 
-    public Matrix getTranspose(){
+    public Matrix getTranspose() {
         Matrix out = new Matrix(cols, rows);
-        for(int i=0; i<rows; i++){
-            for(int j=0; j<cols; j++){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 out.mat[j][i] = mat[i][j];
             }
         }
         return out;
     }
 
-    public double getMaxValue(){
+    public double getMaxValue() {
         double max = -Double.MAX_VALUE;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
