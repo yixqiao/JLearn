@@ -45,6 +45,8 @@ public class Model {
         ArrayList<Matrix> errors;
 
         for (int epoch = 0; epoch < epochs; epoch++) {
+            long epochStart = System.nanoTime();
+
             Collections.shuffle(indices);
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
                 Matrix batchInput = new Matrix(batchSize, input.cols);
@@ -64,8 +66,12 @@ public class Model {
 
             if ((epoch + 1) % logInterval == 0) {
                 Matrix output = forwardPropagate(input);
-                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(loss, input, expected),
-                        getMetric(metric, output, expected) * 100));
+                double lossA = getLoss(loss, input, expected);
+                double metricA = getMetric(metric, output, expected) * 100;
+                double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+                System.out.println(String.format("E: %d, T: %.2fs, L: %.5f, A: %.1f%%",
+                        epoch + 1, timeElapsed,
+                        lossA, metricA));
             }
         }
     }

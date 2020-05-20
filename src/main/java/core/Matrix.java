@@ -4,10 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Random;
-import java.util.function.Function;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 public class Matrix {
+    public static int THREAD_COUNT = 16;
+
     public final double[][] mat;
     public int rows, cols;
     Random random = new Random();
@@ -40,14 +44,41 @@ public class Matrix {
             System.out.println("nope");
             return null;
         }
+
         Matrix nMatrix = new Matrix(rows, m2.cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < m2.cols; j++) {
+
+        class CalcSingle implements Runnable {
+            private int ind1, ind2;
+
+            public CalcSingle(int ind1, int ind2) {
+                this.ind1 = ind1;
+                this.ind2 = ind2;
+            }
+
+            public void run() {
                 for (int k = 0; k < cols; k++) {
-                    nMatrix.mat[i][j] += mat[i][k] * m2.mat[k][j];
+                    nMatrix.mat[ind1][ind2] += mat[ind1][k] * m2.mat[k][ind2];
                 }
             }
         }
+
+        ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < m2.cols; j++) {
+                Runnable r = new CalcSingle(i, j);
+                pool.execute(r);
+            }
+        }
+
+        pool.shutdown();
+
+        try {
+            pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return nMatrix;
     }
 

@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MNIST {
-    ArrayList<Matrix> inputsAL = new ArrayList<>();
-    ArrayList<Matrix> outputsAL = new ArrayList<>();
+    ArrayList<Matrix> inputsALC = new ArrayList<>();
+    ArrayList<Matrix> outputsALC = new ArrayList<>();
     Model model;
     private Matrix inputs;
     private Matrix outputs;
@@ -31,7 +31,7 @@ public class MNIST {
 
     private void buildModel() {
         model = new Model();
-        model.addLayer(new InputLayer(28*28))
+        model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(256, new ReLU()))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
@@ -42,14 +42,14 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.005, 32, 30, 1, new Accuracy());
+        model.fit(inputs, outputs, 0.005, 64, 30, 1, new Accuracy());
 
         printPredictions();
     }
 
     private void printPredictions() {
-        for (int i = 0; i < inputsAL.size(); i += 10000) {
-            Matrix output = model.predict(inputsAL.get(i));
+        for (int i = 0; i < inputsALC.size(); i++) {
+            Matrix output = model.predict(inputsALC.get(i));
             for (int j = 0; j < output.cols; j++) {
                 System.out.print(String.format("%.3f", output.mat[0][j]));
                 if (j != output.cols - 1) System.out.print("\t");
@@ -66,6 +66,8 @@ public class MNIST {
     }
 
     private void writeDataset() {
+        ArrayList<Matrix> inputsAL = new ArrayList<>();
+        ArrayList<Matrix> outputsAL = new ArrayList<>();
         // Flattens all images
         try (BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"))) {
             String line;
@@ -98,6 +100,11 @@ public class MNIST {
                 outputs.mat[i][j] = outputsAL.get(i).mat[0][j];
             }
         }
+
+        for (int i = 0; i < inputsAL.size(); i += 10000) {
+            inputsALC.add(inputsAL.get(i));
+        }
+
     }
 
     private void initInputs() {
