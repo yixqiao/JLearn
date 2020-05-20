@@ -27,13 +27,13 @@ public class XOR {
         model.addLayer(new InputLayer(2))
                 .addLayer(new Dense(16, new LeakyReLU(0.02)))
                 .addLayer(new Dense(1, new LeakyReLU(0.02)));
-        model.buildModel(0.001);
+        model.buildModel();
     }
 
     private void train() {
         for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < inputs.size(); j++) {
-                model.trainOnBatch(inputs.get(j), outputs.get(j));
+                model.trainOnBatch(inputs.get(j), outputs.get(j), 0.001);
             }
             if (i % 10000 == 0) {
                 System.out.println("\n" + i);

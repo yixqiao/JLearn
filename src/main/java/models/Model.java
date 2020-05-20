@@ -13,7 +13,6 @@ import java.util.Collections;
 public class Model {
     private ArrayList<Layer> layers;
     private int layerCount;
-    private double learningRate;
 
     public Model() {
         layers = new ArrayList<>();
@@ -24,8 +23,7 @@ public class Model {
         return this;
     }
 
-    public void buildModel(double learningRate) {
-        this.learningRate = learningRate;
+    public void buildModel() {
         layerCount = layers.size();
         // TODO check that first layer is an input layer
         for (int layer = 0; layer < layerCount - 1; layer++) {
@@ -33,7 +31,7 @@ public class Model {
         }
     }
 
-    public void fit(Matrix input, Matrix expected, int batchSize, int epochs) {
+    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs) {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
@@ -55,7 +53,7 @@ public class Model {
                 }
                 forwardPropagate(batchInput);
                 errors = backPropagate(batchExpected);
-                update(errors);
+                update(errors, learningRate);
             }
 
             if (epoch % (epochs / 20) == 0) {
@@ -66,10 +64,10 @@ public class Model {
         }
     }
 
-    public void trainOnBatch(Matrix input, Matrix expected) {
+    public void trainOnBatch(Matrix input, Matrix expected, double learningRate) {
         forwardPropagate(input);
         ArrayList<Matrix> errors = backPropagate(expected);
-        update(errors);
+        update(errors, learningRate);
     }
 
     public Matrix predict(Matrix input) {
@@ -115,7 +113,7 @@ public class Model {
         return metric.getMetric(input, expected);
     }
 
-    private void update(ArrayList<Matrix> errors) {
+    private void update(ArrayList<Matrix> errors, double learningRate) {
         for (int layer = 1; layer < layerCount; layer++) {
 //            System.out.println(errors.size() + ", " + layerCount);
             int eLayer = layerCount - layer - 1;

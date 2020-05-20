@@ -33,13 +33,13 @@ public class Iris {
                 .addLayer(new Dense(8, new ReLU()))
                 .addLayer(new Dense(3, new Softmax()));
 
-        model.buildModel(0.004);
+        model.buildModel();
     }
 
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 32, 30000);
+        model.fit(inputs, outputs, 0.004, 32, 30000);
 
         printPredictions();
     }
