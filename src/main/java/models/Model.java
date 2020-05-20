@@ -60,7 +60,8 @@ public class Model {
             }
 
             if ((epoch + 1) % (epochs / 20) == 0) {
-                System.out.println(String.format("E: %d, L: %.5f", epoch + 1, getLoss(forwardPropagate(input), expected)));
+                Matrix output = forwardPropagate(input);
+                System.out.println(String.format("E: %d, L: %.5f, A: %.1f%%", epoch + 1, getLoss(output, expected), getAcc(output, expected)*100));
             }
         }
     }
@@ -98,30 +99,62 @@ public class Model {
         return errors;
     }
 
-    public double getLoss(Matrix input, Matrix expected) {
-        ArrayList<Matrix> inputAL = new ArrayList<>();
-        inputAL.add(input);
+    public double getLoss(Matrix output, Matrix expected) {
+        ArrayList<Matrix> outputAL = new ArrayList<>();
+        outputAL.add(output);
         ArrayList<Matrix> expectedAL = new ArrayList<>();
         expectedAL.add(expected);
-        return getLoss(inputAL, expectedAL);
+        return getLoss(outputAL, expectedAL);
     }
 
     public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         double loss = 0;
         int total = 0;
-        for (int inputNum = 0; inputNum < output.size(); inputNum++) {
-            for (int row = 0; row < output.get(inputNum).rows; row++) {
-                for (int col = 0; col < output.get(inputNum).cols; col++) {
-                    if (expected.get(inputNum).mat[row][col] == 1)
-                        loss += -Math.log(output.get(inputNum).mat[row][col]);
+        for (int batchNum = 0; batchNum < output.size(); batchNum++) {
+            for (int row = 0; row < output.get(batchNum).rows; row++) {
+                for (int col = 0; col < output.get(batchNum).cols; col++) {
+                    if (expected.get(batchNum).mat[row][col] == 1)
+                        loss += -Math.log(output.get(batchNum).mat[row][col]);
                     else
-                        loss += -Math.log(1 - output.get(inputNum).mat[row][col]);
+                        loss += -Math.log(1 - output.get(batchNum).mat[row][col]);
                     total++;
                 }
             }
         }
         loss /= total;
         return loss;
+    }
+
+    public double getAcc(Matrix output, Matrix expected) {
+        ArrayList<Matrix> outputAL = new ArrayList<>();
+        outputAL.add(output);
+        ArrayList<Matrix> expectedAL = new ArrayList<>();
+        expectedAL.add(expected);
+        return getAcc(outputAL, expectedAL);
+    }
+
+    public double getAcc(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
+        int correct = 0, total = 0;
+        for (int batchNum = 0; batchNum < output.size(); batchNum++) {
+            for (int row = 0; row < output.get(batchNum).rows; row++) {
+                int maxIO = -1, maxIE = -1;
+                double maxVO = -Double.MAX_VALUE, maxVE = -Double.MAX_VALUE;
+                for (int col = 0; col < output.get(batchNum).cols; col++) {
+                    if (output.get(batchNum).mat[row][col] > maxVO) {
+                        maxVO = output.get(batchNum).mat[row][col];
+                        maxIO = col;
+                    }
+                    if (expected.get(batchNum).mat[row][col] > maxVE) {
+                        maxVE = output.get(batchNum).mat[row][col];
+                        maxIE = col;
+                    }
+                }
+                if (maxIO == maxIE)
+                    correct++;
+                total++;
+            }
+        }
+        return (double) (correct) / total;
     }
 
     private void update(ArrayList<Matrix> errors) {

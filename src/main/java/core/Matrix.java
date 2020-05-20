@@ -111,7 +111,8 @@ public class Matrix {
         return out;
     }
 
-    public double getMax(){
+
+    public double getMaxValue(){
         double max = -Double.MAX_VALUE;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {

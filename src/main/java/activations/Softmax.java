@@ -11,7 +11,7 @@ public class Softmax extends Activation {
     public Consumer<Matrix> getActivation() {
         // Stabilized (https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
         return x -> {
-            double max = x.getMax();
+            double max = x.getMaxValue();
             Matrix shiftx = x.applyEach(xd -> xd - max);
             Matrix exps = shiftx.applyEach(Math::exp);
             for (int row = 0; row < x.rows; row++) {

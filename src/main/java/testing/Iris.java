@@ -40,7 +40,7 @@ public class Iris {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 32, 60000);
+        model.fit(inputs, outputs, 32, 20000);
 
         printPredictions();
     }
