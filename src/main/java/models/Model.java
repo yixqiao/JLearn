@@ -87,7 +87,7 @@ public class Model {
 
     private ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
-        for (int layer = layerCount - 1; layer >= 0; layer--) {
+        for (int layer = layerCount - 1; layer > 0; layer--) {
             if (layer == layerCount - 1) {
                 errors.add(layers.get(layer).getErrorsExpected(expected));
                 errors.add(layers.get(layer).getErrors(errors.get(errors.size() - 1)));
@@ -125,9 +125,9 @@ public class Model {
     }
 
     private void update(ArrayList<Matrix> errors) {
-        for (int layer = 0; layer < layerCount; layer++) {
+        for (int layer = 1; layer < layerCount; layer++) {
 //            System.out.println(errors.size() + ", " + layerCount);
-            int eLayer = layerCount - 1 - layer;
+            int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
         }
     }
