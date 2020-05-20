@@ -9,10 +9,7 @@ import losses.CrossEntropy;
 import metrics.Accuracy;
 import models.Model;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class MNIST {
@@ -24,6 +21,7 @@ public class MNIST {
 
     public static void main(String[] args) {
         MNIST mnist = new MNIST();
+//        mnist.writeDataset();
         mnist.initInputs();
         mnist.buildModel();
         mnist.train();
@@ -34,6 +32,7 @@ public class MNIST {
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(256, new ReLU()))
                 .addLayer(new Dense(64, new ReLU()))
+                .addLayer(new Dense(32, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
 
         model.buildModel(new CrossEntropy());
@@ -69,25 +68,35 @@ public class MNIST {
         ArrayList<Matrix> inputsAL = new ArrayList<>();
         ArrayList<Matrix> outputsAL = new ArrayList<>();
         // Flattens all images
-        try (BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"))) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"));
+            DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("datasets/mnist/data/train.dat")));
             String line;
             br.readLine(); // Discard first line
-            while ((line = br.readLine()) != null) {
+            for(int imgCount=0; imgCount < 60000; imgCount++){
+                line = br.readLine();
                 String[] values = line.split(",");
                 Matrix output = new Matrix(1, 10);
+
                 output.mat[0][Integer.parseInt(values[0])] = 1;
+                dos.writeByte((byte) Integer.parseInt(values[0]));
+
                 Matrix input = new Matrix(1, 28 * 28);
                 for (int i = 0; i < 28 * 28; i++) {
                     input.mat[0][i] = Double.parseDouble(values[1 + i]);
-
+                    dos.writeByte((byte) (input.mat[0][i] - 128));
                 }
+
                 input.multiplyIP(1.0 / 255);
                 inputsAL.add(input);
                 outputsAL.add(output);
             }
+            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Finished writing to file.");
 
         inputs = new Matrix(inputsAL.size(), inputsAL.get(0).cols);
         outputs = new Matrix(outputsAL.size(), outputsAL.get(0).cols);
@@ -108,6 +117,46 @@ public class MNIST {
     }
 
     private void initInputs() {
-        writeDataset();
+        ArrayList<Matrix> inputsAL = new ArrayList<>();
+        ArrayList<Matrix> outputsAL = new ArrayList<>();
+
+        try {
+            DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream("datasets/mnist/data/train.dat")));
+            for (int i = 0; i < 60000; i++) {
+                Matrix output = new Matrix(1, 10);
+                output.mat[0][dis.readByte()] = 1;
+
+                Matrix input = new Matrix(1, 28 * 28);
+                for (int j = 0; j < 28 * 28; j++) {
+                    input.mat[0][j] = dis.readByte() + 128;
+                }
+
+                input.multiplyIP(1.0 / 255);
+                inputsAL.add(input);
+                outputsAL.add(output);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Finished reading from file.");
+
+        inputs = new Matrix(inputsAL.size(), inputsAL.get(0).cols);
+        outputs = new Matrix(outputsAL.size(), outputsAL.get(0).cols);
+
+        for (int i = 0; i < inputsAL.size(); i++) {
+            for (int j = 0; j < inputsAL.get(i).cols; j++) {
+                inputs.mat[i][j] = inputsAL.get(i).mat[0][j];
+            }
+            for (int j = 0; j < outputsAL.get(i).cols; j++) {
+                outputs.mat[i][j] = outputsAL.get(i).mat[0][j];
+            }
+        }
+
+        for (int i = 0; i < inputsAL.size(); i += 10000) {
+            inputsALC.add(inputsAL.get(i));
+        }
     }
 }
+
