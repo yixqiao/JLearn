@@ -44,6 +44,8 @@ public class Model {
 
         ArrayList<Matrix> errors;
 
+        double lossA = 0, metricA = 0;
+
         for (int epoch = 0; epoch < epochs; epoch++) {
             long epochStart = System.nanoTime();
 
@@ -59,19 +61,22 @@ public class Model {
                         batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
                     }
                 }
-                forwardPropagate(batchInput);
+                Matrix batchOutput = forwardPropagate(batchInput);
+                lossA += getLoss(loss, batchOutput, batchExpected);
+                metricA += getMetric(metric, batchOutput, batchExpected);
+
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
             }
 
             if ((epoch + 1) % logInterval == 0) {
-                Matrix output = forwardPropagate(input);
-                double lossA = getLoss(loss, input, expected);
-                double metricA = getMetric(metric, output, expected) * 100;
+                // Matrix output = forwardPropagate(input);
+                lossA /= (double) totalSamples / batchSize;
+                metricA /= (double) totalSamples / batchSize;
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
                 System.out.println(String.format("E: %d, T: %.2fs, L: %.5f, A: %.1f%%",
                         epoch + 1, timeElapsed,
-                        lossA, metricA));
+                        lossA, metricA * 100));
             }
         }
     }
@@ -109,12 +114,12 @@ public class Model {
         return errors;
     }
 
-    public double getLoss(Loss loss, Matrix input, Matrix expected) {
-        return loss.getLoss(this, input, expected);
+    public double getLoss(Loss loss, Matrix output, Matrix expected) {
+        return loss.getLoss(output, expected);
     }
 
     public double getLoss(Loss loss, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
-        return loss.getLoss(this, output, expected);
+        return loss.getLoss(output, expected);
     }
 
     public double getMetric(Metric metric, Matrix output, Matrix expected) {

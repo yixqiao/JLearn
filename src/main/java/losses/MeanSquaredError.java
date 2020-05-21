@@ -4,9 +4,9 @@ import core.Matrix;
 
 import java.util.ArrayList;
 
-public class MeanSquaredError extends OutputLoss {
+public class MeanSquaredError extends Loss {
     @Override
-    public double getOutputLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
+    public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         // return np.sum((yHat - y)**2) / y.size
         double loss = 0;
         for (int i = 0; i < output.size(); i++) {

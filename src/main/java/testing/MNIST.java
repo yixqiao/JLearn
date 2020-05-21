@@ -1,5 +1,6 @@
 package testing;
 
+import activations.LeakyReLU;
 import activations.ReLU;
 import activations.Softmax;
 import core.Matrix;
@@ -31,6 +32,7 @@ public class MNIST {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(256, new ReLU()))
+                .addLayer(new Dense(128, new ReLU()))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
@@ -41,7 +43,7 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.005, 64, 30, 1, new Accuracy());
+        model.fit(inputs, outputs, 0.005, 64, 100, 1, new Accuracy());
 
         printPredictions();
     }
@@ -56,7 +58,7 @@ public class MNIST {
 
             System.out.print("\t-\t");
             for (int j = 0; j < outputs.cols; j++) {
-                System.out.print(String.format("%.3f", outputs.mat[i][j]));
+                System.out.print(String.format("%.3f", outputsALC.get(i).mat[0][j]));
                 if (j != outputs.cols - 1) System.out.print("\t");
             }
 
@@ -156,6 +158,7 @@ public class MNIST {
 
         for (int i = 0; i < inputsAL.size(); i += 10000) {
             inputsALC.add(inputsAL.get(i));
+            outputsALC.add(outputsAL.get(i));
         }
     }
 }

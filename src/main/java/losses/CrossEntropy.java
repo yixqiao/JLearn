@@ -4,9 +4,9 @@ import core.Matrix;
 
 import java.util.ArrayList;
 
-public class CrossEntropy extends OutputLoss {
+public class CrossEntropy extends Loss {
     @Override
-    public double getOutputLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
+    public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         double loss = 0;
         int total = 0;
         for (int batchNum = 0; batchNum < output.size(); batchNum++) {
