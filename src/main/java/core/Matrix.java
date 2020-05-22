@@ -1,5 +1,7 @@
 package core;
 
+import exceptions.MatrixMathException;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -40,10 +42,9 @@ public class Matrix {
     }
 
     public Matrix dot(Matrix m2) {
-        if (cols != m2.rows) {
-            System.out.println("nope");
-            return null;
-        }
+        if (cols != m2.rows)
+            throw new MatrixMathException(String.format("Dot mismatch of %d cols and $d rows", cols, m2.rows));
+
 
         Matrix nMatrix = new Matrix(rows, m2.cols);
 
@@ -83,10 +84,9 @@ public class Matrix {
     }
 
     public void addIP(Matrix m2) {
-        if (rows != m2.rows || cols != m2.cols) {
-            System.out.println("Matrix mismatch!");
-            return;
-        }
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException("Addition size mismatch");
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 mat[i][j] += m2.mat[i][j];
@@ -96,10 +96,9 @@ public class Matrix {
 
     public Matrix subtract(Matrix m2) {
         Matrix out = new Matrix(rows, cols);
-        if (rows != m2.rows || cols != m2.cols) {
-            System.out.println("Matrix mismatch!");
-            return null;
-        }
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException("Subtraction size mismatch");
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 out.mat[i][j] = mat[i][j] - m2.mat[i][j];
