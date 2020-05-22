@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id 'application'
+    id("maven-publish")
 }
 
 group 'me.yixqiao'
-version '0.1.0'
+version '0.1.0-alpha'
 
 application {
     mainClassName = "testing.MNIST"
@@ -16,4 +17,22 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/yixqiao/jlearn")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }
