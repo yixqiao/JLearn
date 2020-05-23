@@ -1,6 +1,6 @@
 package me.yixqiao.jlearn.testing;
 
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
 

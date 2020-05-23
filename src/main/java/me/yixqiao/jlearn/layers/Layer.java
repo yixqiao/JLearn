@@ -1,6 +1,6 @@
 package me.yixqiao.jlearn.layers;
 
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 
 public abstract class Layer {
     public abstract void initLayer(int prevSize);

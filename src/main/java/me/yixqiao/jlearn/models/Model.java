@@ -1,6 +1,6 @@
 package me.yixqiao.jlearn.models;
 
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
@@ -42,9 +42,9 @@ public class Model {
 
         ArrayList<Matrix> errors;
 
-        double lossA = 0, metricA = 0;
-
         for (int epoch = 0; epoch < epochs; epoch++) {
+            double lossA = 0, metricA = 0;
+
             long epochStart = System.nanoTime();
 
             Collections.shuffle(indices);
@@ -60,8 +60,10 @@ public class Model {
                     }
                 }
                 Matrix batchOutput = forwardPropagate(batchInput);
-                lossA += getLoss(loss, batchOutput, batchExpected);
-                metricA += getMetric(metric, batchOutput, batchExpected);
+                if ((epoch + 1) % logInterval == 0) {
+                    lossA += getLoss(loss, batchOutput, batchExpected);
+                    metricA += getMetric(metric, batchOutput, batchExpected);
+                }
 
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
@@ -69,8 +71,8 @@ public class Model {
 
             if ((epoch + 1) % logInterval == 0) {
                 // Matrix output = forwardPropagate(input);
-                lossA /= (double) totalSamples / batchSize;
-                metricA /= (double) totalSamples / batchSize;
+                lossA /= (double) (totalSamples / batchSize);
+                metricA /= (double) (totalSamples / batchSize);
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
                 System.out.println(String.format("E: %d, T: %.2fs, L: %.5f, A: %.1f%%",
                         epoch + 1, timeElapsed,
@@ -130,22 +132,22 @@ public class Model {
 
     private void update(ArrayList<Matrix> errors, double learningRate) {
         for (int layer = 1; layer < layerCount; layer++) {
-//            System.out.println(errors.size() + ", " + layerCount);
+            //            System.out.println(errors.size() + ", " + layerCount);
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
         }
     }
 
-//    private void update(ArrayList<Matrix> errors) {
-//        for (int layer = 0; layer < layerCount - 2; layer++) {
-//            int eLayer = layerCount - 2 - layer;
-//            for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
-//                for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
-//                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
-//                            * (neurons.get(layer).mat[0][curN]);
-//                }
-//            }
-//            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
-//        }
-//    }
+    //    private void update(ArrayList<Matrix> errors) {
+    //        for (int layer = 0; layer < layerCount - 2; layer++) {
+    //            int eLayer = layerCount - 2 - layer;
+    //            for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
+    //                for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
+    //                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
+    //                            * (neurons.get(layer).mat[0][curN]);
+    //                }
+    //            }
+    //            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
+    //        }
+    //    }
 }

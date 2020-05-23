@@ -1,4 +1,4 @@
-package me.yixqiao.jlearn.core;
+package me.yixqiao.jlearn.matrix;
 
 import me.yixqiao.jlearn.exceptions.MatrixMathException;
 
@@ -12,7 +12,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 public class Matrix {
-    public static int THREAD_COUNT = 16;
+    public static int THREAD_COUNT = 8;
+    public static int MIN_OPS_THREADING = (int) 1e4;
 
     public final double[][] mat;
     public int rows, cols;
@@ -45,39 +46,58 @@ public class Matrix {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and $d rows", cols, m2.rows));
 
+        if (THREAD_COUNT == 1 || rows * m2.cols < MIN_OPS_THREADING)
+            return dot(m2, false);
+        else
+            return dot(m2, true);
+    }
+
+    public Matrix dot(Matrix m2, boolean useThreading) {
+        if (cols != m2.rows)
+            throw new MatrixMathException(String.format("Dot mismatch of %d cols and $d rows", cols, m2.rows));
 
         Matrix nMatrix = new Matrix(rows, m2.cols);
 
-        class CalcSingle implements Runnable {
-            private int ind1, ind2;
+        if (useThreading) {
+            class CalcSingle implements Runnable {
+                private int ind1, ind2;
 
-            public CalcSingle(int ind1, int ind2) {
-                this.ind1 = ind1;
-                this.ind2 = ind2;
-            }
+                public CalcSingle(int ind1, int ind2) {
+                    this.ind1 = ind1;
+                    this.ind2 = ind2;
+                }
 
-            public void run() {
-                for (int k = 0; k < cols; k++) {
-                    nMatrix.mat[ind1][ind2] += mat[ind1][k] * m2.mat[k][ind2];
+                public void run() {
+                    for (int k = 0; k < cols; k++) {
+                        nMatrix.mat[ind1][ind2] += mat[ind1][k] * m2.mat[k][ind2];
+                    }
                 }
             }
-        }
 
-        ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+            ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < m2.cols; j++) {
-                Runnable r = new CalcSingle(i, j);
-                pool.execute(r);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < m2.cols; j++) {
+                    Runnable r = new CalcSingle(i, j);
+                    pool.execute(r);
+                }
             }
-        }
 
-        pool.shutdown();
+            pool.shutdown();
 
-        try {
-            pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            try {
+                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < m2.cols; j++) {
+                    for (int k = 0; k < cols; k++) {
+                        nMatrix.mat[i][j] += mat[i][k] * m2.mat[k][j];
+                    }
+                }
+            }
         }
 
         return nMatrix;

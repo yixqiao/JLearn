@@ -1,7 +1,7 @@
 package me.yixqiao.jlearn.testing;
 
 import me.yixqiao.jlearn.activations.LeakyReLU;
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.MeanSquaredError;

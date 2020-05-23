@@ -2,7 +2,7 @@ package me.yixqiao.jlearn.testing;
 
 import me.yixqiao.jlearn.activations.ReLU;
 import me.yixqiao.jlearn.activations.Softmax;
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.CrossEntropy;
@@ -42,7 +42,7 @@ public class Iris {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.004, 32, 30000, 1000, new Accuracy());
+        model.fit(inputs, outputs, 0.004, 16, 30000, 1000, new Accuracy());
 
         printPredictions();
     }

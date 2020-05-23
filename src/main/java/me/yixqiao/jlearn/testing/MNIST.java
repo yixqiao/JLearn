@@ -2,7 +2,7 @@ package me.yixqiao.jlearn.testing;
 
 import me.yixqiao.jlearn.activations.ReLU;
 import me.yixqiao.jlearn.activations.Softmax;
-import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.CrossEntropy;
@@ -34,6 +34,7 @@ public class MNIST {
                 .addLayer(new Dense(128, new ReLU()))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
+                .addLayer(new Dense(16, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
 
         model.buildModel(new CrossEntropy());
@@ -42,7 +43,7 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.005, 64, 100, 1, new Accuracy());
+        model.fit(inputs, outputs, 0.008, 64, 100, 1, new Accuracy());
 
         printPredictions();
     }
