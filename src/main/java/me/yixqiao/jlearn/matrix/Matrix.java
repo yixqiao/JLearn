@@ -13,7 +13,7 @@ import java.util.function.ToDoubleFunction;
 
 public class Matrix {
     public static int THREAD_COUNT = 8;
-    public static int MIN_OPS_THREADING = (int) 1e4;
+    public static int THREADING_MIN_OPS = (int) 1e4;
 
     public final double[][] mat;
     public int rows, cols;
@@ -44,9 +44,9 @@ public class Matrix {
 
     public Matrix dot(Matrix m2) {
         if (cols != m2.rows)
-            throw new MatrixMathException(String.format("Dot mismatch of %d cols and $d rows", cols, m2.rows));
+            throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
 
-        if (THREAD_COUNT == 1 || rows * m2.cols < MIN_OPS_THREADING)
+        if (THREAD_COUNT == 1 || rows * m2.cols < THREADING_MIN_OPS)
             return dot(m2, false);
         else
             return dot(m2, true);
@@ -54,13 +54,13 @@ public class Matrix {
 
     public Matrix dot(Matrix m2, boolean useThreading) {
         if (cols != m2.rows)
-            throw new MatrixMathException(String.format("Dot mismatch of %d cols and $d rows", cols, m2.rows));
+            throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
 
         Matrix nMatrix = new Matrix(rows, m2.cols);
 
         if (useThreading) {
             class CalcSingle implements Runnable {
-                private int ind1, ind2;
+                private final int ind1, ind2;
 
                 public CalcSingle(int ind1, int ind2) {
                     this.ind1 = ind1;
@@ -166,9 +166,48 @@ public class Matrix {
     }
 
     public void applyEachIP(ToDoubleFunction<Double> function) {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mat[i][j] = function.applyAsDouble(mat[i][j]);
+        if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
+            applyEachIP(function, false);
+        else
+            applyEachIP(function, true);
+    }
+
+    public void applyEachIP(ToDoubleFunction<Double> function, boolean useThreading) {
+        if (useThreading) {
+            class CalcSingle implements Runnable {
+                private final int r, c;
+
+                public CalcSingle(int r, int c) {
+                    this.r = r;
+                    this.c = c;
+                }
+
+                public void run() {
+                    mat[r][c] = function.applyAsDouble(mat[r][c]);
+                }
+            }
+
+            ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    Runnable r = new CalcSingle(i, j);
+                    pool.execute(r);
+                }
+            }
+
+            pool.shutdown();
+
+            try {
+                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    mat[i][j] = function.applyAsDouble(mat[i][j]);
+                }
             }
         }
     }
