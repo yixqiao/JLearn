@@ -1,11 +1,9 @@
-package models;
+package me.yixqiao.jlearn.models;
 
-import core.Matrix;
-import layers.Layer;
-import losses.CrossEntropy;
-import losses.Loss;
-import metrics.Accuracy;
-import metrics.Metric;
+import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.layers.Layer;
+import me.yixqiao.jlearn.losses.Loss;
+import me.yixqiao.jlearn.metrics.Metric;
 
 import java.util.ArrayList;
 import java.util.Collections;

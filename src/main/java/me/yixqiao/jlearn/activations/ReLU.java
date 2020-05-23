@@ -1,4 +1,4 @@
-package activations;
+package me.yixqiao.jlearn.activations;
 
 import java.util.function.ToDoubleFunction;
 

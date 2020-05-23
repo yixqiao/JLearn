@@ -1,6 +1,6 @@
-package core;
+package me.yixqiao.jlearn.core;
 
-import exceptions.MatrixMathException;
+import me.yixqiao.jlearn.exceptions.MatrixMathException;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

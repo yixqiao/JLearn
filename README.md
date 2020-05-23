@@ -11,4 +11,4 @@ Polished library should be available in about 2 weeks.
 - Easily access and change internals of the neural network
 - Fast implementation of matrices
 - Basic data processing
-- Various losses and optimizers
+- Various me.yixqiao.losses and optimizers

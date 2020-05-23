@@ -1,6 +1,6 @@
-package layers;
+package me.yixqiao.jlearn.layers;
 
-import core.Matrix;
+import me.yixqiao.jlearn.core.Matrix;
 
 public class InputLayer extends Layer {
     private int size;

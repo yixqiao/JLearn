@@ -1,6 +1,6 @@
-package activations;
+package me.yixqiao.jlearn.activations;
 
-import core.Matrix;
+import me.yixqiao.jlearn.core.Matrix;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

@@ -1,6 +1,6 @@
-package testing;
+package me.yixqiao.jlearn.testing;
 
-import core.Matrix;
+import me.yixqiao.jlearn.core.Matrix;
 
 import java.util.ArrayList;
 
@@ -74,7 +74,7 @@ public class Test {
     private static void singlePass(Matrix input, Matrix expected) {
         forwardPropagate(input);//.printMatrix();
         //System.out.println("Output: ");
-        //activations.get(2).printMatrix();
+        //me.yixqiao.activations.get(2).printMatrix();
         ArrayList<Matrix> errors = backPropagate(expected);
         Test.errors = errors;
         // System.out.println(errors);
@@ -95,13 +95,13 @@ public class Test {
 //        Matrix activationsLocal = input.clone();
 //        activationsNoS.add(activationsLocal);
 //        activationsLocal.applyEach(activation.applyActivation);
-//        Test.activations.add(activationsLocal.clone());
+//        Test.me.yixqiao.activations.add(activationsLocal.clone());
 //        for (Matrix layer : network) {
 //            Matrix newActivations = activationsLocal.dot(layer);
 //            activationsNoS.add(newActivations.clone());
 //            newActivations.applyEach(activation.applyActivation);
 //            activationsLocal = newActivations.clone();
-//            Test.activations.add(activationsLocal.clone());
+//            Test.me.yixqiao.activations.add(activationsLocal.clone());
 //        }
         return activations.get(activations.size() - 1);
     }
@@ -109,7 +109,7 @@ public class Test {
     private static ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
         Matrix first = new Matrix(1, 1);
-        // first.mat[0][0] = (expected.mat[0][0] - activations.get(2).mat[0][0]) * (expected.mat[0][0] - activations.get(2).mat[0][0]);
+        // first.mat[0][0] = (expected.mat[0][0] - me.yixqiao.activations.get(2).mat[0][0]) * (expected.mat[0][0] - me.yixqiao.activations.get(2).mat[0][0]);
         first.mat[0][0] = (expected.mat[0][0] - activations.get(2).mat[0][0]);
         first.mat[0][0] *= transferDerivative(activations.get(2).mat[0][0]);
         errors.add(first);

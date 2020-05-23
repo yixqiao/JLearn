@@ -1,7 +1,7 @@
-package layers;
+package me.yixqiao.jlearn.layers;
 
-import activations.Activation;
-import core.Matrix;
+import me.yixqiao.jlearn.activations.Activation;
+import me.yixqiao.jlearn.core.Matrix;
 
 public class Dense extends Layer {
     private int inSize, outSize;

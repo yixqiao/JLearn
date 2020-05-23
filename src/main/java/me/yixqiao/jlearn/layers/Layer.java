@@ -1,8 +1,6 @@
-package layers;
+package me.yixqiao.jlearn.layers;
 
-import core.Matrix;
-
-import java.util.ArrayList;
+import me.yixqiao.jlearn.core.Matrix;
 
 public abstract class Layer {
     public abstract void initLayer(int prevSize);

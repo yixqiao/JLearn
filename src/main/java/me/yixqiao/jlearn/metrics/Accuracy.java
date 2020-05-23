@@ -1,6 +1,6 @@
-package metrics;
+package me.yixqiao.jlearn.metrics;
 
-import core.Matrix;
+import me.yixqiao.jlearn.core.Matrix;
 
 import java.util.ArrayList;
 

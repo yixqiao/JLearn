@@ -1,7 +1,6 @@
-package losses;
+package me.yixqiao.jlearn.losses;
 
-import core.Matrix;
-import models.Model;
+import me.yixqiao.jlearn.core.Matrix;
 
 import java.util.ArrayList;
 

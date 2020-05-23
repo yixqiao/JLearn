@@ -1,14 +1,11 @@
-package testing;
+package me.yixqiao.jlearn.testing;
 
-import activations.LeakyReLU;
-import activations.ReLU;
-import activations.Softmax;
-import core.Matrix;
-import layers.Dense;
-import layers.InputLayer;
-import losses.CrossEntropy;
-import losses.MeanSquaredError;
-import models.Model;
+import me.yixqiao.jlearn.activations.LeakyReLU;
+import me.yixqiao.jlearn.core.Matrix;
+import me.yixqiao.jlearn.layers.Dense;
+import me.yixqiao.jlearn.layers.InputLayer;
+import me.yixqiao.jlearn.losses.MeanSquaredError;
+import me.yixqiao.jlearn.models.Model;
 
 import java.util.ArrayList;
 
