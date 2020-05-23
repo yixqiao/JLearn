@@ -12,7 +12,7 @@ public abstract class ElementwiseActivation extends Activation {
     }
 
     public Function<Matrix, Matrix> getTransferDerivative() {
-        return x -> x.applyEach(getETransferDerivative());
+        return x -> x.applyEach(getETransferDerivative(), false);
     }
 
     public abstract ToDoubleFunction<Double> getEActivation();

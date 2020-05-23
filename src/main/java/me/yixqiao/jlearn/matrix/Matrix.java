@@ -223,10 +223,49 @@ public class Matrix {
     }
 
     public Matrix applyEach(ToDoubleFunction<Double> function) {
+        if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
+            return applyEach(function, false);
+        else
+            return applyEach(function, true);
+    }
+
+    public Matrix applyEach(ToDoubleFunction<Double> function, boolean useThreading) {
         Matrix out = clone();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = function.applyAsDouble(mat[i][j]);
+        if (useThreading) {
+            class CalcSingle implements Runnable {
+                private final int r, c;
+
+                public CalcSingle(int r, int c) {
+                    this.r = r;
+                    this.c = c;
+                }
+
+                public void run() {
+                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
+                }
+            }
+
+            ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    Runnable r = new CalcSingle(i, j);
+                    pool.execute(r);
+                }
+            }
+
+            pool.shutdown();
+
+            try {
+                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    out.mat[i][j] = function.applyAsDouble(mat[i][j]);
+                }
             }
         }
         return out;
