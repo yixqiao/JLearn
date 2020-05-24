@@ -11,18 +11,60 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * Matrix class and operations.
+ */
+
 public class Matrix {
+    /**
+     * Number of threads to use.
+     */
     public static int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
+    /**
+     * Minimum number of operations before threading is used.
+     */
     public static int THREADING_MIN_OPS = (int) 1e4;
 
+    /**
+     * Contains the matrix itself.
+     */
     public final double[][] mat;
-    public int rows, cols;
+    /**
+     * Row count.
+     */
+    public int rows;
+
+    /**
+     * Column count.
+     */
+    public int cols;
+
+    /**
+     * Random generator.
+     */
     Random random = new Random();
 
+    /**
+     * Creates a new, empty matrix.
+     *
+     * @param rows number of rows
+     * @param cols number of columns
+     */
     public Matrix(int rows, int cols) {
         this(rows, cols, 0);
     }
 
+    /**
+     * Creates a new randomized matrix.
+     *
+     * <p>
+     *     Randomizes with <code>random.nextGaussian() * rFactor</code>
+     * </p>
+     *
+     * @param rows number of rows
+     * @param cols number of columns
+     * @param rFactor factor to randomize by
+     */
     public Matrix(int rows, int cols, double rFactor) {
         this.rows = rows;
         this.cols = cols;
@@ -31,11 +73,20 @@ public class Matrix {
             return;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                mat[i][j] = (random.nextGaussian()) * rFactor;
+                mat[i][j] =  random.nextGaussian()* rFactor;
             }
         }
     }
 
+    /**
+     * Create a matrix from an existing 2d array of doubles.
+     *
+     * <p>
+     *     Note that this constructor does not create a copy of the array passed in.
+     * </p>
+     *
+     * @param mat the array to make the matrix with
+     */
     public Matrix(double[][] mat) {
         this.rows = mat.length;
         this.cols = mat[0].length;

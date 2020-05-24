@@ -10,6 +10,10 @@ import me.yixqiao.jlearn.metrics.Metric;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Neural network model.
+ */
+
 public class Model {
     private ArrayList<Layer> layers;
     private int layerCount;
@@ -52,12 +56,12 @@ public class Model {
     /**
      * Train the model on data.
      *
-     * @param input input data to train on
-     * @param expected expected outputs
+     * @param input        input data to train on
+     * @param expected     expected outputs
      * @param learningRate learning rate of training
-     * @param batchSize size of each minibatch
-     * @param epochs number of epochs to train for
-     * @param metric metric to display
+     * @param batchSize    size of each minibatch
+     * @param epochs       number of epochs to train for
+     * @param metric       metric to display
      */
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, Metric metric) {
         fit(input, expected, learningRate, batchSize, epochs, 1, metric);
@@ -66,13 +70,13 @@ public class Model {
     /**
      * Train the model on data.
      *
-     * @param input input data to train on
-     * @param expected expected outputs
+     * @param input        input data to train on
+     * @param expected     expected outputs
      * @param learningRate learning rate of training
-     * @param batchSize size of each minibatch
-     * @param epochs number of epochs to train for
-     * @param logInterval log every n epochs
-     * @param metric metric to display
+     * @param batchSize    size of each minibatch
+     * @param epochs       number of epochs to train for
+     * @param logInterval  log every n epochs
+     * @param metric       metric to display
      */
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval, Metric metric) {
         int totalSamples = input.rows;
@@ -123,8 +127,8 @@ public class Model {
     /**
      * Train on a single batch of input and output.
      *
-     * @param input input data to train on
-     * @param expected expected outputs
+     * @param input        input data to train on
+     * @param expected     expected outputs
      * @param learningRate learning rate of training
      */
     public void trainOnBatch(Matrix input, Matrix expected, double learningRate) {
@@ -177,22 +181,59 @@ public class Model {
         return errors;
     }
 
+    /**
+     * Get the loss.
+     *
+     * @param loss     loss function to use
+     * @param output   actual output of model
+     * @param expected expected output
+     * @return loss of model
+     */
     public double getLoss(Loss loss, Matrix output, Matrix expected) {
         return loss.getLoss(output, expected);
     }
 
+    /**
+     * Get the loss.
+     *
+     * @param loss     loss function to use
+     * @param output   actual output of model
+     * @param expected expected output
+     * @return loss of model
+     */
     public double getLoss(Loss loss, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         return loss.getLoss(output, expected);
     }
 
+    /**
+     * Get a metric of the model.
+     *
+     * @param metric   metric function to use
+     * @param output   actual output of model
+     * @param expected expected output
+     * @return calculated metric
+     */
     public double getMetric(Metric metric, Matrix output, Matrix expected) {
         return metric.getMetric(output, expected);
     }
 
-    public double getMetric(Metric metric, ArrayList<Matrix> input, ArrayList<Matrix> expected) {
-        return metric.getMetric(input, expected);
+    /**
+     * Get a metric of the model.
+     *
+     * @param metric   metric function to use
+     * @param output   actual output of model
+     * @param expected expected output
+     * @return calculated metric
+     */
+    public double getMetric(Metric metric, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
+        return metric.getMetric(output, expected);
     }
 
+    /**
+     * Update the model after backpropagation.
+     * @param errors errors obtained from backpropagation
+     * @param learningRate learning rate of updating
+     */
     private void update(ArrayList<Matrix> errors, double learningRate) {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
