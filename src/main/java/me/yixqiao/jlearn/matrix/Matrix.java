@@ -138,6 +138,8 @@ public class Matrix {
     }
 
     public Matrix multiply(Matrix m2) {
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException("Multiplication size mismatch");
         Matrix out = clone();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -329,6 +331,8 @@ public class Matrix {
     }
 
     public void crossOver(Matrix m2, double weightSelf) {
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException("Cross over size mismatch");
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (random.nextDouble() > weightSelf) {

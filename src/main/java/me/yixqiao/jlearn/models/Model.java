@@ -1,5 +1,7 @@
 package me.yixqiao.jlearn.models;
 
+import me.yixqiao.jlearn.exceptions.NeuralNetworkException;
+import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
@@ -24,7 +26,9 @@ public class Model {
 
     public void buildModel(Loss loss) {
         layerCount = layers.size();
-        // TODO check that first layer is an input layer
+        if(!(layers.get(0) instanceof InputLayer)){
+            throw new NeuralNetworkException("First layer is not an input layer");
+        }
         for (int layer = 0; layer < layerCount - 1; layer++) {
             layers.get(layer + 1).initLayer(layers.get(layer).getOutSize());
         }
