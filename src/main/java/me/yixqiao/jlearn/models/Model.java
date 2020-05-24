@@ -15,6 +15,9 @@ public class Model {
     private int layerCount;
     private Loss loss;
 
+    /**
+     * Create a new model.
+     */
     public Model() {
         layers = new ArrayList<>();
     }
@@ -46,10 +49,31 @@ public class Model {
         this.loss = loss;
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param input input data to train on
+     * @param expected expected outputs
+     * @param learningRate learning rate of training
+     * @param batchSize size of each minibatch
+     * @param epochs number of epochs to train for
+     * @param metric metric to display
+     */
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, Metric metric) {
         fit(input, expected, learningRate, batchSize, epochs, 1, metric);
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param input input data to train on
+     * @param expected expected outputs
+     * @param learningRate learning rate of training
+     * @param batchSize size of each minibatch
+     * @param epochs number of epochs to train for
+     * @param logInterval log every n epochs
+     * @param metric metric to display
+     */
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval, Metric metric) {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
@@ -96,18 +120,36 @@ public class Model {
         }
     }
 
+    /**
+     * Train on a single batch of input and output.
+     *
+     * @param input input data to train on
+     * @param expected expected outputs
+     * @param learningRate learning rate of training
+     */
     public void trainOnBatch(Matrix input, Matrix expected, double learningRate) {
         forwardPropagate(input);
         ArrayList<Matrix> errors = backPropagate(expected);
         update(errors, learningRate);
     }
 
+    /**
+     * Predict on a batch of input.
+     *
+     * @param input input data to feed forward
+     * @return prediction of model for input
+     */
     public Matrix predict(Matrix input) {
         return forwardPropagate(input);
     }
 
-    // return np.exp(x) / np.sum(np.exp(x), axis=0)
 
+    /**
+     * Forward propagate a batch of input.
+     *
+     * @param input input data to feed forward
+     * @return result of model for input
+     */
     public Matrix forwardPropagate(Matrix input) {
         Matrix activations = input.clone();
         for (int layerNum = 0; layerNum < layerCount; layerNum++) {
@@ -116,6 +158,12 @@ public class Model {
         return activations;
     }
 
+    /**
+     * Backpropagate model after forward propagating input.
+     *
+     * @param expected expected output for model
+     * @return errors for each layer from backpropagation
+     */
     public ArrayList<Matrix> backPropagate(Matrix expected) {
         ArrayList<Matrix> errors = new ArrayList<>();
         for (int layer = layerCount - 1; layer > 0; layer--) {
