@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 public class Matrix {
-    public static int THREAD_COUNT = 8;
+    public static int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
     public static int THREADING_MIN_OPS = (int) 1e4;
 
     public final double[][] mat;
