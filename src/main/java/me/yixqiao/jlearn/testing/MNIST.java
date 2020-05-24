@@ -43,7 +43,7 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.008, 64, 100, 1, new Accuracy());
+        model.fit(inputs, outputs, 0.008, 64, 100, new Accuracy());
 
         printPredictions();
     }

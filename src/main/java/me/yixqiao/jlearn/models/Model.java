@@ -19,14 +19,25 @@ public class Model {
         layers = new ArrayList<>();
     }
 
+    /**
+     * Add a layer to the model.
+     *
+     * @param layer the layer instance to add
+     * @return the model itself to allow for daisy chaining
+     */
     public Model addLayer(Layer layer) {
         layers.add(layer);
         return this;
     }
 
+    /**
+     * Build the model. Run this after adding layers and before training.
+     *
+     * @param loss an instance of the loss function to use in the model
+     */
     public void buildModel(Loss loss) {
         layerCount = layers.size();
-        if(!(layers.get(0) instanceof InputLayer)){
+        if (!(layers.get(0) instanceof InputLayer)) {
             throw new NeuralNetworkException("First layer is not an input layer");
         }
         for (int layer = 0; layer < layerCount - 1; layer++) {
@@ -36,7 +47,7 @@ public class Model {
     }
 
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, Metric metric) {
-        fit(input, expected, learningRate, batchSize, epochs, metric);
+        fit(input, expected, learningRate, batchSize, epochs, 1, metric);
     }
 
     public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval, Metric metric) {
@@ -136,22 +147,8 @@ public class Model {
 
     private void update(ArrayList<Matrix> errors, double learningRate) {
         for (int layer = 1; layer < layerCount; layer++) {
-            //            System.out.println(errors.size() + ", " + layerCount);
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
         }
     }
-
-    //    private void update(ArrayList<Matrix> errors) {
-    //        for (int layer = 0; layer < layerCount - 2; layer++) {
-    //            int eLayer = layerCount - 2 - layer;
-    //            for (int curN = 0; curN < neurons.get(layer).cols; curN++) {
-    //                for (int nextN = 0; nextN < neurons.get(layer + 1).cols; nextN++) {
-    //                    weights.get(layer).mat[curN][nextN] += learningRate * errors.get(eLayer).mat[0][nextN]
-    //                            * (neurons.get(layer).mat[0][curN]);
-    //                }
-    //            }
-    //            biases.get(layer).addIP(errors.get(eLayer).multiply(learningRate));
-    //        }
-    //    }
 }
