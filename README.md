@@ -7,7 +7,7 @@ Focuses on being easy to use and configure.
 
 **STILL IN EARLY DEVELOPMENT.**  
 Basic library has been put out in [packages](https://github.com/yixqiao/JLearn/packages), but is not completely ready yet.  
-Polished library should be available in about 2 weeks.
+Polished library should be available in about 1-2 weeks.
 
 ### Goals
 - Create and train a neural network in a few lines of intuitive code
