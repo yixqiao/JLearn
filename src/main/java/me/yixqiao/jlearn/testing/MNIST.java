@@ -44,7 +44,7 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, 0.01, 64, 20, metrics);
+        model.fit(inputs, outputs, 0.01, 128, 20, metrics);
 
         printPredictions();
     }

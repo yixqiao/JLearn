@@ -86,7 +86,6 @@ public class Model {
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
         learningRate *= Math.sqrt(batchSize);
-        System.out.println(learningRate);
 
         ArrayList<Matrix> errors;
         if (metrics == null)
