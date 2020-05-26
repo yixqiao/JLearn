@@ -1,7 +1,10 @@
 package me.yixqiao.jlearn.testing;
 
+import me.yixqiao.jlearn.activations.Linear;
 import me.yixqiao.jlearn.activations.ReLU;
+import me.yixqiao.jlearn.activations.Sigmoid;
 import me.yixqiao.jlearn.activations.Softmax;
+import me.yixqiao.jlearn.losses.MeanSquaredError;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
@@ -32,10 +35,10 @@ public class MNIST {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
-                .addLayer(new Dense(16, new ReLU()))
-                .addLayer(new Dense(10, new Softmax()));
+                .addLayer(new Dense(32, new ReLU()))
+                .addLayer(new Dense(10, new ReLU()));
 
-        model.buildModel(new CrossEntropy());
+        model.buildModel(new MeanSquaredError());
     }
 
     private void train() {
@@ -44,7 +47,7 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, 0.01, 128, 20, metrics);
+        model.fit(inputs, outputs, 0.01, 4, 10, metrics);
 
         printPredictions();
     }

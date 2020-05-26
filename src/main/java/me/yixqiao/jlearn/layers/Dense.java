@@ -1,6 +1,8 @@
 package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
+import me.yixqiao.jlearn.activations.ReLU;
+import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
 
 public class Dense extends Layer {
@@ -10,13 +12,13 @@ public class Dense extends Layer {
     private Matrix inputNeurons;
     private Matrix outputNeurons;
 
-//    public Dense(int prevSize, int nextSize, Activation activation) {
-//        this.prevSize = prevSize;
-//        this.nextSize = nextSize;
-//        this.activation = activation;
-//        weights = new Matrix(prevSize, nextSize, Math.sqrt(2.0 / prevSize));
-//        biases = new Matrix(1, nextSize);
-//    }
+    //    public Dense(int prevSize, int nextSize, Activation activation) {
+    //        this.prevSize = prevSize;
+    //        this.nextSize = nextSize;
+    //        this.activation = activation;
+    //        weights = new Matrix(prevSize, nextSize, Math.sqrt(2.0 / prevSize));
+    //        biases = new Matrix(1, nextSize);
+    //    }
 
     public Dense(int outSize, Activation activation) {
         this.outSize = outSize;

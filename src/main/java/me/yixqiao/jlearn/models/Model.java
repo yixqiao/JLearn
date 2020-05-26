@@ -124,6 +124,7 @@ public class Model {
 
             if ((epoch + 1) % logInterval == 0) {
                 // Matrix output = forwardPropagate(input);
+                // output.printMatrix();
                 lossA /= (double) (totalSamples / batchSize);
                 for (int i = 0; i < metrics.size(); i++)
                     metricA[i] /= (double) (totalSamples / batchSize);
