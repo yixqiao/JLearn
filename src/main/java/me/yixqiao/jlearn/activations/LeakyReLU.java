@@ -2,9 +2,18 @@ package me.yixqiao.jlearn.activations;
 
 import java.util.function.ToDoubleFunction;
 
-public class LeakyReLU extends ElementwiseActivation {
-    double alpha;
+/**
+ * Leaky Rectified Linear Unit activation.
+ */
 
+public class LeakyReLU extends ElementwiseActivation {
+    private final double alpha;
+
+    /**
+     * Initialize the activation.
+     *
+     * @param alpha slope when x is below 0
+     */
     public LeakyReLU(double alpha) {
         this.alpha = alpha;
     }

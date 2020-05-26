@@ -2,6 +2,9 @@ package me.yixqiao.jlearn.activations;
 
 import java.util.function.ToDoubleFunction;
 
+/**
+ * Rectified Linear Unit activation.
+ */
 public class ReLU extends ElementwiseActivation {
     @Override
     public ToDoubleFunction<Double> getEActivation() {
