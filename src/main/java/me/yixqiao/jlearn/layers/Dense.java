@@ -2,8 +2,11 @@ package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.activations.ReLU;
+import me.yixqiao.jlearn.activations.Sigmoid;
 import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
+
+import static java.lang.Double.NaN;
 
 public class Dense extends Layer {
     private int inSize, outSize;
@@ -48,6 +51,23 @@ public class Dense extends Layer {
         }
         activation.getActivation().accept(output);
         outputNeurons = output.clone();
+
+        // if (activation instanceof Softmax)
+        //     System.out.println();
+        // System.out.println(output.getMaxValue());
+
+        // if (output.getMaxValue() > 0.999 /*Double.isNaN(output.mat[0][0])*/ && activation instanceof Softmax) {
+        //     input.printMatrix();
+        //     System.out.println();
+        //     output.printMatrix();
+        //     System.out.println();
+        //     weights.printMatrix();
+        //     System.out.println();
+        //     biases.printMatrix();
+        //     System.out.println(weights.getMaxValue() + "\n\n\n\n\n\n\n\n\n\n\n\n");
+        //     // System.exit(1);
+        // }
+
         return output;
     }
 
@@ -57,7 +77,8 @@ public class Dense extends Layer {
         Matrix weightT = weights.getTranspose();
         Matrix errors = prevErrors.dot(weightT);
         for (int prevN = 0; prevN < inSize; prevN++) {
-            errors.mat[0][prevN] *= derivative.mat[0][prevN];
+            if (!(activation instanceof Softmax))
+                errors.mat[0][prevN] *= derivative.mat[0][prevN];
         }
         return errors;
     }

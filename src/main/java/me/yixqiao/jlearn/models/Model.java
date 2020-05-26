@@ -110,6 +110,8 @@ public class Model {
                         batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
                     }
                 }
+                //System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+                //batchInput.printMatrix();
                 Matrix batchOutput = forwardPropagate(batchInput);
                 // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
                 if ((epoch + 1) % logInterval == 0) {
