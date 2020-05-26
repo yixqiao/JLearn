@@ -8,6 +8,7 @@ import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -61,10 +62,11 @@ public class Model {
      * @param learningRate learning rate of training
      * @param batchSize    size of each minibatch
      * @param epochs       number of epochs to train for
-     * @param metric       metric to display
+     * @param metrics      metrics to display
      */
-    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, Metric metric) {
-        fit(input, expected, learningRate, batchSize, epochs, 1, metric);
+    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs,
+                    ArrayList<Metric> metrics) {
+        fit(input, expected, learningRate, batchSize, epochs, 1, metrics);
     }
 
     /**
@@ -76,17 +78,24 @@ public class Model {
      * @param batchSize    size of each minibatch
      * @param epochs       number of epochs to train for
      * @param logInterval  log every n epochs
-     * @param metric       metric to display
+     * @param metrics      metrics to display
      */
-    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval, Metric metric) {
+    public void fit(Matrix input, Matrix expected, double learningRate, int batchSize, int epochs, int logInterval,
+                    ArrayList<Metric> metrics) {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
+        learningRate *= Math.sqrt(batchSize);
+        System.out.println(learningRate);
 
         ArrayList<Matrix> errors;
+        if (metrics == null)
+            metrics = new ArrayList<>();
+
 
         for (int epoch = 0; epoch < epochs; epoch++) {
-            double lossA = 0, metricA = 0;
+            double lossA = 0;
+            double[] metricA = new double[metrics.size()];
 
             long epochStart = System.nanoTime();
 
@@ -103,9 +112,11 @@ public class Model {
                     }
                 }
                 Matrix batchOutput = forwardPropagate(batchInput);
+                // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
                 if ((epoch + 1) % logInterval == 0) {
                     lossA += getLoss(loss, batchOutput, batchExpected);
-                    metricA += getMetric(metric, batchOutput, batchExpected);
+                    for (int i = 0; i < metrics.size(); i++)
+                        metricA[i] += getMetric(metrics.get(i), batchOutput, batchExpected);
                 }
 
                 errors = backPropagate(batchExpected);
@@ -115,11 +126,13 @@ public class Model {
             if ((epoch + 1) % logInterval == 0) {
                 // Matrix output = forwardPropagate(input);
                 lossA /= (double) (totalSamples / batchSize);
-                metricA /= (double) (totalSamples / batchSize);
+                for (int i = 0; i < metrics.size(); i++)
+                    metricA[i] /= (double) (totalSamples / batchSize);
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
-                System.out.println(String.format("E: %d, T: %.2fs, L: %.5f, A: %.1f%%",
-                        epoch + 1, timeElapsed,
-                        lossA, metricA * 100));
+                System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                for (int i = 0; i < metrics.size(); i++)
+                    System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
+                System.out.println();
             }
         }
     }
@@ -231,7 +244,8 @@ public class Model {
 
     /**
      * Update the model after backpropagation.
-     * @param errors errors obtained from backpropagation
+     *
+     * @param errors       errors obtained from backpropagation
      * @param learningRate learning rate of updating
      */
     private void update(ArrayList<Matrix> errors, double learningRate) {

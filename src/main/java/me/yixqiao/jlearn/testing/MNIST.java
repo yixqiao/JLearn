@@ -7,6 +7,7 @@ import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.CrossEntropy;
 import me.yixqiao.jlearn.metrics.Accuracy;
+import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class MNIST {
 
     public static void main(String[] args) {
         MNIST mnist = new MNIST();
-//        mnist.writeDataset();
+        // mnist.writeDataset();
         mnist.initInputs();
         mnist.buildModel();
         mnist.train();
@@ -30,10 +31,7 @@ public class MNIST {
     private void buildModel() {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
-                .addLayer(new Dense(256, new ReLU()))
-                .addLayer(new Dense(128, new ReLU()))
                 .addLayer(new Dense(64, new ReLU()))
-                .addLayer(new Dense(32, new ReLU()))
                 .addLayer(new Dense(16, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
 
@@ -43,7 +41,10 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, 0.008, 64, 100, new Accuracy());
+        ArrayList<Metric> metrics = new ArrayList<>() {{
+            add(new Accuracy());
+        }};
+        model.fit(inputs, outputs, 0.01, 64, 20, metrics);
 
         printPredictions();
     }
@@ -75,7 +76,7 @@ public class MNIST {
             DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("datasets/mnist/data/train.dat")));
             String line;
             br.readLine(); // Discard first line
-            for(int imgCount=0; imgCount < 60000; imgCount++){
+            for (int imgCount = 0; imgCount < 60000; imgCount++) {
                 line = br.readLine();
                 String[] values = line.split(",");
                 Matrix output = new Matrix(1, 10);

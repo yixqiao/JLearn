@@ -5,6 +5,15 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import java.util.ArrayList;
 
 public class Accuracy extends Metric {
+    private boolean formatPercent;
+
+    public Accuracy() {
+        this.formatPercent = true;
+    }
+
+    public Accuracy(boolean formatPercent) {
+        this.formatPercent = formatPercent;
+    }
 
     @Override
     public double getMetric(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
@@ -28,6 +37,11 @@ public class Accuracy extends Metric {
                 total++;
             }
         }
-        return (double) (correct) / total;
+        return formatPercent ? ((double) (correct) / total * 100) : ((double) (correct) / total);
+    }
+
+    @Override
+    public String getFormatString() {
+        return formatPercent ? "A: %.2f%%" : "A: %.3f";
     }
 }

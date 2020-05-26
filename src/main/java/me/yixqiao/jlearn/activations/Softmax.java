@@ -12,7 +12,9 @@ public class Softmax extends Activation {
         return x -> {
             double max = x.getMaxValue();
             Matrix shiftx = x.applyEach(xd -> xd - max);
+            // shiftx.printMatrix();
             Matrix exps = shiftx.applyEach(Math::exp);
+            // exps.printMatrix();
             for (int row = 0; row < x.rows; row++) {
                 double sum = 0;
                 for (int col = 0; col < x.cols; col++)

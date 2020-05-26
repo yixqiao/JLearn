@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public abstract class Metric {
     public abstract double getMetric (ArrayList<Matrix> output, ArrayList<Matrix> expected);
 
+    public abstract String getFormatString();
+
     public double getMetric(Matrix output, Matrix expected) {
         ArrayList<Matrix> outputAL = new ArrayList<>();
         outputAL.add(output);

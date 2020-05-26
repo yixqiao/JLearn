@@ -10,6 +10,9 @@ public abstract class Loss extends Metric {
         return getLoss(output, expected);
     }
 
+    public String getFormatString() {
+        return "L: %d";
+    }
 
     public abstract double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected);
 
