@@ -5,21 +5,22 @@ import me.yixqiao.jlearn.activations.ReLU;
 import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * Basic fully-connected layer.
+ */
 public class Dense extends Layer {
     private int inSize, outSize;
     private Matrix weights, biases;
-    private Activation activation;
+    private final Activation activation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
 
-    //    public Dense(int prevSize, int nextSize, Activation activation) {
-    //        this.prevSize = prevSize;
-    //        this.nextSize = nextSize;
-    //        this.activation = activation;
-    //        weights = new Matrix(prevSize, nextSize, Math.sqrt(2.0 / prevSize));
-    //        biases = new Matrix(1, nextSize);
-    //    }
-
+    /**
+     * Create a new dense layer.
+     *
+     * @param outSize size of output
+     * @param activation activation to use
+     */
     public Dense(int outSize, Activation activation) {
         this.outSize = outSize;
         this.activation = activation;
