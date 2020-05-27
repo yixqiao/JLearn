@@ -1,5 +1,4 @@
-<!---<img alt="JLearn" src="JLearn-logo.svg" width="60%" />-->
-![JLearn](logo.svg)
+<img alt="JLearn" src="logo.svg" width="120em" />
 
 Java library for machine learning.  
 Focuses on being easy to use and configure.
