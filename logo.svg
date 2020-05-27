@@ -10,13 +10,13 @@
    inkscape:export-ydpi="24.000002"
    inkscape:export-xdpi="24.000002"
    inkscape:export-filename="/home/yixuan/Pictures/JLearn/JLearn-full_sm.png"
-   sodipodi:docname="JLearn-logo.svg"
+   sodipodi:docname="logo.svg"
    inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
    id="svg8"
    version="1.1"
-   viewBox="0 0 79.375026 33.866668"
-   height="128"
-   width="300">
+   viewBox="0 0 61.638098 20.388812"
+   height="77.060074"
+   width="232.96281">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -32,15 +32,20 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="39.776736"
-     inkscape:cx="156.12182"
-     inkscape:zoom="2.0944646"
+     inkscape:cy="23.068941"
+     inkscape:cx="147.75505"
+     inkscape:zoom="1.4810101"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
      bordercolor="#666666"
      pagecolor="#ffffff"
-     id="base" />
+     id="base"
+     fit-margin-top="4"
+     fit-margin-left="4"
+     fit-margin-bottom="4"
+     fit-margin-right="4"
+     showguides="false" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -56,7 +61,8 @@
   <g
      id="layer1"
      inkscape:groupmode="layer"
-     inkscape:label="Layer 1">
+     inkscape:label="Layer 1"
+     transform="translate(-8.8684614,-6.7389212)">
     <g
        style="font-style:normal;font-weight:normal;font-size:19.6644px;line-height:1.25;font-family:sans-serif;fill:#5382a1;fill-opacity:1;stroke:none;stroke-width:0.491611"
        id="text42"
@@ -77,6 +83,7 @@
          d="m -22.159829,7.7972545 h 1.939555 V 21.134096 q 0,2.592475 -0.988981,3.763889 -0.97938,1.171415 -3.158979,1.171415 h -0.739335 v -1.632299 h 0.604911 q 1.286635,0 1.814732,-0.720132 0.528097,-0.720132 0.528097,-2.582873 z" />
     </g>
     <g
+       transform="translate(0,0.1001702)"
        style="font-style:normal;font-weight:normal;font-size:19.8595px;line-height:1.25;font-family:sans-serif;fill:#f8981d;fill-opacity:1;stroke:none;stroke-width:0.496488"
        id="text18"
        aria-label="earn">
