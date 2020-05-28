@@ -36,9 +36,9 @@ public class MNIST {
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(10, new Softmax()));
+                .addLayer(new Dense(10, new Sigmoid()));
 
-        model.buildModel(new MeanSquaredError());
+        model.buildModel(new CrossEntropy());
     }
 
     private void train() {
@@ -47,7 +47,7 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, 0.01, 8, 100, metrics);
+        model.fit(inputs, outputs, 0.01, 4, 10, metrics);
 
         printPredictions();
     }

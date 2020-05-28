@@ -15,14 +15,6 @@ public class Dense extends Layer {
     private Matrix inputNeurons;
     private Matrix outputNeurons;
 
-    //    public Dense(int prevSize, int nextSize, Activation activation) {
-    //        this.prevSize = prevSize;
-    //        this.nextSize = nextSize;
-    //        this.activation = activation;
-    //        weights = new Matrix(prevSize, nextSize, Math.sqrt(2.0 / prevSize));
-    //        biases = new Matrix(1, nextSize);
-    //    }
-
     public Dense(int outSize, Activation activation) {
         this.outSize = outSize;
         this.activation = activation;
@@ -57,22 +49,6 @@ public class Dense extends Layer {
         }
         activation.getActivation().accept(output);
         outputNeurons = output.clone();
-
-        // if (activation instanceof Softmax)
-        //     System.out.println();
-        // System.out.println(output.getMaxValue());
-
-        // if (output.getMaxValue() > 0.999 /*Double.isNaN(output.mat[0][0])*/ && activation instanceof Softmax) {
-        //     input.printMatrix();
-        //     System.out.println();
-        //     output.printMatrix();
-        //     System.out.println();
-        //     weights.printMatrix();
-        //     System.out.println();
-        //     biases.printMatrix();
-        //     System.out.println(weights.getMaxValue() + "\n\n\n\n\n\n\n\n\n\n\n\n");
-        //     // System.exit(1);
-        // }
 
         return output;
     }
