@@ -5,6 +5,9 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * Sigmoid activation.
+ */
 public class Sigmoid extends ElementwiseActivation {
     @Override
     public Function<Matrix, Matrix> getTransferDerivative() {

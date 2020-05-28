@@ -71,9 +71,9 @@ public class Matrix {
         mat = new double[rows][cols];
         if (rFactor == 0)
             return;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mat[i][j] =  random.nextGaussian()* rFactor;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] =  random.nextGaussian()* rFactor;
             }
         }
     }
@@ -111,26 +111,26 @@ public class Matrix {
 
         if (useThreading) {
             class CalcSingle implements Runnable {
-                private final int ind1, ind2;
+                private final int r, c;
 
-                public CalcSingle(int ind1, int ind2) {
-                    this.ind1 = ind1;
-                    this.ind2 = ind2;
+                public CalcSingle(int r, int c) {
+                    this.r = r;
+                    this.c = c;
                 }
 
                 public void run() {
-                    for (int k = 0; k < cols; k++) {
-                        nMatrix.mat[ind1][ind2] += mat[ind1][k] * m2.mat[k][ind2];
+                    for (int i = 0; i < cols; i++) {
+                        nMatrix.mat[r][c] += mat[r][i] * m2.mat[i][c];
                     }
                 }
             }
 
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
 
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < m2.cols; j++) {
-                    Runnable r = new CalcSingle(i, j);
-                    pool.execute(r);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < m2.cols; c++) {
+                    Runnable rn = new CalcSingle(r, c);
+                    pool.execute(rn);
                 }
             }
 
@@ -142,10 +142,10 @@ public class Matrix {
                 e.printStackTrace();
             }
         } else {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < m2.cols; j++) {
-                    for (int k = 0; k < cols; k++) {
-                        nMatrix.mat[i][j] += mat[i][k] * m2.mat[k][j];
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < m2.cols; c++) {
+                    for (int i = 0; i < cols; i++) {
+                        nMatrix.mat[r][c] += mat[r][i] * m2.mat[i][c];
                     }
                 }
             }
@@ -158,9 +158,9 @@ public class Matrix {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Addition size mismatch");
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mat[i][j] += m2.mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] += m2.mat[r][c];
             }
         }
     }
@@ -170,9 +170,9 @@ public class Matrix {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Subtraction size mismatch");
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = mat[i][j] - m2.mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c] - m2.mat[r][c];
             }
         }
         return out;
@@ -180,9 +180,9 @@ public class Matrix {
 
     public Matrix multiply(double x) {
         Matrix out = clone();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = mat[i][j] * x;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c] * x;
             }
         }
         return out;
@@ -192,27 +192,27 @@ public class Matrix {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Multiplication size mismatch");
         Matrix out = clone();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = mat[i][j] * m2.mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c] * m2.mat[r][c];
             }
         }
         return out;
     }
 
     public void multiplyIP(double x) {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                mat[i][j] *= x;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] *= x;
             }
         }
     }
 
     public Matrix add(int x) {
         Matrix out = clone();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = mat[i][j] + x;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c] + x;
             }
         }
         return out;
@@ -242,10 +242,10 @@ public class Matrix {
 
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
 
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    Runnable r = new CalcSingle(i, j);
-                    pool.execute(r);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    Runnable rn = new CalcSingle(r, c);
+                    pool.execute(rn);
                 }
             }
 
@@ -257,9 +257,9 @@ public class Matrix {
                 e.printStackTrace();
             }
         } else {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    mat[i][j] = function.applyAsDouble(mat[i][j]);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    mat[r][c] = function.applyAsDouble(mat[r][c]);
                 }
             }
         }
@@ -267,9 +267,9 @@ public class Matrix {
 
     public double sum() {
         double sum = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                sum += mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                sum += mat[r][c];
             }
         }
         return sum;
@@ -300,10 +300,10 @@ public class Matrix {
 
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
 
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    Runnable r = new CalcSingle(i, j);
-                    pool.execute(r);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    Runnable rn = new CalcSingle(r, c);
+                    pool.execute(rn);
                 }
             }
 
@@ -315,9 +315,9 @@ public class Matrix {
                 e.printStackTrace();
             }
         } else {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    out.mat[i][j] = function.applyAsDouble(mat[i][j]);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
                 }
             }
         }
@@ -326,9 +326,9 @@ public class Matrix {
 
     public Matrix getTranspose() {
         Matrix out = new Matrix(cols, rows);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[j][i] = mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[c][r] = mat[r][c];
             }
         }
         return out;
@@ -336,20 +336,20 @@ public class Matrix {
 
     public double getMaxValue() {
         double max = -Double.MAX_VALUE;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                max = Math.max(max, mat[i][j]);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                max = Math.max(max, mat[r][c]);
             }
         }
         return max;
     }
 
     public void randomize(double rChance, double rAmount, double rPAmount) {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
                 if (random.nextDouble() < rChance) {
-                    mat[i][j] *= random.nextDouble() * rAmount * 2 - rAmount + 1;
-                    mat[i][j] += random.nextDouble() * rPAmount * 2 - rPAmount;
+                    mat[r][c] *= random.nextDouble() * rAmount * 2 - rAmount + 1;
+                    mat[r][c] += random.nextDouble() * rPAmount * 2 - rPAmount;
                 }
             }
         }
@@ -357,9 +357,9 @@ public class Matrix {
 
     public void writeToFile(DataOutputStream dos) {
         try {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    dos.writeDouble(mat[i][j]);
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    dos.writeDouble(mat[r][c]);
                 }
             }
 
@@ -370,9 +370,9 @@ public class Matrix {
 
     public void readFromFile(DataInputStream dis) {
         try {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    mat[i][j] = dis.readDouble();
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    mat[r][c] = dis.readDouble();
                 }
             }
 
@@ -384,19 +384,19 @@ public class Matrix {
     public void crossOver(Matrix m2, double weightSelf) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Cross over size mismatch");
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
                 if (random.nextDouble() > weightSelf) {
-                    mat[i][j] = m2.mat[i][j];
+                    mat[r][c] = m2.mat[r][c];
                 }
             }
         }
     }
 
     public void printMatrix() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                System.out.print(mat[i][j]);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                System.out.print(mat[r][c]);
                 System.out.print(" ");
             }
             System.out.println();
@@ -405,9 +405,9 @@ public class Matrix {
 
     public Matrix clone() {
         Matrix out = new Matrix(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                out.mat[i][j] = mat[i][j];
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c];
             }
         }
         return out;

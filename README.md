@@ -1,4 +1,5 @@
-# JLearn
+<img alt="JLearn" src="logo.svg" width="120em" />
+
 Java library for machine learning.  
 Focuses on being easy to use and configure.
 

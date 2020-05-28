@@ -6,14 +6,22 @@ import me.yixqiao.jlearn.activations.Sigmoid;
 import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
 
-import static java.lang.Double.NaN;
-
+/**
+ * Basic fully-connected layer.
+ */
 public class Dense extends Layer {
     private int inSize, outSize;
     private Matrix weights, biases;
     private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
+
+    /**
+     * Create a new dense layer.
+     *
+     * @param outSize size of output
+     * @param activation activation to use
+     */
 
     public Dense(int outSize, Activation activation) {
         this.outSize = outSize;

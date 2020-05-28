@@ -5,6 +5,10 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Softmax activation. Currently only works for output layer with cross entropy loss.
+ */
+// TODO update if this changes
 public class Softmax extends Activation {
     @Override
     public Consumer<Matrix> getActivation() {
