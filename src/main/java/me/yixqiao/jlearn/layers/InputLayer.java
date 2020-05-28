@@ -7,7 +7,7 @@ import me.yixqiao.jlearn.matrix.Matrix;
 /**
  * Layer for input.
  * <p>
- *     All functions are no-ops.
+ * All functions are no-ops.
  * </p>
  */
 public class InputLayer extends Layer {
@@ -18,7 +18,7 @@ public class InputLayer extends Layer {
      *
      * @param size size of the input
      */
-    public InputLayer(int size){
+    public InputLayer(int size) {
         this.size = size;
     }
 
@@ -32,6 +32,11 @@ public class InputLayer extends Layer {
 
     }
 
+    /**
+     * Return a linear activation.
+     *
+     * @return a new linear activation
+     */
     @Override
     public Activation getActivation() {
         return new Linear();
@@ -79,7 +84,7 @@ public class InputLayer extends Layer {
     /**
      * No op. Nothing is updated.
      *
-     * @param errors calculated errors
+     * @param errors       calculated errors
      * @param learningRate learning rate of changes
      */
     @Override

@@ -19,7 +19,7 @@ public class Dense extends Layer {
     /**
      * Create a new dense layer.
      *
-     * @param outSize size of output
+     * @param outSize    size of output
      * @param activation activation to use
      */
 

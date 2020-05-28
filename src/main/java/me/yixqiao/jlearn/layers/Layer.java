@@ -7,13 +7,19 @@ import me.yixqiao.jlearn.matrix.Matrix;
  * Abstract layer class.
  */
 public abstract class Layer {
-     /**
+    /**
      * Create the layer.
      *
-     * @param prevSize size of the previous layer
+     * @param prevSize       size of the previous layer
+     * @param prevActivation activation function or previous layer
      */
     public abstract void initLayer(int prevSize, Activation prevActivation);
 
+    /**
+     * Get the activation of the layer.
+     *
+     * @return the activation object
+     */
     public abstract Activation getActivation();
 
     /**
@@ -50,7 +56,7 @@ public abstract class Layer {
     /**
      * Update the layer after calculating errors.
      *
-     * @param errors calculated errors
+     * @param errors       calculated errors
      * @param learningRate learning rate of changes
      */
     public abstract void update(Matrix errors, double learningRate);
