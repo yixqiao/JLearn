@@ -1,9 +1,12 @@
 package me.yixqiao.jlearn.layers;
 
+import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.matrix.Matrix;
 
 public abstract class Layer {
-    public abstract void initLayer(int prevSize);
+    public abstract void initLayer(int prevSize, Activation prevActivation);
+
+    public abstract Activation getActivation();
 
     public abstract int getOutSize();
 

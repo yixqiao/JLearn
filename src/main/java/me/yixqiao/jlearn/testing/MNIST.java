@@ -34,8 +34,8 @@ public class MNIST {
     private void buildModel() {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
+                .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(16, new ReLU()))
                 .addLayer(new Dense(10, new Softmax()));
 
         model.buildModel(new MeanSquaredError());
@@ -47,7 +47,7 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, 0.01, 64, 5, metrics);
+        model.fit(inputs, outputs, 0.01, 8, 100, metrics);
 
         printPredictions();
     }

@@ -1,5 +1,7 @@
 package me.yixqiao.jlearn.layers;
 
+import me.yixqiao.jlearn.activations.Activation;
+import me.yixqiao.jlearn.activations.Linear;
 import me.yixqiao.jlearn.matrix.Matrix;
 
 public class InputLayer extends Layer {
@@ -10,9 +12,15 @@ public class InputLayer extends Layer {
     }
 
     @Override
-    public void initLayer(int prevSize) {
+    public void initLayer(int prevSize, Activation prevActivation) {
 
     }
+
+    @Override
+    public Activation getActivation() {
+        return new Linear();
+    }
+
 
     @Override
     public int getOutSize() {

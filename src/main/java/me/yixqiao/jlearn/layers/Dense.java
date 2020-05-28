@@ -11,7 +11,7 @@ import static java.lang.Double.NaN;
 public class Dense extends Layer {
     private int inSize, outSize;
     private Matrix weights, biases;
-    private Activation activation;
+    private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
 
@@ -29,10 +29,16 @@ public class Dense extends Layer {
     }
 
     @Override
-    public void initLayer(int inSize) {
+    public void initLayer(int inSize, Activation prevActivation) {
         this.inSize = inSize;
         weights = new Matrix(inSize, outSize, Math.sqrt(2.0 / inSize));
         biases = new Matrix(1, outSize);
+        this.prevActivation = prevActivation;
+    }
+
+    @Override
+    public Activation getActivation() {
+        return activation;
     }
 
     @Override
@@ -73,12 +79,11 @@ public class Dense extends Layer {
 
     @Override
     public Matrix getErrors(Matrix prevErrors) {
-        Matrix derivative = activation.getTransferDerivative().apply(inputNeurons);
+        Matrix derivative = prevActivation.getTransferDerivative().apply(inputNeurons);
         Matrix weightT = weights.getTranspose();
         Matrix errors = prevErrors.dot(weightT);
         for (int prevN = 0; prevN < inSize; prevN++) {
-            if (!(activation instanceof Softmax))
-                errors.mat[0][prevN] *= derivative.mat[0][prevN];
+            errors.mat[0][prevN] *= derivative.mat[0][prevN];
         }
         return errors;
     }

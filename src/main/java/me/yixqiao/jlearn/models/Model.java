@@ -49,7 +49,7 @@ public class Model {
             throw new NeuralNetworkException("First layer is not an input layer");
         }
         for (int layer = 0; layer < layerCount - 1; layer++) {
-            layers.get(layer + 1).initLayer(layers.get(layer).getOutSize());
+            layers.get(layer + 1).initLayer(layers.get(layer).getOutSize(), layers.get(layer).getActivation());
         }
         this.loss = loss;
     }
