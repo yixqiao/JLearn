@@ -1,17 +1,20 @@
 package me.yixqiao.jlearn.layers;
 
+import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.matrix.Matrix;
 
 /**
  * Abstract layer class.
  */
 public abstract class Layer {
-    /**
+     /**
      * Create the layer.
      *
      * @param prevSize size of the previous layer
      */
-    public abstract void initLayer(int prevSize);
+    public abstract void initLayer(int prevSize, Activation prevActivation);
+
+    public abstract Activation getActivation();
 
     /**
      * Get the output size of the layer.

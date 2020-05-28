@@ -49,7 +49,7 @@ public class Model {
             throw new NeuralNetworkException("First layer is not an input layer");
         }
         for (int layer = 0; layer < layerCount - 1; layer++) {
-            layers.get(layer + 1).initLayer(layers.get(layer).getOutSize());
+            layers.get(layer + 1).initLayer(layers.get(layer).getOutSize(), layers.get(layer).getActivation());
         }
         this.loss = loss;
     }
@@ -110,6 +110,8 @@ public class Model {
                         batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
                     }
                 }
+                //System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+                //batchInput.printMatrix();
                 Matrix batchOutput = forwardPropagate(batchInput);
                 // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
                 if ((epoch + 1) % logInterval == 0) {

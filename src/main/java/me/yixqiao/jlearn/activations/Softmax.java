@@ -10,17 +10,13 @@ import java.util.function.Function;
  */
 // TODO update if this changes
 public class Softmax extends Activation {
-    private final double epsilon = 1e-8;//Double.MIN_VALUE;
-
     @Override
     public Consumer<Matrix> getActivation() {
         // Stabilized (https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/)
         return x -> {
             double max = x.getMaxValue();
             Matrix shiftx = x.applyEach(xd -> (xd - max));
-            // shiftx.printMatrix();
             Matrix exps = shiftx.applyEach(Math::exp);
-            // exps.printMatrix();
             for (int row = 0; row < x.rows; row++) {
                 double sum = 0;
                 for (int col = 0; col < x.cols; col++)
@@ -34,7 +30,6 @@ public class Softmax extends Activation {
 
     @Override
     public Function<Matrix, Matrix> getTransferDerivative() {
-        return x -> x.applyEach(xd -> xd * (1 - xd), false);
-        // return x -> x.applyEach(xd -> xd * (1 - xd));
+        return x -> x.applyEach(xd -> 1, false);
     }
 }

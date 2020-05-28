@@ -2,6 +2,7 @@ package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.activations.ReLU;
+import me.yixqiao.jlearn.activations.Sigmoid;
 import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
 
@@ -11,7 +12,7 @@ import me.yixqiao.jlearn.matrix.Matrix;
 public class Dense extends Layer {
     private int inSize, outSize;
     private Matrix weights, biases;
-    private final Activation activation;
+    private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
 
@@ -21,16 +22,23 @@ public class Dense extends Layer {
      * @param outSize size of output
      * @param activation activation to use
      */
+
     public Dense(int outSize, Activation activation) {
         this.outSize = outSize;
         this.activation = activation;
     }
 
     @Override
-    public void initLayer(int inSize) {
+    public void initLayer(int inSize, Activation prevActivation) {
         this.inSize = inSize;
         weights = new Matrix(inSize, outSize, Math.sqrt(2.0 / inSize));
         biases = new Matrix(1, outSize);
+        this.prevActivation = prevActivation;
+    }
+
+    @Override
+    public Activation getActivation() {
+        return activation;
     }
 
     @Override
@@ -49,12 +57,13 @@ public class Dense extends Layer {
         }
         activation.getActivation().accept(output);
         outputNeurons = output.clone();
+
         return output;
     }
 
     @Override
     public Matrix getErrors(Matrix prevErrors) {
-        Matrix derivative = activation.getTransferDerivative().apply(inputNeurons);
+        Matrix derivative = prevActivation.getTransferDerivative().apply(inputNeurons);
         Matrix weightT = weights.getTranspose();
         Matrix errors = prevErrors.dot(weightT);
         for (int prevN = 0; prevN < inSize; prevN++) {
