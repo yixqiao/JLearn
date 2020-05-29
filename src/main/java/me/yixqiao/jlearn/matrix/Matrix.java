@@ -17,6 +17,10 @@ import java.util.function.ToDoubleFunction;
 
 public class Matrix {
     /**
+     * Random generator.
+     */
+    private static final Random random = new Random();
+    /**
      * Number of threads to use.
      */
     public static int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
@@ -24,7 +28,6 @@ public class Matrix {
      * Minimum number of operations before threading is used.
      */
     public static int THREADING_MIN_OPS = (int) 1e4;
-
     /**
      * Contains the matrix itself.
      */
@@ -33,16 +36,15 @@ public class Matrix {
      * Row count.
      */
     public int rows;
-
     /**
      * Column count.
      */
     public int cols;
 
-    /**
-     * Random generator.
-     */
-    Random random = new Random();
+    public Matrix(int rows, int cols, Init init) {
+        this(rows, cols);
+        init.apply(this);
+    }
 
     /**
      * Creates a new, empty matrix.
@@ -51,7 +53,9 @@ public class Matrix {
      * @param cols number of columns
      */
     public Matrix(int rows, int cols) {
-        this(rows, cols, 0);
+        this.rows = rows;
+        this.cols = cols;
+        mat = new double[rows][cols];
     }
 
     /**
@@ -489,7 +493,7 @@ public class Matrix {
     /**
      * Cross over with another matrix.
      *
-     * @param m2 other matrix
+     * @param m2         other matrix
      * @param weightSelf weight given to itself
      * @deprecated As of v0.2.0, this method has no use.
      */
@@ -532,5 +536,41 @@ public class Matrix {
             }
         }
         return out;
+    }
+
+    public abstract static class Init {
+        public abstract void apply(Matrix m);
+
+        public static class Empty extends Init {
+            public void apply(Matrix m) {
+                // Do nothing, as matrix should already be initialized with 0
+            }
+        }
+
+        public static class Fill extends Init {
+            double fNum;
+
+            public Fill(double fNum) {
+                this.fNum = fNum;
+            }
+
+            @Override
+            public void apply(Matrix m) {
+                m.applyEachIP(x -> fNum);
+            }
+        }
+
+        public static class Gaussian extends Init {
+            double rFactor;
+
+            public Gaussian(double rFactor) {
+                this.rFactor = rFactor;
+            }
+
+            @Override
+            public void apply(Matrix m) {
+                m.applyEachIP(x -> random.nextGaussian() * rFactor);
+            }
+        }
     }
 }
