@@ -154,6 +154,16 @@ public class Matrix {
         return nMatrix;
     }
 
+    public Matrix add(int x) {
+        Matrix out = clone();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] = mat[r][c] + x;
+            }
+        }
+        return out;
+    }
+
     public void addIP(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Addition size mismatch");
@@ -208,11 +218,50 @@ public class Matrix {
         }
     }
 
-    public Matrix add(int x) {
+    public Matrix applyEach(ToDoubleFunction<Double> function) {
+        if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
+            return applyEach(function, false);
+        else
+            return applyEach(function, true);
+    }
+
+    public Matrix applyEach(ToDoubleFunction<Double> function, boolean useThreading) {
         Matrix out = clone();
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                out.mat[r][c] = mat[r][c] + x;
+        if (useThreading) {
+            class CalcSingle implements Runnable {
+                private final int r, c;
+
+                public CalcSingle(int r, int c) {
+                    this.r = r;
+                    this.c = c;
+                }
+
+                public void run() {
+                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
+                }
+            }
+
+            ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
+
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    Runnable rn = new CalcSingle(r, c);
+                    pool.execute(rn);
+                }
+            }
+
+            pool.shutdown();
+
+            try {
+                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < cols; c++) {
+                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
+                }
             }
         }
         return out;
@@ -265,7 +314,7 @@ public class Matrix {
         }
     }
 
-    public double sum() {
+    public double getSum() {
         double sum = 0;
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -273,65 +322,6 @@ public class Matrix {
             }
         }
         return sum;
-    }
-
-    public Matrix applyEach(ToDoubleFunction<Double> function) {
-        if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
-            return applyEach(function, false);
-        else
-            return applyEach(function, true);
-    }
-
-    public Matrix applyEach(ToDoubleFunction<Double> function, boolean useThreading) {
-        Matrix out = clone();
-        if (useThreading) {
-            class CalcSingle implements Runnable {
-                private final int r, c;
-
-                public CalcSingle(int r, int c) {
-                    this.r = r;
-                    this.c = c;
-                }
-
-                public void run() {
-                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
-                }
-            }
-
-            ExecutorService pool = Executors.newFixedThreadPool(THREAD_COUNT);
-
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    Runnable rn = new CalcSingle(r, c);
-                    pool.execute(rn);
-                }
-            }
-
-            pool.shutdown();
-
-            try {
-                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < cols; c++) {
-                    out.mat[r][c] = function.applyAsDouble(mat[r][c]);
-                }
-            }
-        }
-        return out;
-    }
-
-    public Matrix getTranspose() {
-        Matrix out = new Matrix(cols, rows);
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                out.mat[c][r] = mat[r][c];
-            }
-        }
-        return out;
     }
 
     public double getMaxValue() {
@@ -342,6 +332,16 @@ public class Matrix {
             }
         }
         return max;
+    }
+
+    public Matrix getTranspose() {
+        Matrix out = new Matrix(cols, rows);
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[c][r] = mat[r][c];
+            }
+        }
+        return out;
     }
 
     public void randomize(double rChance, double rAmount, double rPAmount) {

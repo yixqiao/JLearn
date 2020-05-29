@@ -13,7 +13,7 @@ public class MeanSquaredError extends Loss {
             Matrix o = output.get(i), e = expected.get(i);
             Matrix diff = o.subtract(e);
             diff.applyEachIP(x -> x * x);
-            double sum = diff.sum();
+            double sum = diff.getSum();
             loss += sum / (o.rows * o.cols);
         }
         return loss;
