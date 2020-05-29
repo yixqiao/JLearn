@@ -58,11 +58,11 @@ public class Matrix {
      * Creates a new randomized matrix.
      *
      * <p>
-     *     Randomizes with <code>random.nextGaussian() * rFactor</code>
+     * Randomizes with <code>random.nextGaussian() * rFactor</code>
      * </p>
      *
-     * @param rows number of rows
-     * @param cols number of columns
+     * @param rows    number of rows
+     * @param cols    number of columns
      * @param rFactor factor to randomize by
      */
     public Matrix(int rows, int cols, double rFactor) {
@@ -73,7 +73,7 @@ public class Matrix {
             return;
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                mat[r][c] =  random.nextGaussian()* rFactor;
+                mat[r][c] = random.nextGaussian() * rFactor;
             }
         }
     }
@@ -82,7 +82,7 @@ public class Matrix {
      * Create a matrix from an existing 2d array of doubles.
      *
      * <p>
-     *     Note that this constructor does not create a copy of the array passed in.
+     * Note that this constructor does not create a copy of the array passed in.
      * </p>
      *
      * @param mat the array to make the matrix with
@@ -93,6 +93,12 @@ public class Matrix {
         this.mat = mat;
     }
 
+    /**
+     * Calculate the dot product.
+     *
+     * @param m2 the other matrix
+     * @return the result
+     */
     public Matrix dot(Matrix m2) {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
@@ -103,6 +109,13 @@ public class Matrix {
             return dot(m2, true);
     }
 
+    /**
+     * Calculate the dot product.
+     *
+     * @param m2           the other matrix
+     * @param useThreading whether to use threading
+     * @return the result
+     */
     public Matrix dot(Matrix m2, boolean useThreading) {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
@@ -154,7 +167,13 @@ public class Matrix {
         return nMatrix;
     }
 
-    public Matrix add(int x) {
+    /**
+     * Add a scalar to all elements.
+     *
+     * @param x number to add
+     * @return new matrix
+     */
+    public Matrix add(double x) {
         Matrix out = clone();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -164,6 +183,11 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Add another matrix element by element, in place.
+     *
+     * @param m2 other matrix with same dimensions
+     */
     public void addIP(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Addition size mismatch");
@@ -175,6 +199,12 @@ public class Matrix {
         }
     }
 
+    /**
+     * Subtract another matrix element by element.
+     *
+     * @param m2 other matrix with the same dimensions
+     * @return the resulting matrix
+     */
     public Matrix subtract(Matrix m2) {
         Matrix out = new Matrix(rows, cols);
         if (rows != m2.rows || cols != m2.cols)
@@ -188,6 +218,12 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Multiply each matrix element by a scalar.
+     *
+     * @param x the number to multiply by
+     * @return the resulting matrix
+     */
     public Matrix multiply(double x) {
         Matrix out = clone();
         for (int r = 0; r < rows; r++) {
@@ -198,6 +234,25 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Multiply each matrix element by a scalar, in place.
+     *
+     * @param x the number to multiply by
+     */
+    public void multiplyIP(double x) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] *= x;
+            }
+        }
+    }
+
+    /**
+     * Multiply by another matrix element by element.
+     *
+     * @param m2 other matrix with the same dimensions
+     * @return the resulting matrix
+     */
     public Matrix multiply(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Multiplication size mismatch");
@@ -210,14 +265,12 @@ public class Matrix {
         return out;
     }
 
-    public void multiplyIP(double x) {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                mat[r][c] *= x;
-            }
-        }
-    }
-
+    /**
+     * Apply a function to each element.
+     *
+     * @param function the function to apply
+     * @return the resulting matrix
+     */
     public Matrix applyEach(ToDoubleFunction<Double> function) {
         if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
             return applyEach(function, false);
@@ -225,6 +278,13 @@ public class Matrix {
             return applyEach(function, true);
     }
 
+    /**
+     * Apply a function to each element.
+     *
+     * @param function     the function to apply
+     * @param useThreading whether to use threading
+     * @return the resulting matrix
+     */
     public Matrix applyEach(ToDoubleFunction<Double> function, boolean useThreading) {
         Matrix out = clone();
         if (useThreading) {
@@ -267,6 +327,11 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Apply a function to each element, in place.
+     *
+     * @param function the function to apply
+     */
     public void applyEachIP(ToDoubleFunction<Double> function) {
         if (THREAD_COUNT == 1 || rows * cols < THREADING_MIN_OPS)
             applyEachIP(function, false);
@@ -274,6 +339,12 @@ public class Matrix {
             applyEachIP(function, true);
     }
 
+    /**
+     * Apply a function to each element, in place.
+     *
+     * @param function     the function to apply
+     * @param useThreading whether to use threading
+     */
     public void applyEachIP(ToDoubleFunction<Double> function, boolean useThreading) {
         if (useThreading) {
             class CalcSingle implements Runnable {
@@ -314,6 +385,11 @@ public class Matrix {
         }
     }
 
+    /**
+     * Get the sum of the elements.
+     *
+     * @return the sum
+     */
     public double getSum() {
         double sum = 0;
         for (int r = 0; r < rows; r++) {
@@ -324,6 +400,11 @@ public class Matrix {
         return sum;
     }
 
+    /**
+     * Get the greatest value in the matrix.
+     *
+     * @return the max value
+     */
     public double getMaxValue() {
         double max = -Double.MAX_VALUE;
         for (int r = 0; r < rows; r++) {
@@ -334,6 +415,11 @@ public class Matrix {
         return max;
     }
 
+    /**
+     * Get the matrix transpose.
+     *
+     * @return the transposed matrix
+     */
     public Matrix getTranspose() {
         Matrix out = new Matrix(cols, rows);
         for (int r = 0; r < rows; r++) {
@@ -344,6 +430,15 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Randomize the matrix.
+     *
+     * @param rChance  chance to randomize
+     * @param rAmount  amount to randomize by
+     * @param rPAmount amount to add randomization by
+     * @deprecated As of v0.2.0, this method has no use.
+     */
+    @Deprecated
     public void randomize(double rChance, double rAmount, double rPAmount) {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -355,6 +450,11 @@ public class Matrix {
         }
     }
 
+    /**
+     * Write the matrix to a file.
+     *
+     * @param dos stream to write to
+     */
     public void writeToFile(DataOutputStream dos) {
         try {
             for (int r = 0; r < rows; r++) {
@@ -368,6 +468,11 @@ public class Matrix {
         }
     }
 
+    /**
+     * Read the matrix from a file.
+     *
+     * @param dis stream to read from
+     */
     public void readFromFile(DataInputStream dis) {
         try {
             for (int r = 0; r < rows; r++) {
@@ -381,6 +486,13 @@ public class Matrix {
         }
     }
 
+    /**
+     * Cross over with another matrix.
+     *
+     * @param m2 other matrix
+     * @param weightSelf weight given to itself
+     * @deprecated As of v0.2.0, this method has no use.
+     */
     public void crossOver(Matrix m2, double weightSelf) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Cross over size mismatch");
@@ -393,6 +505,9 @@ public class Matrix {
         }
     }
 
+    /**
+     * Print out the matrix to stdout.
+     */
     public void printMatrix() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -403,6 +518,11 @@ public class Matrix {
         }
     }
 
+    /**
+     * Create a clone of the matrix.
+     *
+     * @return the clone
+     */
     public Matrix clone() {
         Matrix out = new Matrix(rows, cols);
         for (int r = 0; r < rows; r++) {
