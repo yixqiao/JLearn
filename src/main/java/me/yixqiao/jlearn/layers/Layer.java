@@ -38,7 +38,7 @@ public abstract class Layer {
     public abstract Matrix forwardPropagate(Matrix input);
 
     /**
-     * Get backpropagated errors
+     * Get backpropagated errors.
      *
      * @param prevErrors errors from previous layer (layer after output)
      * @return matrix of errors

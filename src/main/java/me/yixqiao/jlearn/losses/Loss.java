@@ -9,10 +9,12 @@ import java.util.ArrayList;
  * Class for loss function.
  */
 public abstract class Loss extends Metric {
+    @Override
     public double getMetric(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         return getLoss(output, expected);
     }
 
+    @Override
     public String getFormatString() {
         return "L: %.4f";
     }
