@@ -4,8 +4,13 @@ import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
 
+/**
+ * Cross entropy loss.
+ * <p>
+ * For now, only for use with the softmax activation.
+ * </p>
+ */
 public class CrossEntropy extends Loss {
-
     @Override
     public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         double loss = 0;

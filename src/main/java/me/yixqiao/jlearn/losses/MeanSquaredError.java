@@ -4,6 +4,9 @@ import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
 
+/**
+ * Mean squared error loss.
+ */
 public class MeanSquaredError extends Loss {
     @Override
     public double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
