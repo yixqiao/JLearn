@@ -11,6 +11,11 @@ application {
     mainClassName = "me.yixqiao.jlearn.testing.MNIST"
 }
 
+configurations {
+// Other configuration lines might be in here
+    javadocCoverage
+}
+
 repositories {
     mavenCentral()
 }
@@ -21,6 +26,7 @@ run {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    javadocCoverage "com.manoelcampos:javadoc-coverage:1.1.0"
 }
 
 publishing {
@@ -39,4 +45,19 @@ publishing {
             from(components.java)
         }
     }
+}
+
+// This generates the Javadoc coverage report into build/reports/javadoc/javadoc-coverage.html
+task javadocCoverageReport(type: Javadoc, dependsOn: javadoc) {
+    source = sourceSets.main.allJava
+    destinationDir = reporting.file("javadoc")
+    options.docletpath = configurations.javadocCoverage.files.asType(List)
+    options.doclet = "com.manoelcampos.javadoc.coverage.CoverageDoclet"
+}
+// Optionally you can add the dependsOn here so that when you generate the javadoc
+// jar, e.g. if you include the javadocJar in a publishing configuration, the javadoc
+// coverage report will be generated automatically.
+task javadocJar(type: Jar, dependsOn: javadocCoverageReport) {
+    classifier "javadoc"
+    from javadoc.destinationDir
 }

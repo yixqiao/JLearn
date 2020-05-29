@@ -49,7 +49,7 @@ public class MNIST {
     private void train() {
         printPredictions();
 
-        ArrayList<Metric> metrics = new ArrayList<>() {{
+        ArrayList<Metric> metrics = new ArrayList<Metric>() {{
             add(new Accuracy());
         }};
         model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 10, 1, metrics);
