@@ -4,13 +4,24 @@ import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
 
+/**
+ * Accuracy metric.
+ */
 public class Accuracy extends Metric {
-    private boolean formatPercent;
+    private final boolean formatPercent;
 
+    /**
+     * Create the metric.
+     */
     public Accuracy() {
         this.formatPercent = true;
     }
 
+    /**
+     * Create the metric.
+     *
+     * @param formatPercent whether to display the accuracy as a percent
+     */
     public Accuracy(boolean formatPercent) {
         this.formatPercent = formatPercent;
     }
