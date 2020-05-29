@@ -189,17 +189,22 @@ public class Model {
                 lossA /= (double) (totalSamples / batchSize);
                 for (int i = 0; i < metrics.size(); i++)
                     metricA[i] /= (double) (totalSamples / batchSize);
+                Matrix evalOutput = forwardPropagate(evalInput);
+
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+
                 System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+
                 for (int i = 0; i < metrics.size(); i++)
                     System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
 
-                Matrix evalOutput = forwardPropagate(evalInput);
                 double evalLoss = getLoss(loss, evalOutput, evalExpected);
                 System.out.printf(", EL: %.5f", evalLoss);
+
                 for (int i = 0; i < metrics.size(); i++)
                     System.out.printf((", E" + metrics.get(i).getFormatString()),
                             getMetric(metrics.get(i), evalOutput, evalExpected));
+
                 System.out.println();
             }
         }
