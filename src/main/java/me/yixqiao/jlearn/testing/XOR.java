@@ -9,6 +9,9 @@ import me.yixqiao.jlearn.models.Model;
 
 import java.util.ArrayList;
 
+/**
+ * Train a model to perform the XOR bitwise operation.
+ */
 public class XOR {
     Model model;
     private ArrayList<Matrix> inputs;
@@ -63,15 +66,15 @@ public class XOR {
         outputs = new ArrayList<>();
 
         inputs.add(new Matrix(new double[][]{{0.0, 0.0}}));
-        outputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0}}));
 
         inputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
-        outputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0}}));
 
         inputs.add(new Matrix(new double[][]{{1.0, 1.0}}));
-        outputs.add(new Matrix(new double[][]{{0.0, 1.0}}));
+        outputs.add(new Matrix(new double[][]{{0.0}}));
 
         inputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
-        outputs.add(new Matrix(new double[][]{{1.0, 0.0}}));
+        outputs.add(new Matrix(new double[][]{{1.0}}));
     }
 }

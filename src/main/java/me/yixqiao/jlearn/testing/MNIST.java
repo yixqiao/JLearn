@@ -16,6 +16,9 @@ import me.yixqiao.jlearn.models.Model;
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * Train a network on the MNIST digits dataset.
+ */
 public class MNIST {
     ArrayList<Matrix> inputsALC = new ArrayList<>();
     ArrayList<Matrix> outputsALC = new ArrayList<>();

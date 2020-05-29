@@ -15,6 +15,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Train a network on the iris flowers dataset.
+ */
 public class Iris {
     ArrayList<Matrix> inputsAL = new ArrayList<>();
     ArrayList<Matrix> outputsAL = new ArrayList<>();

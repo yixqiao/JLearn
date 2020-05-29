@@ -493,6 +493,7 @@ public class Matrix {
      * @param weightSelf weight given to itself
      * @deprecated As of v0.2.0, this method has no use.
      */
+    @Deprecated
     public void crossOver(Matrix m2, double weightSelf) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException("Cross over size mismatch");

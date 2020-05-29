@@ -4,6 +4,11 @@ import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
 
+/**
+ * Early testing class.
+ * @deprecated Made very early on, no current use.
+ */
+@Deprecated
 public class Test {
     private static ArrayList<Matrix> network = new ArrayList<>();
     private static ArrayList<Matrix> activations = new ArrayList<>();
