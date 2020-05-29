@@ -560,16 +560,41 @@ public class Matrix {
             }
         }
 
-        public static class Gaussian extends Init {
-            double rFactor;
+        public static class Uniform extends Init {
+            double center;
+            double range;
 
-            public Gaussian(double rFactor) {
-                this.rFactor = rFactor;
+            public Uniform(double center, double range) {
+                this.center = center;
+                this.range = range;
+            }
+
+            public Uniform(double range) {
+                this(0, range);
             }
 
             @Override
             public void apply(Matrix m) {
-                m.applyEachIP(x -> random.nextGaussian() * rFactor);
+                m.applyEachIP(x -> (random.nextDouble() * 2 - 1) * range + center);
+            }
+        }
+
+        public static class Gaussian extends Init {
+            double center;
+            double deviation;
+
+            public Gaussian(double center, double deviation) {
+                this.center = center;
+                this.deviation = deviation;
+            }
+
+            public Gaussian(double deviation) {
+                this(0, deviation);
+            }
+
+            @Override
+            public void apply(Matrix m) {
+                m.applyEachIP(x -> random.nextGaussian() * deviation + center);
             }
         }
     }
