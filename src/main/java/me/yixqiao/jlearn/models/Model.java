@@ -139,6 +139,72 @@ public class Model {
         }
     }
 
+    public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
+                    double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
+        int totalSamples = input.rows;
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < totalSamples; i++) indices.add(i);
+        learningRate *= Math.sqrt(batchSize);
+
+        ArrayList<Matrix> errors;
+        if (metrics == null)
+            metrics = new ArrayList<>();
+
+
+        for (int epoch = 0; epoch < epochs; epoch++) {
+            double lossA = 0;
+            double[] metricA = new double[metrics.size()];
+
+            long epochStart = System.nanoTime();
+
+            Collections.shuffle(indices);
+            for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
+                Matrix batchInput = new Matrix(batchSize, input.cols);
+                Matrix batchExpected = new Matrix(batchSize, expected.cols);
+                for (int i = 0; i < batchSize; i++) {
+                    for (int j = 0; j < input.cols; j++) {
+                        batchInput.mat[i][j] = input.mat[indices.get(batchNum * batchSize + i)][j];
+                    }
+                    for (int j = 0; j < expected.cols; j++) {
+                        batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
+                    }
+                }
+                //System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
+                //batchInput.printMatrix();
+                Matrix batchOutput = forwardPropagate(batchInput);
+                // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
+                if ((epoch + 1) % logInterval == 0) {
+                    lossA += getLoss(loss, batchOutput, batchExpected);
+                    for (int i = 0; i < metrics.size(); i++)
+                        metricA[i] += getMetric(metrics.get(i), batchOutput, batchExpected);
+                }
+
+                errors = backPropagate(batchExpected);
+                update(errors, learningRate);
+            }
+
+            if ((epoch + 1) % logInterval == 0) {
+                // Matrix output = forwardPropagate(input);
+                // output.printMatrix();
+                lossA /= (double) (totalSamples / batchSize);
+                for (int i = 0; i < metrics.size(); i++)
+                    metricA[i] /= (double) (totalSamples / batchSize);
+                double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+                System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                for (int i = 0; i < metrics.size(); i++)
+                    System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
+
+                Matrix evalOutput = forwardPropagate(evalInput);
+                double evalLoss = getLoss(loss, evalOutput, evalExpected);
+                System.out.printf(", EL: %.5f", evalLoss);
+                for (int i = 0; i < metrics.size(); i++)
+                    System.out.printf((", E" + metrics.get(i).getFormatString()),
+                            getMetric(metrics.get(i), evalOutput, evalExpected));
+                System.out.println();
+            }
+        }
+    }
+
     /**
      * Train on a single batch of input and output.
      *
