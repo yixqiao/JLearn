@@ -7,10 +7,12 @@ import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Neural network model.
@@ -26,6 +28,22 @@ public class Model implements Serializable {
      */
     public Model() {
         layers = new ArrayList<>();
+    }
+
+    public static Model readFromFile(String filePath) {
+        Model m = null;
+        try {
+            FileInputStream fis = new FileInputStream("m.tmp");
+            GZIPInputStream gzipIn = new GZIPInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(gzipIn);
+
+            m = (Model) ois.readObject();
+
+            fis.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return m;
     }
 
     /**
@@ -234,7 +252,6 @@ public class Model implements Serializable {
         return forwardPropagate(input);
     }
 
-
     /**
      * Forward propagate a batch of input.
      *
@@ -326,6 +343,24 @@ public class Model implements Serializable {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
+        }
+    }
+
+    public void saveToFile(String filePath) {
+        try {
+            FileOutputStream fos = new FileOutputStream(filePath);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(gzipOut);
+
+            oos.writeObject(this);
+
+            oos.flush();
+            oos.close();
+            gzipOut.finish();
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

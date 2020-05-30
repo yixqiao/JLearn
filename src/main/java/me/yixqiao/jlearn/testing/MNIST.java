@@ -203,7 +203,7 @@ public class MNIST {
             }
         }
 
-        System.out.println("Finished reading from file.");
+        System.out.println("Finished reading inputs from file.");
 
         for (int i = 0; i < inputsAL.size(); i += 1000) {
             inputsALC.add(inputsAL.get(i));

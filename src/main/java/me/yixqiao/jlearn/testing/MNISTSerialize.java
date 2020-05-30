@@ -31,19 +31,7 @@ public class MNISTSerialize extends MNIST {
     }
 
     protected void loadModel() {
-        Model model = null;
-        try {
-            FileInputStream fis = new FileInputStream("m.tmp");
-            GZIPInputStream gzipIn = new GZIPInputStream(fis);
-            ObjectInputStream ois = new ObjectInputStream(gzipIn);
-
-            model = (Model) ois.readObject();
-
-            fis.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        this.model = model;
+        this.model = Model.readFromFile("m.tmp");
         System.out.println("Done.");
     }
 
@@ -58,18 +46,6 @@ public class MNISTSerialize extends MNIST {
 
         printPredictions();
 
-        try {
-            FileOutputStream fos = new FileOutputStream("m.tmp");
-            GZIPOutputStream gzipOut = new GZIPOutputStream(fos);
-            ObjectOutputStream oos = new ObjectOutputStream(gzipOut);
-
-            oos.writeObject(model);
-
-            oos.flush();
-            oos.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        model.saveToFile("m.tmp");
     }
 }
