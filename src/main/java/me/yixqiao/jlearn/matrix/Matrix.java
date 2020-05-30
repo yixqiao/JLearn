@@ -16,9 +16,6 @@ import java.util.function.ToDoubleFunction;
  */
 
 public class Matrix {
-    /**
-     * Random generator.
-     */
     private static final Random random = new Random();
     /**
      * Number of threads to use.
@@ -35,12 +32,19 @@ public class Matrix {
     /**
      * Row count.
      */
-    public int rows;
+    public final int rows;
     /**
      * Column count.
      */
-    public int cols;
+    public final int cols;
 
+    /**
+     * Create a new matrix using an <code>Matrix.Init</code> object.
+     *
+     * @param rows number of rows
+     * @param cols number of columns
+     * @param init instance of init object
+     */
     public Matrix(int rows, int cols, Init init) {
         this(rows, cols);
         init.apply(this);
@@ -68,7 +72,9 @@ public class Matrix {
      * @param rows    number of rows
      * @param cols    number of columns
      * @param rFactor factor to randomize by
+     * @deprecated use the Matrix.Init.Gaussian class instead
      */
+    @Deprecated
     public Matrix(int rows, int cols, double rFactor) {
         this.rows = rows;
         this.cols = cols;
@@ -538,18 +544,38 @@ public class Matrix {
         return out;
     }
 
+    /**
+     * Initialization methods for Matrix.
+     */
     public abstract static class Init {
+        /**
+         * Apply the initialization (in place) to a new matrix.
+         *
+         * @param m the matrix
+         */
         public abstract void apply(Matrix m);
 
+        /**
+         * Init all with 0s.
+         */
         public static class Empty extends Init {
+            @Override
             public void apply(Matrix m) {
                 // Do nothing, as matrix should already be initialized with 0
             }
         }
 
+        /**
+         * Init all with a number.
+         */
         public static class Fill extends Init {
             double fNum;
 
+            /**
+             * Create a new class.
+             *
+             * @param fNum the number to fill the matrix with
+             */
             public Fill(double fNum) {
                 this.fNum = fNum;
             }
@@ -560,15 +586,33 @@ public class Matrix {
             }
         }
 
+        /**
+         * Generate a uniform range of random numbers to fill the matrix.
+         * <p>
+         * The uniform will be centered around <code>center</code>,
+         * extending for <code>range</code> in either direction.
+         * </p>
+         */
         public static class Uniform extends Init {
             double center;
             double range;
 
+            /**
+             * Create a new class.
+             *
+             * @param center center of the uniform
+             * @param range  range in either direction
+             */
             public Uniform(double center, double range) {
                 this.center = center;
                 this.range = range;
             }
 
+            /**
+             * Create a new class.
+             *
+             * @param range range in either direction
+             */
             public Uniform(double range) {
                 this(0, range);
             }
@@ -579,15 +623,33 @@ public class Matrix {
             }
         }
 
+        /**
+         * Generate random numbers from the gaussian distribution to fill the matrix.
+         * <p>
+         * The numbers will be centered around <code>center</code>,
+         * and have a standard deviation of <code>range</code> direction.
+         * </p>
+         */
         public static class Gaussian extends Init {
             double center;
             double deviation;
 
+            /**
+             * Create a new class.
+             *
+             * @param center    center of the gaussian
+             * @param deviation standard deviation
+             */
             public Gaussian(double center, double deviation) {
                 this.center = center;
                 this.deviation = deviation;
             }
 
+            /**
+             * Create a new class.
+             *
+             * @param deviation standard deviation
+             */
             public Gaussian(double deviation) {
                 this(0, deviation);
             }
