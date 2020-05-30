@@ -272,6 +272,26 @@ public class Model implements Serializable {
     }
 
     /**
+     * Evaluate the performance of the model.
+     *
+     * @param input    input data
+     * @param expected expected outputs
+     * @param metrics  metrics to display
+     */
+    public void evaluate(Matrix input, Matrix expected, ArrayList<Metric> metrics) {
+        Matrix output = forwardPropagate(input);
+
+        double evalLoss = getLoss(loss, output, expected);
+        System.out.printf("L: %.5f", evalLoss);
+
+        for (int i = 0; i < metrics.size(); i++)
+            System.out.printf((", " + metrics.get(i).getFormatString()),
+                    getMetric(metrics.get(i), output, expected));
+
+        System.out.println();
+    }
+
+    /**
      * Forward propagate a batch of input.
      *
      * @param input input data to feed forward
