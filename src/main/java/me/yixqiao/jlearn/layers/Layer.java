@@ -3,10 +3,12 @@ package me.yixqiao.jlearn.layers;
 import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.matrix.Matrix;
 
+import java.io.Serializable;
+
 /**
  * Abstract layer class.
  */
-public abstract class Layer {
+public abstract class Layer implements Serializable {
     /**
      * Create the layer.
      *
