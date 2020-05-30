@@ -31,7 +31,7 @@ public class Dense extends Layer {
     @Override
     public void initLayer(int inSize, Activation prevActivation) {
         this.inSize = inSize;
-        weights = new Matrix(inSize, outSize, Math.sqrt(2.0 / inSize));
+        weights = new Matrix(inSize, outSize, new Matrix.Init.Gaussian(Math.sqrt(2.0 / inSize)));
         biases = new Matrix(1, outSize);
         this.prevActivation = prevActivation;
     }
