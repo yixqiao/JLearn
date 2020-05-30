@@ -2,12 +2,13 @@ package me.yixqiao.jlearn.metrics;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Class for a metric.
  */
-public abstract class Metric {
+public abstract class Metric implements Serializable {
     /**
      * Get the value of the metric.
      *

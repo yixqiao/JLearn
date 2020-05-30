@@ -23,10 +23,10 @@ public class MNIST {
     ArrayList<Matrix> inputsALC = new ArrayList<>();
     ArrayList<Matrix> outputsALC = new ArrayList<>();
     Model model;
-    private Matrix inputs;
-    private Matrix outputs;
-    private Matrix evalInputs;
-    private Matrix evalOutputs;
+    protected Matrix inputs;
+    protected Matrix outputs;
+    protected Matrix evalInputs;
+    protected Matrix evalOutputs;
 
     public static void main(String[] args) {
         MNIST mnist = new MNIST();
@@ -36,7 +36,7 @@ public class MNIST {
         mnist.train();
     }
 
-    private void buildModel() {
+    protected void buildModel() {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
@@ -46,7 +46,7 @@ public class MNIST {
         model.buildModel(new CrossEntropy());
     }
 
-    private void train() {
+    protected void train() {
         printPredictions();
 
         ArrayList<Metric> metrics = new ArrayList<>() {{
@@ -57,7 +57,7 @@ public class MNIST {
         printPredictions();
     }
 
-    private void printPredictions() {
+    protected void printPredictions() {
         for (int i = 0; i < inputsALC.size(); i++) {
             Matrix output = model.predict(inputsALC.get(i));
             for (int j = 0; j < output.cols; j++) {
@@ -75,7 +75,7 @@ public class MNIST {
         }
     }
 
-    private void writeDataset() {
+    protected void writeDataset() {
         // Flattens all images
         try {
             BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"));
@@ -134,7 +134,7 @@ public class MNIST {
         System.exit(0);
     }
 
-    private void initInputs() {
+    protected void initInputs() {
         ArrayList<Matrix> inputsAL = new ArrayList<>();
         ArrayList<Matrix> outputsAL = new ArrayList<>();
 

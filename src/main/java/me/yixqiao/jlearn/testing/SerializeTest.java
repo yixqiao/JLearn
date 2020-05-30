@@ -4,13 +4,15 @@ import me.yixqiao.jlearn.activations.LeakyReLU;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.models.Model;
 
 import java.io.*;
 
 public class SerializeTest {
     public static void main(String[] args) {
-        layer();
+        // layer();
         // matrix();
+        System.out.println("Nothing here.");
     }
 
     private static void layer() {
@@ -30,6 +32,9 @@ public class SerializeTest {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println(l2.getOutSize());
+        System.exit(0);
     }
 
     private static void matrix() {
@@ -49,5 +54,6 @@ public class SerializeTest {
             e.printStackTrace();
         }
         m2.printMatrix();
+        System.exit(0);
     }
 }

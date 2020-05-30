@@ -7,6 +7,7 @@ import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,8 +16,8 @@ import java.util.Collections;
  * Neural network model.
  */
 
-public class Model {
-    private ArrayList<Layer> layers;
+public class Model implements Serializable {
+    private final ArrayList<Layer> layers;
     private int layerCount;
     private Loss loss;
 
