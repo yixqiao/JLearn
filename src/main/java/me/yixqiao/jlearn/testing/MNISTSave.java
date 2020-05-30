@@ -24,27 +24,17 @@ public class MNISTSave extends MNIST {
         MNISTSave mnist = new MNISTSave();
         mnist.loadModel();
         mnist.initInputs();
-        mnist.printPredictions();
+        mnist.evaluateModel();
     }
 
     protected void loadModel() {
-        this.model = Model.readFromFile("m.tmp");
+        this.model = Model.readFromFile("m.jlm");
         System.out.println("Finished loading model.");
     }
 
     @Override
-    protected void train() {
-        printPredictions();
-
-        ArrayList<Metric> metrics = new ArrayList<>() {{
-            add(new Accuracy());
-        }};
-        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 2, 1, metrics);
-
-        printPredictions();
-
-        model.saveToFile("m.tmp");
-
+    protected void afterTrain() {
+        model.saveToFile("m.jlm");
         System.out.println("Finished saving model.\n");
     }
 }

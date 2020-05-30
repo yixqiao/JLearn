@@ -1,5 +1,6 @@
 package me.yixqiao.jlearn.testing;
 
+import jdk.jshell.spi.ExecutionControl;
 import me.yixqiao.jlearn.activations.Linear;
 import me.yixqiao.jlearn.activations.ReLU;
 import me.yixqiao.jlearn.activations.Sigmoid;
@@ -59,14 +60,30 @@ public class MNIST {
     }
 
     protected void train() {
-        printPredictions();
+        // printPredictions();
 
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
         model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 10, 1, metrics);
 
-        printPredictions();
+        // printPredictions();
+
+        evaluateModel();
+
+        afterTrain();
+    }
+
+    protected void evaluateModel(){
+        ArrayList<Metric> metrics = new ArrayList<>() {{
+            add(new Accuracy());
+        }};
+        System.out.print("Eval: ");
+        model.evaluate(evalInputs, evalOutputs, metrics);
+    }
+
+    protected void afterTrain(){
+        // Override in subclass
     }
 
     protected void printPredictions() {
@@ -217,7 +234,7 @@ public class MNIST {
 
         System.out.println("Finished reading inputs from file.");
 
-        for (int i = 0; i < inputsAL.size(); i += 1000) {
+        for (int i = 0; i < inputsAL.size(); i += (10000/10)) {
             inputsALC.add(inputsAL.get(i));
             outputsALC.add(outputsAL.get(i));
         }

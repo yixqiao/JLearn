@@ -39,7 +39,7 @@ public class Model implements Serializable {
     public static Model readFromFile(String filePath) {
         Model m = null;
         try {
-            FileInputStream fis = new FileInputStream("m.tmp");
+            FileInputStream fis = new FileInputStream(filePath);
             GZIPInputStream gzipIn = new GZIPInputStream(fis);
             ObjectInputStream ois = new ObjectInputStream(gzipIn);
 
