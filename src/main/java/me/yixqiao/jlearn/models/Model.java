@@ -79,6 +79,14 @@ public class Model implements Serializable {
         this.loss = loss;
     }
 
+    public void printSummary(){
+        System.out.printf("\nModel with %d layers:\n", layerCount);
+        for(Layer l : layers){
+            System.out.println(l);
+        }
+        System.out.println();
+    }
+
     /**
      * Train the model on data.
      *

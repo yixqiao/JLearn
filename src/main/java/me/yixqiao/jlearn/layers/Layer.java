@@ -62,4 +62,6 @@ public abstract class Layer implements Serializable {
      * @param learningRate learning rate of changes
      */
     public abstract void update(Matrix errors, double learningRate);
+
+    public abstract String toString();
 }

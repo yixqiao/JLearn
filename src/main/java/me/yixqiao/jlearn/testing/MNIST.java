@@ -54,9 +54,11 @@ public class MNIST {
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(10, new Sigmoid()));
+                .addLayer(new Dense(10, new Softmax()));
 
         model.buildModel(new CrossEntropy());
+
+        model.printSummary();
     }
 
     protected void train() {

@@ -95,4 +95,9 @@ public class Dense extends Layer {
         }
         biases.addIP(errors.multiply(learningRate));
     }
+
+    @Override
+    public String toString() {
+        return String.format("Dense: in: %d, out: %d, activation: %s", inSize, outSize, activation.getClass().getName());
+    }
 }
