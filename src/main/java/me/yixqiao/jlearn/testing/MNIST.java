@@ -23,9 +23,21 @@ public class MNIST {
     ArrayList<Matrix> inputsALC = new ArrayList<>();
     ArrayList<Matrix> outputsALC = new ArrayList<>();
     Model model;
+    /**
+     * Inputs from dataset.
+     */
     protected Matrix inputs;
+    /**
+     * Outputs from dataset.
+     */
     protected Matrix outputs;
+    /**
+     * Test inputs from dataset.
+     */
     protected Matrix evalInputs;
+    /**
+     * Test outputs from dataset.
+     */
     protected Matrix evalOutputs;
 
     public static void main(String[] args) {

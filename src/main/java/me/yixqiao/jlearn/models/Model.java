@@ -30,6 +30,12 @@ public class Model implements Serializable {
         layers = new ArrayList<>();
     }
 
+    /**
+     * Read a model from a file.
+     *
+     * @param filePath path to the file
+     * @return the model read from the file
+     */
     public static Model readFromFile(String filePath) {
         Model m = null;
         try {
@@ -158,6 +164,19 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param input        input data to train on
+     * @param expected     expected outputs
+     * @param evalInput    input of evaluation set
+     * @param evalExpected expected outputs of evaluation set
+     * @param learningRate learning rate of training
+     * @param batchSize    size of each minibatch
+     * @param epochs       number of epochs to train for
+     * @param logInterval  log every n epochs
+     * @param metrics      metrics to display
+     */
     public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
                     double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
         int totalSamples = input.rows;
@@ -346,6 +365,14 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Save the current model to a file.
+     * <p>
+     * Note: the model can continue to be trained and used to predict after saving.
+     * </p>
+     *
+     * @param filePath path to file to save to
+     */
     public void saveToFile(String filePath) {
         try {
             FileOutputStream fos = new FileOutputStream(filePath);
