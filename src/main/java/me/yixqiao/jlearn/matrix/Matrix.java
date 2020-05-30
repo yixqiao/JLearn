@@ -5,6 +5,7 @@ import me.yixqiao.jlearn.exceptions.MatrixMathException;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,7 +16,7 @@ import java.util.function.ToDoubleFunction;
  * Matrix class and operations.
  */
 
-public class Matrix {
+public class Matrix implements Serializable {
     private static final Random random = new Random();
     /**
      * Number of threads to use.

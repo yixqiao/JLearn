@@ -8,7 +8,7 @@ group 'me.yixqiao'
 version '0.2.0'
 
 application {
-    mainClassName = "me.yixqiao.jlearn.testing.MNIST"
+    mainClassName = "me.yixqiao.jlearn.testing.MNISTSave"
 }
 
 repositories {

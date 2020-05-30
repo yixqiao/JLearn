@@ -7,16 +7,19 @@ import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Neural network model.
  */
 
-public class Model {
-    private ArrayList<Layer> layers;
+public class Model implements Serializable {
+    private final ArrayList<Layer> layers;
     private int layerCount;
     private Loss loss;
 
@@ -25,6 +28,28 @@ public class Model {
      */
     public Model() {
         layers = new ArrayList<>();
+    }
+
+    /**
+     * Read a model from a file.
+     *
+     * @param filePath path to the file
+     * @return the model read from the file
+     */
+    public static Model readFromFile(String filePath) {
+        Model m = null;
+        try {
+            FileInputStream fis = new FileInputStream("m.tmp");
+            GZIPInputStream gzipIn = new GZIPInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(gzipIn);
+
+            m = (Model) ois.readObject();
+
+            fis.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return m;
     }
 
     /**
@@ -139,6 +164,19 @@ public class Model {
         }
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param input        input data to train on
+     * @param expected     expected outputs
+     * @param evalInput    input of evaluation set
+     * @param evalExpected expected outputs of evaluation set
+     * @param learningRate learning rate of training
+     * @param batchSize    size of each minibatch
+     * @param epochs       number of epochs to train for
+     * @param logInterval  log every n epochs
+     * @param metrics      metrics to display
+     */
     public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
                     double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
         int totalSamples = input.rows;
@@ -233,7 +271,6 @@ public class Model {
         return forwardPropagate(input);
     }
 
-
     /**
      * Forward propagate a batch of input.
      *
@@ -325,6 +362,32 @@ public class Model {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
+        }
+    }
+
+    /**
+     * Save the current model to a file.
+     * <p>
+     * Note: the model can continue to be trained and used to predict after saving.
+     * </p>
+     *
+     * @param filePath path to file to save to
+     */
+    public void saveToFile(String filePath) {
+        try {
+            FileOutputStream fos = new FileOutputStream(filePath);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(gzipOut);
+
+            oos.writeObject(this);
+
+            oos.flush();
+            oos.close();
+            gzipOut.finish();
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
