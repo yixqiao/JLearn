@@ -7,6 +7,8 @@ import me.yixqiao.jlearn.models.Model;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class MNISTSerialize extends MNIST {
     public static void main(String[] args) {
@@ -31,8 +33,13 @@ public class MNISTSerialize extends MNIST {
     protected void loadModel() {
         Model model = null;
         try {
-            ObjectInputStream ois = new ObjectInputStream((new FileInputStream(("m.tmp"))));
+            FileInputStream fis = new FileInputStream("m.tmp");
+            GZIPInputStream gzipIn = new GZIPInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(gzipIn);
+
             model = (Model) ois.readObject();
+
+            fis.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -47,14 +54,20 @@ public class MNISTSerialize extends MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 10, 1, metrics);
+        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 2, 1, metrics);
 
         printPredictions();
 
-        // TODO: https://stackoverflow.com/questions/5934495/implementing-in-memory-compression-for-objects-in-java
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("m.tmp"));
+            FileOutputStream fos = new FileOutputStream("m.tmp");
+            GZIPOutputStream gzipOut = new GZIPOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(gzipOut);
+
             oos.writeObject(model);
+
+            oos.flush();
+            oos.close();
+            fos.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
