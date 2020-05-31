@@ -75,7 +75,7 @@ public class MNIST {
     }
 
     protected void evaluateModel(){
-        ArrayList<Metric> metrics = new ArrayList<>() {{
+        ArrayList<Metric> metrics = new ArrayList<Metric>() {{
             add(new Accuracy());
         }};
         System.out.print("Eval: ");
