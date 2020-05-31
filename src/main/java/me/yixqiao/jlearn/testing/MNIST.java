@@ -68,6 +68,7 @@ public class MNIST {
 
         // printPredictions();
 
+        System.out.println();
         evaluateModel();
 
         afterTrain();
