@@ -1,10 +1,7 @@
 package me.yixqiao.jlearn.testing;
 
 import jdk.jshell.spi.ExecutionControl;
-import me.yixqiao.jlearn.activations.Linear;
-import me.yixqiao.jlearn.activations.ReLU;
-import me.yixqiao.jlearn.activations.Sigmoid;
-import me.yixqiao.jlearn.activations.Softmax;
+import me.yixqiao.jlearn.activations.*;
 import me.yixqiao.jlearn.losses.MeanSquaredError;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;

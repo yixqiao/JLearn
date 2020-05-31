@@ -32,4 +32,9 @@ public class Softmax extends Activation {
     public Function<Matrix, Matrix> getTransferDerivative() {
         return x -> x.applyEach(xd -> 1, false);
     }
+
+    @Override
+    public String toString() {
+        return "Softmax";
+    }
 }

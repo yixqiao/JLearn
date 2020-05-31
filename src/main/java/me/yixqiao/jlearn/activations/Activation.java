@@ -24,4 +24,6 @@ public abstract class Activation implements Serializable {
      * @return the function
      */
     public abstract Function<Matrix, Matrix> getTransferDerivative();
+
+    public abstract String toString();
 }

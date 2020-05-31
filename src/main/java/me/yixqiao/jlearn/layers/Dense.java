@@ -98,6 +98,6 @@ public class Dense extends Layer {
 
     @Override
     public String toString() {
-        return String.format("Dense: in: %d, out: %d, activation: %s", inSize, outSize, activation.getClass().getName());
+        return String.format("Dense: in: %d, out: %d, activation: %s", inSize, outSize, activation.toString());
     }
 }

@@ -15,6 +15,11 @@ public class Sigmoid extends ElementwiseActivation {
     }
 
     @Override
+    public String toString() {
+        return "Sigmoid";
+    }
+
+    @Override
     public ToDoubleFunction<Double> getEActivation() {
         return x -> 1.0 / (1.0 + Math.exp(-x));
     }
