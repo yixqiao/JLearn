@@ -79,9 +79,9 @@ public class Model implements Serializable {
         this.loss = loss;
     }
 
-    public void printSummary(){
+    public void printSummary() {
         System.out.printf("\nModel with %d layers:\n", layerCount);
-        for(Layer l : layers){
+        for (Layer l : layers) {
             System.out.println(l);
         }
         System.out.println();
@@ -227,6 +227,16 @@ public class Model implements Serializable {
 
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
+
+                if ((epoch + 1) % logInterval == 0 && batchNum % 400 == 0) {
+                    double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+
+                    System.out.printf("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+
+                    for (int i = 0; i < metrics.size(); i++)
+                        System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+
+                }
             }
 
             if ((epoch + 1) % logInterval == 0) {
@@ -239,7 +249,7 @@ public class Model implements Serializable {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                System.out.printf("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
                     System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
