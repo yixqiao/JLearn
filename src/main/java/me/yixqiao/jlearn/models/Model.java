@@ -19,9 +19,9 @@ import java.util.zip.GZIPOutputStream;
  */
 
 public class Model implements Serializable {
-    private final ArrayList<Layer> layers;
-    private int layerCount;
-    private Loss loss;
+    protected final ArrayList<Layer> layers;
+    protected int layerCount;
+    protected Loss loss;
 
     /**
      * Create a new model.
@@ -79,9 +79,9 @@ public class Model implements Serializable {
         this.loss = loss;
     }
 
-    public void printSummary(){
+    public void printSummary() {
         System.out.printf("\nModel with %d layers:\n", layerCount);
-        for(Layer l : layers){
+        for (Layer l : layers) {
             System.out.println(l);
         }
         System.out.println();
@@ -190,7 +190,7 @@ public class Model implements Serializable {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
-        learningRate *= Math.sqrt(batchSize);
+        learningRate *= batchSize;
 
         ArrayList<Matrix> errors;
         if (metrics == null)
@@ -204,6 +204,14 @@ public class Model implements Serializable {
             long epochStart = System.nanoTime();
 
             Collections.shuffle(indices);
+
+            FitPrint fp = null;
+            int maxLineLen = 0;
+            if ((epoch + 1) % logInterval == 0) {
+                fp = new FitPrint();
+                fp.start();
+            }
+
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
                 Matrix batchInput = new Matrix(batchSize, input.cols);
                 Matrix batchExpected = new Matrix(batchSize, expected.cols);
@@ -227,9 +235,62 @@ public class Model implements Serializable {
 
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
+
+                if ((epoch + 1) % logInterval == 0) {
+                    String fitOutput = "";
+
+                    double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+
+                    fitOutput += String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+
+                    for (int i = 0; i < metrics.size(); i++)
+                        fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+
+                    fitOutput += " - [";
+
+                    int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
+
+
+                    for (int i = 0; i < progress; i++) {
+                        fitOutput += "=";
+                    }
+
+                    fitOutput += ">";
+
+                    for (int i = 0; i < 20 - progress - 1; i++) {
+                        fitOutput += ".";
+                    }
+
+                    fitOutput += "]";
+
+                    maxLineLen = Math.max(maxLineLen, fitOutput.length());
+
+                    fp.setOutput(fitOutput);
+                }
             }
 
             if ((epoch + 1) % logInterval == 0) {
+                fp.stopThread();
+
+                try {
+                    fp.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                String toPrint = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
+                        lossA / (double) (totalSamples / batchSize));
+
+                for (int i = 0; i < metrics.size(); i++)
+                    toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
+
+                toPrint += " - Evaluating...";
+
+                for (int i = toPrint.length(); i < maxLineLen; i++)
+                    toPrint += " ";
+
+                System.out.print(toPrint);
+
                 // Matrix output = forwardPropagate(input);
                 // output.printMatrix();
                 lossA /= (double) (totalSamples / batchSize);
@@ -239,17 +300,22 @@ public class Model implements Serializable {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                String finalOutput = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
+                    finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 double evalLoss = getLoss(loss, evalOutput, evalExpected);
-                System.out.printf(", EL: %.5f", evalLoss);
+                finalOutput += String.format(" - EL: %.5f", evalLoss);
 
-                for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", E" + metrics.get(i).getFormatString()),
-                            getMetric(metrics.get(i), evalOutput, evalExpected));
+                for (Metric metric : metrics)
+                    finalOutput += String.format((" - E" + metric.getFormatString()),
+                            getMetric(metric, evalOutput, evalExpected));
+
+                for(int i=0; i<3; i++){
+                    System.out.print(finalOutput);
+                    System.out.flush();
+                }
 
                 System.out.println();
             }
@@ -416,6 +482,30 @@ public class Model implements Serializable {
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected static class FitPrint extends Thread {
+        protected String fitOutput = "";
+        protected boolean stopped = false;
+
+        public void setOutput(String fitOutput) {
+            this.fitOutput = fitOutput;
+        }
+
+        public void stopThread() {
+            stopped = true;
+        }
+
+        public void run() {
+            while (!stopped) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.print(fitOutput);
+            }
         }
     }
 }

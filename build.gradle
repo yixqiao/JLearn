@@ -8,7 +8,7 @@ group 'me.yixqiao'
 version '0.2.0'
 
 application {
-    mainClassName = "me.yixqiao.jlearn.testing.MNISTSave"
+    mainClassName = "me.yixqiao.jlearn.testing.MNIST"
 }
 
 repositories {
@@ -20,7 +20,7 @@ run {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 publishing {
