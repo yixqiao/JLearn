@@ -66,34 +66,43 @@ public class Dense extends Layer {
         Matrix derivative = prevActivation.getTransferDerivative().apply(inputNeurons);
         Matrix weightT = weights.getTranspose();
         Matrix errors = prevErrors.dot(weightT);
-        for (int prevN = 0; prevN < inSize; prevN++) {
-            errors.mat[0][prevN] *= derivative.mat[0][prevN];
+        for (int inputNum = 0; inputNum < prevErrors.rows; inputNum++) {
+            for (int prevN = 0; prevN < inSize; prevN++) {
+                errors.mat[inputNum][prevN] *= derivative.mat[inputNum][prevN];
+            }
         }
         return errors;
     }
 
     @Override
     public Matrix getErrorsExpected(Matrix expected) {
-        Matrix curError = new Matrix(1, outSize);
+        Matrix curError = new Matrix(expected.rows, outSize);
         Matrix derivative = activation.getTransferDerivative().apply(outputNeurons);
         for (int outN = 0; outN < outSize; outN++) {
             for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
-                curError.mat[0][outN] += (expected.mat[inputNum][outN] - outputNeurons.mat[inputNum][outN]);
+                curError.mat[inputNum][outN] += (expected.mat[inputNum][outN] - outputNeurons.mat[inputNum][outN]);
+                curError.mat[inputNum][outN] *= derivative.mat[0][outN];
             }
-            curError.mat[0][outN] /= expected.rows;
-            curError.mat[0][outN] *= derivative.mat[0][outN];
         }
         return curError;
     }
 
     @Override
     public void update(Matrix errors, double learningRate) {
-        for (int prevN = 0; prevN < inSize; prevN++) {
+        Matrix bChanges = new Matrix(1, errors.cols);
+        for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
+            for (int prevN = 0; prevN < inSize; prevN++) {
+                for (int nextN = 0; nextN < outSize; nextN++) {
+                    weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN] * (inputNeurons.mat[inputNum][prevN]);
+                }
+            }
+
             for (int nextN = 0; nextN < outSize; nextN++) {
-                weights.mat[prevN][nextN] += learningRate * errors.mat[0][nextN] * (inputNeurons.mat[0][prevN]);
+                bChanges.mat[0][nextN] += errors.mat[inputNum][nextN];
             }
         }
-        biases.addIP(errors.multiply(learningRate));
+        bChanges.applyEachIP(x -> x / errors.rows);
+        biases.addIP(bChanges.multiply(learningRate));
     }
 
     @Override
