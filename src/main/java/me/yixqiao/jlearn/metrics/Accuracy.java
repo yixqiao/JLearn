@@ -53,6 +53,6 @@ public class Accuracy extends Metric {
 
     @Override
     public String getFormatString() {
-        return formatPercent ? "A: %.2f%%" : "A: %.3f";
+        return formatPercent ? "A: %5.2f%%" : "A: %.3f";
     }
 }

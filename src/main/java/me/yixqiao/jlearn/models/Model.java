@@ -250,11 +250,14 @@ public class Model implements Serializable {
 
                     int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
 
+
                     for (int i = 0; i < progress; i++) {
                         fitOutput += "=";
                     }
 
-                    for (int i = 0; i < 20 - progress; i++) {
+                    fitOutput += ">";
+
+                    for (int i = 0; i < 20 - progress - 1; i++) {
                         fitOutput += ".";
                     }
 
@@ -275,7 +278,6 @@ public class Model implements Serializable {
                     e.printStackTrace();
                 }
 
-
                 String toPrint = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
                         lossA / (double) (totalSamples / batchSize));
 
@@ -284,7 +286,7 @@ public class Model implements Serializable {
 
                 toPrint += " - Evaluating...";
 
-                for(int i=toPrint.length(); i<maxLineLen; i++)
+                for (int i = toPrint.length(); i < maxLineLen; i++)
                     toPrint += " ";
 
                 System.out.print(toPrint);
@@ -298,17 +300,21 @@ public class Model implements Serializable {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                System.out.printf("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
+                String finalOutput = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((" - " + metrics.get(i).getFormatString()), metricA[i]);
+                    finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 double evalLoss = getLoss(loss, evalOutput, evalExpected);
-                System.out.printf(" - EL: %.5f", evalLoss);
+                finalOutput += String.format(" - EL: %.5f", evalLoss);
 
                 for (Metric metric : metrics)
-                    System.out.printf((" - E" + metric.getFormatString()),
+                    finalOutput += String.format((" - E" + metric.getFormatString()),
                             getMetric(metric, evalOutput, evalExpected));
+
+                for(int i=0; i<3; i++){
+                    System.out.print(finalOutput);
+                }
 
                 System.out.println();
             }
@@ -479,8 +485,8 @@ public class Model implements Serializable {
     }
 
     protected static class FitPrint extends Thread {
-        protected String fitOutput;
-        protected boolean stopped;
+        protected String fitOutput = "";
+        protected boolean stopped = false;
 
         public void setOutput(String fitOutput) {
             this.fitOutput = fitOutput;
