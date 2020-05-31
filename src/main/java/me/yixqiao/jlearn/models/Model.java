@@ -190,7 +190,7 @@ public class Model implements Serializable {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
-        learningRate *= Math.sqrt(batchSize);
+        learningRate *= batchSize;
 
         ArrayList<Matrix> errors;
         if (metrics == null)
@@ -314,6 +314,7 @@ public class Model implements Serializable {
 
                 for(int i=0; i<3; i++){
                     System.out.print(finalOutput);
+                    System.out.flush();
                 }
 
                 System.out.println();

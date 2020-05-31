@@ -64,7 +64,7 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 50, 1, metrics);
+        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.005, 64, 10, 1, metrics);
 
         // printPredictions();
 
