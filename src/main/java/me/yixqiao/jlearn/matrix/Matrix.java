@@ -25,7 +25,7 @@ public class Matrix implements Serializable {
     /**
      * Minimum number of operations before threading is used.
      */
-    public static int THREADING_MIN_OPS = (int) 1e4;
+    public static int THREADING_MIN_OPS = (int) 1000;
     /**
      * Contains the matrix itself.
      */
@@ -114,7 +114,7 @@ public class Matrix implements Serializable {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
 
-        if (THREAD_COUNT == 1 || rows * m2.cols < THREADING_MIN_OPS)
+        if (THREAD_COUNT == 1 || cols < THREADING_MIN_OPS)
             return dot(m2, false);
         else
             return dot(m2, true);
