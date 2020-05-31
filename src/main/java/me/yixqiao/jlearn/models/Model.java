@@ -206,6 +206,7 @@ public class Model implements Serializable {
             Collections.shuffle(indices);
 
             FitPrint fp = null;
+            int maxLineLen = 0;
             if ((epoch + 1) % logInterval == 0) {
                 fp = new FitPrint();
                 fp.start();
@@ -240,10 +241,26 @@ public class Model implements Serializable {
 
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                    fitOutput += String.format("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+                    fitOutput += String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
 
                     for (int i = 0; i < metrics.size(); i++)
-                        fitOutput += String.format((", " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+                        fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+
+                    fitOutput += " - [";
+
+                    int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
+
+                    for (int i = 0; i < progress; i++) {
+                        fitOutput += "=";
+                    }
+
+                    for (int i = 0; i < 20 - progress; i++) {
+                        fitOutput += ".";
+                    }
+
+                    fitOutput += "]";
+
+                    maxLineLen = Math.max(maxLineLen, fitOutput.length());
 
                     fp.setOutput(fitOutput);
                 }
@@ -251,11 +268,26 @@ public class Model implements Serializable {
 
             if ((epoch + 1) % logInterval == 0) {
                 fp.stopThread();
+
                 try {
                     fp.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+
+                String toPrint = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
+                        lossA / (double) (totalSamples / batchSize));
+
+                for (int i = 0; i < metrics.size(); i++)
+                    toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
+
+                toPrint += " - Evaluating...";
+
+                for(int i=toPrint.length(); i<maxLineLen; i++)
+                    toPrint += " ";
+
+                System.out.print(toPrint);
 
                 // Matrix output = forwardPropagate(input);
                 // output.printMatrix();
@@ -266,17 +298,17 @@ public class Model implements Serializable {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                System.out.printf("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                System.out.printf("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
+                    System.out.printf((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 double evalLoss = getLoss(loss, evalOutput, evalExpected);
-                System.out.printf(", EL: %.5f", evalLoss);
+                System.out.printf(" - EL: %.5f", evalLoss);
 
-                for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", E" + metrics.get(i).getFormatString()),
-                            getMetric(metrics.get(i), evalOutput, evalExpected));
+                for (Metric metric : metrics)
+                    System.out.printf((" - E" + metric.getFormatString()),
+                            getMetric(metric, evalOutput, evalExpected));
 
                 System.out.println();
             }
@@ -454,7 +486,7 @@ public class Model implements Serializable {
             this.fitOutput = fitOutput;
         }
 
-        public void stopThread(){
+        public void stopThread() {
             stopped = true;
         }
 
