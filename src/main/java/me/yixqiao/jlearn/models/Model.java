@@ -19,9 +19,9 @@ import java.util.zip.GZIPOutputStream;
  */
 
 public class Model implements Serializable {
-    private final ArrayList<Layer> layers;
-    private int layerCount;
-    private Loss loss;
+    protected final ArrayList<Layer> layers;
+    protected int layerCount;
+    protected Loss loss;
 
     /**
      * Create a new model.
@@ -204,6 +204,13 @@ public class Model implements Serializable {
             long epochStart = System.nanoTime();
 
             Collections.shuffle(indices);
+
+            FitPrint fp = null;
+            if ((epoch + 1) % logInterval == 0) {
+                fp = new FitPrint();
+                fp.start();
+            }
+
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
                 Matrix batchInput = new Matrix(batchSize, input.cols);
                 Matrix batchExpected = new Matrix(batchSize, expected.cols);
@@ -228,18 +235,28 @@ public class Model implements Serializable {
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
 
-                if ((epoch + 1) % logInterval == 0 && batchNum % 400 == 0) {
+                if ((epoch + 1) % logInterval == 0) {
+                    String fitOutput = "";
+
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                    System.out.printf("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+                    fitOutput += String.format("\rE: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
 
                     for (int i = 0; i < metrics.size(); i++)
-                        System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+                        fitOutput += String.format((", " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
 
+                    fp.setOutput(fitOutput);
                 }
             }
 
             if ((epoch + 1) % logInterval == 0) {
+                fp.stopThread();
+                try {
+                    fp.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 // Matrix output = forwardPropagate(input);
                 // output.printMatrix();
                 lossA /= (double) (totalSamples / batchSize);
@@ -426,6 +443,30 @@ public class Model implements Serializable {
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected static class FitPrint extends Thread {
+        protected String fitOutput;
+        protected boolean stopped;
+
+        public void setOutput(String fitOutput) {
+            this.fitOutput = fitOutput;
+        }
+
+        public void stopThread(){
+            stopped = true;
+        }
+
+        public void run() {
+            while (!stopped) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.print(fitOutput);
+            }
         }
     }
 }
