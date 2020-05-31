@@ -15,4 +15,9 @@ public class ReLU extends ElementwiseActivation {
     public ToDoubleFunction<Double> getETransferDerivative() {
         return x -> (x <= 0 ? 0 : 1);
     }
+
+    @Override
+    public String toString() {
+        return "ReLU";
+    }
 }

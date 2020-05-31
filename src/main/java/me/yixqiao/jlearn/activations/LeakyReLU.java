@@ -27,4 +27,9 @@ public class LeakyReLU extends ElementwiseActivation {
     public ToDoubleFunction<Double> getETransferDerivative() {
         return x -> (x <= 0 ? alpha : 1);
     }
+
+    @Override
+    public String toString() {
+        return ("LeakyReLU(alpha=" + alpha + ")");
+    }
 }

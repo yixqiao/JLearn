@@ -15,4 +15,9 @@ public class Linear extends ElementwiseActivation {
     public ToDoubleFunction<Double> getETransferDerivative() {
         return x -> 1;
     }
+
+    @Override
+    public String toString() {
+        return "Linear";
+    }
 }

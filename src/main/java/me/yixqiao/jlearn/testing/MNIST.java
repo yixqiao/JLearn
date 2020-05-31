@@ -1,9 +1,7 @@
 package me.yixqiao.jlearn.testing;
 
-import me.yixqiao.jlearn.activations.Linear;
-import me.yixqiao.jlearn.activations.ReLU;
-import me.yixqiao.jlearn.activations.Sigmoid;
-import me.yixqiao.jlearn.activations.Softmax;
+import jdk.jshell.spi.ExecutionControl;
+import me.yixqiao.jlearn.activations.*;
 import me.yixqiao.jlearn.losses.MeanSquaredError;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
@@ -23,10 +21,22 @@ public class MNIST {
     ArrayList<Matrix> inputsALC = new ArrayList<>();
     ArrayList<Matrix> outputsALC = new ArrayList<>();
     Model model;
-    private Matrix inputs;
-    private Matrix outputs;
-    private Matrix evalInputs;
-    private Matrix evalOutputs;
+    /**
+     * Inputs from dataset.
+     */
+    protected Matrix inputs;
+    /**
+     * Outputs from dataset.
+     */
+    protected Matrix outputs;
+    /**
+     * Test inputs from dataset.
+     */
+    protected Matrix evalInputs;
+    /**
+     * Test outputs from dataset.
+     */
+    protected Matrix evalOutputs;
 
     public static void main(String[] args) {
         MNIST mnist = new MNIST();
@@ -36,28 +46,47 @@ public class MNIST {
         mnist.train();
     }
 
-    private void buildModel() {
+    protected void buildModel() {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(10, new Sigmoid()));
+                .addLayer(new Dense(10, new Softmax()));
 
         model.buildModel(new CrossEntropy());
+
+        model.printSummary();
     }
 
-    private void train() {
-        printPredictions();
+    protected void train() {
+        // printPredictions();
 
+        ArrayList<Metric> metrics = new ArrayList<>() {{
+            add(new Accuracy());
+        }};
+        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.005, 4, 10, 1, metrics);
+
+        // printPredictions();
+
+        System.out.println();
+        evaluateModel();
+
+        afterTrain();
+    }
+
+    protected void evaluateModel(){
         ArrayList<Metric> metrics = new ArrayList<Metric>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.01, 4, 10, 1, metrics);
-
-        printPredictions();
+        System.out.print("Eval: ");
+        model.evaluate(evalInputs, evalOutputs, metrics);
     }
 
-    private void printPredictions() {
+    protected void afterTrain(){
+        // Override in subclass
+    }
+
+    protected void printPredictions() {
         for (int i = 0; i < inputsALC.size(); i++) {
             Matrix output = model.predict(inputsALC.get(i));
             for (int j = 0; j < output.cols; j++) {
@@ -75,7 +104,7 @@ public class MNIST {
         }
     }
 
-    private void writeDataset() {
+    protected void writeDataset() {
         // Flattens all images
         try {
             BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"));
@@ -134,7 +163,7 @@ public class MNIST {
         System.exit(0);
     }
 
-    private void initInputs() {
+    protected void initInputs() {
         ArrayList<Matrix> inputsAL = new ArrayList<>();
         ArrayList<Matrix> outputsAL = new ArrayList<>();
 
@@ -203,9 +232,9 @@ public class MNIST {
             }
         }
 
-        System.out.println("Finished reading from file.");
+        System.out.println("Finished reading inputs from file.");
 
-        for (int i = 0; i < inputsAL.size(); i += 1000) {
+        for (int i = 0; i < inputsAL.size(); i += (10000/10)) {
             inputsALC.add(inputsAL.get(i));
             outputsALC.add(outputsAL.get(i));
         }

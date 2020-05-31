@@ -7,24 +7,49 @@ import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.metrics.Metric;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Neural network model.
  */
 
-public class Model {
-    private ArrayList<Layer> layers;
-    private int layerCount;
-    private Loss loss;
+public class Model implements Serializable {
+    protected final ArrayList<Layer> layers;
+    protected int layerCount;
+    protected Loss loss;
 
     /**
      * Create a new model.
      */
     public Model() {
         layers = new ArrayList<>();
+    }
+
+    /**
+     * Read a model from a file.
+     *
+     * @param filePath path to the file
+     * @return the model read from the file
+     */
+    public static Model readFromFile(String filePath) {
+        Model m = null;
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            GZIPInputStream gzipIn = new GZIPInputStream(fis);
+            ObjectInputStream ois = new ObjectInputStream(gzipIn);
+
+            m = (Model) ois.readObject();
+
+            fis.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return m;
     }
 
     /**
@@ -52,6 +77,14 @@ public class Model {
             layers.get(layer + 1).initLayer(layers.get(layer).getOutSize(), layers.get(layer).getActivation());
         }
         this.loss = loss;
+    }
+
+    public void printSummary() {
+        System.out.printf("\nModel with %d layers:\n", layerCount);
+        for (Layer l : layers) {
+            System.out.println(l);
+        }
+        System.out.println();
     }
 
     /**
@@ -139,12 +172,25 @@ public class Model {
         }
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param input        input data to train on
+     * @param expected     expected outputs
+     * @param evalInput    input of evaluation set
+     * @param evalExpected expected outputs of evaluation set
+     * @param learningRate learning rate of training
+     * @param batchSize    size of each minibatch
+     * @param epochs       number of epochs to train for
+     * @param logInterval  log every n epochs
+     * @param metrics      metrics to display
+     */
     public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
                     double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
-        learningRate *= Math.sqrt(batchSize);
+        learningRate *= batchSize;
 
         ArrayList<Matrix> errors;
         if (metrics == null)
@@ -158,6 +204,14 @@ public class Model {
             long epochStart = System.nanoTime();
 
             Collections.shuffle(indices);
+
+            FitPrint fp = null;
+            int maxLineLen = 0;
+            if ((epoch + 1) % logInterval == 0) {
+                fp = new FitPrint();
+                fp.start();
+            }
+
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
                 Matrix batchInput = new Matrix(batchSize, input.cols);
                 Matrix batchExpected = new Matrix(batchSize, expected.cols);
@@ -181,9 +235,62 @@ public class Model {
 
                 errors = backPropagate(batchExpected);
                 update(errors, learningRate);
+
+                if ((epoch + 1) % logInterval == 0) {
+                    String fitOutput = "";
+
+                    double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
+
+                    fitOutput += String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+
+                    for (int i = 0; i < metrics.size(); i++)
+                        fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+
+                    fitOutput += " - [";
+
+                    int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
+
+
+                    for (int i = 0; i < progress; i++) {
+                        fitOutput += "=";
+                    }
+
+                    fitOutput += ">";
+
+                    for (int i = 0; i < 20 - progress - 1; i++) {
+                        fitOutput += ".";
+                    }
+
+                    fitOutput += "]";
+
+                    maxLineLen = Math.max(maxLineLen, fitOutput.length());
+
+                    fp.setOutput(fitOutput);
+                }
             }
 
             if ((epoch + 1) % logInterval == 0) {
+                fp.stopThread();
+
+                try {
+                    fp.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                String toPrint = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
+                        lossA / (double) (totalSamples / batchSize));
+
+                for (int i = 0; i < metrics.size(); i++)
+                    toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
+
+                toPrint += " - Evaluating...";
+
+                for (int i = toPrint.length(); i < maxLineLen; i++)
+                    toPrint += " ";
+
+                System.out.print(toPrint);
+
                 // Matrix output = forwardPropagate(input);
                 // output.printMatrix();
                 lossA /= (double) (totalSamples / batchSize);
@@ -193,17 +300,22 @@ public class Model {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                System.out.printf("E: %d, T: %.2fs, L: %.5f", epoch + 1, timeElapsed, lossA);
+                String finalOutput = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", " + metrics.get(i).getFormatString()), metricA[i]);
+                    finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 double evalLoss = getLoss(loss, evalOutput, evalExpected);
-                System.out.printf(", EL: %.5f", evalLoss);
+                finalOutput += String.format(" - EL: %.5f", evalLoss);
 
-                for (int i = 0; i < metrics.size(); i++)
-                    System.out.printf((", E" + metrics.get(i).getFormatString()),
-                            getMetric(metrics.get(i), evalOutput, evalExpected));
+                for (Metric metric : metrics)
+                    finalOutput += String.format((" - E" + metric.getFormatString()),
+                            getMetric(metric, evalOutput, evalExpected));
+
+                for(int i=0; i<3; i++){
+                    System.out.print(finalOutput);
+                    System.out.flush();
+                }
 
                 System.out.println();
             }
@@ -233,6 +345,25 @@ public class Model {
         return forwardPropagate(input);
     }
 
+    /**
+     * Evaluate the performance of the model.
+     *
+     * @param input    input data
+     * @param expected expected outputs
+     * @param metrics  metrics to display
+     */
+    public void evaluate(Matrix input, Matrix expected, ArrayList<Metric> metrics) {
+        Matrix output = forwardPropagate(input);
+
+        double evalLoss = getLoss(loss, output, expected);
+        System.out.printf("L: %.5f", evalLoss);
+
+        for (int i = 0; i < metrics.size(); i++)
+            System.out.printf((", " + metrics.get(i).getFormatString()),
+                    getMetric(metrics.get(i), output, expected));
+
+        System.out.println();
+    }
 
     /**
      * Forward propagate a batch of input.
@@ -325,6 +456,56 @@ public class Model {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
+        }
+    }
+
+    /**
+     * Save the current model to a file.
+     * <p>
+     * Note: the model can continue to be trained and used to predict after saving.
+     * </p>
+     *
+     * @param filePath path to file to save to
+     */
+    public void saveToFile(String filePath) {
+        try {
+            FileOutputStream fos = new FileOutputStream(filePath);
+            GZIPOutputStream gzipOut = new GZIPOutputStream(fos);
+            ObjectOutputStream oos = new ObjectOutputStream(gzipOut);
+
+            oos.writeObject(this);
+
+            oos.flush();
+            oos.close();
+            gzipOut.finish();
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static class FitPrint extends Thread {
+        protected String fitOutput = "";
+        protected boolean stopped = false;
+
+        public void setOutput(String fitOutput) {
+            this.fitOutput = fitOutput;
+        }
+
+        public void stopThread() {
+            stopped = true;
+        }
+
+        public void run() {
+            while (!stopped) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.print(fitOutput);
+            }
         }
     }
 }

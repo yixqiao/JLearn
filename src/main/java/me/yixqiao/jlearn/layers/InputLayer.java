@@ -91,4 +91,9 @@ public class InputLayer extends Layer {
     public void update(Matrix errors, double learningRate) {
 
     }
+
+    @Override
+    public String toString() {
+        return String.format("Input: size: %d", size);
+    }
 }

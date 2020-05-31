@@ -3,12 +3,13 @@ package me.yixqiao.jlearn.losses;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.metrics.Metric;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Class for loss function.
  */
-public abstract class Loss extends Metric {
+public abstract class Loss extends Metric implements Serializable {
     @Override
     public double getMetric(ArrayList<Matrix> output, ArrayList<Matrix> expected) {
         return getLoss(output, expected);
