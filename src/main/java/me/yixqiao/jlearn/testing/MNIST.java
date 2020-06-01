@@ -70,7 +70,7 @@ public class MNIST {
                 .batchSize(64)
                 .epochs(10)
                 .metrics(metrics)
-                // .eval(evalInputs, evalOutputs)
+                .eval(evalInputs, evalOutputs)
         );
 
         // printPredictions();
