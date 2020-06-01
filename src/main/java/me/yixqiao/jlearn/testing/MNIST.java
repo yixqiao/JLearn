@@ -18,9 +18,6 @@ import java.util.ArrayList;
  * Train a network on the MNIST digits dataset.
  */
 public class MNIST {
-    ArrayList<Matrix> inputsALC = new ArrayList<>();
-    ArrayList<Matrix> outputsALC = new ArrayList<>();
-    Model model;
     /**
      * Inputs from dataset.
      */
@@ -37,6 +34,9 @@ public class MNIST {
      * Test outputs from dataset.
      */
     protected Matrix evalOutputs;
+    ArrayList<Matrix> inputsALC = new ArrayList<>();
+    ArrayList<Matrix> outputsALC = new ArrayList<>();
+    Model model;
 
     public static void main(String[] args) {
         MNIST mnist = new MNIST();
@@ -64,7 +64,24 @@ public class MNIST {
         ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy());
         }};
-        model.fit(inputs, outputs, evalInputs, evalOutputs, 0.005, 64, 10, 1, metrics);
+
+        // protected Matrix input, expected;
+        // protected double learningRate;
+        // protected int batchSize = 1;
+        // protected int epochs = 1;
+        // protected ArrayList<Metric> metrics = new ArrayList<>();
+        // protected boolean hasEval = false;
+        // protected Matrix evalInput, evalExpected;
+        // protected int logInterval = 1;
+
+        model.fit(new Model.FitBuilder(inputs, outputs)
+                .learningRate(0.005)
+                .batchSize(64)
+                .epochs(64)
+                .metrics(metrics)
+                .eval(evalInputs, evalOutputs)
+        );
+        // model.fit(inputs, outputs, evalInputs, evalOutputs, 0.005, 64, 10, 1, metrics);
 
         // printPredictions();
 
@@ -74,7 +91,7 @@ public class MNIST {
         afterTrain();
     }
 
-    protected void evaluateModel(){
+    protected void evaluateModel() {
         ArrayList<Metric> metrics = new ArrayList<Metric>() {{
             add(new Accuracy());
         }};
@@ -82,7 +99,7 @@ public class MNIST {
         model.evaluate(evalInputs, evalOutputs, metrics);
     }
 
-    protected void afterTrain(){
+    protected void afterTrain() {
         // Override in subclass
     }
 
@@ -234,7 +251,7 @@ public class MNIST {
 
         System.out.println("Finished reading inputs from file.");
 
-        for (int i = 0; i < inputsAL.size(); i += (10000/10)) {
+        for (int i = 0; i < inputsAL.size(); i += (10000 / 10)) {
             inputsALC.add(inputsAL.get(i));
             outputsALC.add(outputsAL.get(i));
         }
