@@ -7,6 +7,7 @@ import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.CrossEntropy;
 import me.yixqiao.jlearn.metrics.Accuracy;
+import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
 
 import java.io.BufferedReader;
@@ -36,7 +37,7 @@ public class Iris {
         model = new Model();
         model.addLayer(new InputLayer(4))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(8, new ReLU()))
+                .addLayer(new Dense(16, new ReLU()))
                 .addLayer(new Dense(3, new Softmax()));
 
         model.buildModel(new CrossEntropy());
@@ -45,7 +46,18 @@ public class Iris {
     private void train() {
         printPredictions();
 
-        model.fit(inputs, outputs, null, null, 0.004, 16, 30000, 1000, null);
+        ArrayList<Metric> metrics = new ArrayList<>(){{
+            add(new Accuracy(true));
+        }};
+
+        model.fit(new Model.FitBuilder(inputs, outputs)
+                .learningRate(0.01)
+                .batchSize(32)
+                .epochs(1000)
+                .metrics(metrics)
+                .logInterval(100));
+
+        // model.fit(inputs, outputs, null, null, 0.004, 16, 30000, 1000, null);
 
         printPredictions();
     }
