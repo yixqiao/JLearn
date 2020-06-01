@@ -99,7 +99,9 @@ public class Model implements Serializable {
      * @param epochs       number of epochs to train for
      * @param logInterval  log every n epochs
      * @param metrics      metrics to display
+     * @deprecated Use FitBuilder.
      */
+    @Deprecated
     public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
                     double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
         int totalSamples = input.rows;
@@ -237,6 +239,11 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Train the model on data.
+     *
+     * @param fb FitBuilder instance
+     */
     public void fit(FitBuilder fb) {
         Matrix input = fb.input;
         Matrix expected = fb.expected;
@@ -573,21 +580,68 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Builder class for fit operation.
+     */
     public static class FitBuilder {
-        protected Matrix input, expected;
+        /**
+         * Training input.
+         */
+        protected Matrix input;
+        /**
+         * Training correct values.
+         */
+        protected Matrix expected;
+        /**
+         * Learning rate.
+         */
         protected double learningRate;
+        /**
+         * Batch size.
+         */
         protected int batchSize = 1;
+        /**
+         * Number of epochs.
+         */
         protected int epochs = 1;
+        /**
+         * Metrics to gauge model performance.
+         */
         protected ArrayList<Metric> metrics = new ArrayList<>();
+        /**
+         * Whether to use an evaluation dataset.
+         */
         protected boolean hasEval = false;
-        protected Matrix evalInput, evalExpected;
+        /**
+         * Evaluation input.
+         */
+        protected Matrix evalInput;
+        /**
+         * Evaluation correct values.
+         */
+        protected Matrix evalExpected;
+        /**
+         * Log to console every n epochs.
+         */
         protected int logInterval = 1;
 
+        /**
+         * Create a new FitBuilder.
+         *
+         * @param input training input
+         * @param expected training correct values
+         */
         public FitBuilder(Matrix input, Matrix expected) {
             this.input = input;
             this.expected = expected;
         }
 
+        /**
+         * Set learning rate.
+         *
+         * @param learningRate learning rate
+         * @return the instance for daisy chaining
+         */
         public FitBuilder learningRate(double learningRate) {
             this.learningRate = learningRate;
             return this;
