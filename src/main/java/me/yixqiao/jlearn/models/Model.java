@@ -342,7 +342,8 @@ public class Model implements Serializable {
                 for (int i = 0; i < metrics.size(); i++)
                     toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
 
-                toPrint += " - Evaluating...";
+                if (fb.hasEval)
+                    toPrint += " - Evaluating...";
 
                 for (int i = toPrint.length(); i < maxLineLen; i++)
                     toPrint += " ";

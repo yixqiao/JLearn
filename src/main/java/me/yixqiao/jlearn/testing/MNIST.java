@@ -65,23 +65,13 @@ public class MNIST {
             add(new Accuracy());
         }};
 
-        // protected Matrix input, expected;
-        // protected double learningRate;
-        // protected int batchSize = 1;
-        // protected int epochs = 1;
-        // protected ArrayList<Metric> metrics = new ArrayList<>();
-        // protected boolean hasEval = false;
-        // protected Matrix evalInput, evalExpected;
-        // protected int logInterval = 1;
-
         model.fit(new Model.FitBuilder(inputs, outputs)
                 .learningRate(0.005)
                 .batchSize(64)
-                .epochs(64)
+                .epochs(10)
                 .metrics(metrics)
-                .eval(evalInputs, evalOutputs)
+                // .eval(evalInputs, evalOutputs)
         );
-        // model.fit(inputs, outputs, evalInputs, evalOutputs, 0.005, 64, 10, 1, metrics);
 
         // printPredictions();
 
