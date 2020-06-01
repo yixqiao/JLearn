@@ -109,8 +109,6 @@ public class Iris {
                 inputsAL.add(input);
                 outputsAL.add(output);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

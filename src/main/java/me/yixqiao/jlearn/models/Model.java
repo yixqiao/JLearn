@@ -556,18 +556,38 @@ public class Model implements Serializable {
         }
     }
 
+    /**
+     * Thread to print progress when fitting.
+     */
     protected static class FitPrint extends Thread {
+        /**
+         * Output to print.
+         */
         protected String fitOutput = "";
+        /**
+         * Whether to stop the thread.
+         */
         protected boolean stopped = false;
 
+        /**
+         * Set output to print.
+         *
+         * @param fitOutput output
+         */
         public void setOutput(String fitOutput) {
             this.fitOutput = fitOutput;
         }
 
+        /**
+         * Stop the printing.
+         */
         public void stopThread() {
             stopped = true;
         }
 
+        /**
+         * Run the thread.
+         */
         public void run() {
             while (!stopped) {
                 try {
