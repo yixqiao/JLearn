@@ -190,7 +190,7 @@ public class Model implements Serializable {
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
-        learningRate *= batchSize;
+        learningRate *= Math.sqrt(batchSize);
 
         ArrayList<Matrix> errors;
         if (metrics == null)
@@ -241,7 +241,7 @@ public class Model implements Serializable {
 
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                    fitOutput += String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+                    fitOutput += String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
 
                     for (int i = 0; i < metrics.size(); i++)
                         fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
@@ -278,7 +278,7 @@ public class Model implements Serializable {
                     e.printStackTrace();
                 }
 
-                String toPrint = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
+                String toPrint = String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
                         lossA / (double) (totalSamples / batchSize));
 
                 for (int i = 0; i < metrics.size(); i++)
@@ -300,7 +300,7 @@ public class Model implements Serializable {
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
-                String finalOutput = String.format("\rE: %d - T: %.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
+                String finalOutput = String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
 
                 for (int i = 0; i < metrics.size(); i++)
                     finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
