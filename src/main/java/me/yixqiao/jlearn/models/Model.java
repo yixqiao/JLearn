@@ -667,21 +667,47 @@ public class Model implements Serializable {
             return this;
         }
 
+        /**
+         * Set batch size.
+         *
+         * @param batchSize batch size
+         * @return the instance for daisy chaining
+         */
         public FitBuilder batchSize(int batchSize) {
             this.batchSize = batchSize;
             return this;
         }
 
+
+        /**
+         * Set the epoch number.
+         *
+         * @param epochs number of epochs
+         * @return the instance for daisy chaining
+         */
         public FitBuilder epochs(int epochs) {
             this.epochs = epochs;
             return this;
         }
 
+        /**
+         * Set metrics.
+         *
+         * @param metrics list of metrics
+         * @return the instance for daisy chaining
+         */
         public FitBuilder metrics(ArrayList<Metric> metrics) {
             this.metrics = metrics;
             return this;
         }
 
+        /**
+         * Set evaluation dataset.
+         *
+         * @param evalInput evaluation input
+         * @param evalExpected evaluation correct values
+         * @return the instance for daisy chaining
+         */
         public FitBuilder eval(Matrix evalInput, Matrix evalExpected) {
             this.evalInput = evalInput;
             this.evalExpected = evalExpected;
@@ -689,6 +715,12 @@ public class Model implements Serializable {
             return this;
         }
 
+        /**
+         * Set the log interval.
+         *
+         * @param logInterval interval to log
+         * @return the instance for daisy chaining
+         */
         public FitBuilder logInterval(int logInterval) {
             this.logInterval = logInterval;
             return this;
