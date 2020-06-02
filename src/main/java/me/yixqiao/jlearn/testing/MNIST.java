@@ -10,6 +10,7 @@ import me.yixqiao.jlearn.losses.CrossEntropy;
 import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
+import me.yixqiao.jlearn.settings.Settings;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class MNIST {
     Model model;
 
     public static void main(String[] args) {
+        Settings.THREAD_COUNT /= 2; // Use physical core count
         MNIST mnist = new MNIST();
         // mnist.writeDataset();
         mnist.initInputs();

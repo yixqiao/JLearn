@@ -84,8 +84,8 @@ public class Dense extends Layer {
     public Matrix getErrorsExpected(Matrix expected) {
         Matrix curError = new Matrix(expected.rows, outSize);
         Matrix derivative = activation.getTransferDerivative().apply(outputNeurons);
-        for (int outN = 0; outN < outSize; outN++) {
-            for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
+        for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
+            for (int outN = 0; outN < outSize; outN++) {
                 curError.mat[inputNum][outN] += (expected.mat[inputNum][outN] - outputNeurons.mat[inputNum][outN]);
                 curError.mat[inputNum][outN] *= derivative.mat[0][outN];
             }
@@ -136,7 +136,8 @@ public class Dense extends Layer {
             for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
                 for (int prevN = 0; prevN < inSize; prevN++) {
                     for (int nextN = 0; nextN < outSize; nextN++) {
-                        weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN] * (inputNeurons.mat[inputNum][prevN]);
+                        weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN]
+                                * (inputNeurons.mat[inputNum][prevN]);
                     }
                 }
             }

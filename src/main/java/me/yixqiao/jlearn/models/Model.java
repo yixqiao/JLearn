@@ -345,9 +345,7 @@ public class Model implements Serializable {
                     toPrint += " ";
 
                 System.out.print(toPrint);
-
-                // Matrix output = forwardPropagate(input);
-                // output.printMatrix();
+                
                 lossA /= (double) (totalSamples / batchSize);
                 for (int i = 0; i < metrics.size(); i++)
                     metricA[i] /= (double) (totalSamples / batchSize);

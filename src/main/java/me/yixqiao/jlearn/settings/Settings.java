@@ -7,7 +7,7 @@ public final class Settings {
     /**
      * Number of threads to use.
      */
-    public static int THREAD_COUNT = 8;//Runtime.getRuntime().availableProcessors();
+    public static int THREAD_COUNT = Runtime.getRuntime().availableProcessors();
     /**
      * Minimum number of operations before threading is used.
      * <p>
