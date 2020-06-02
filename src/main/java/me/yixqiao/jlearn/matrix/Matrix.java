@@ -107,7 +107,7 @@ public class Matrix implements Serializable {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
 
-        if (Settings.THREAD_COUNT == 1 || cols < Settings.THREADING_MIN_OPS)
+        if (Settings.THREAD_COUNT == 1 || cols * m2.rows < Settings.THREADING_MIN_OPS)
             return dot(m2, false);
         else
             return dot(m2, true);
@@ -128,16 +128,17 @@ public class Matrix implements Serializable {
 
         if (useThreading) {
             class CalcSingle implements Runnable {
-                private final int r, c;
+                private final int r;
 
-                public CalcSingle(int r, int c) {
+                public CalcSingle(int r) {
                     this.r = r;
-                    this.c = c;
                 }
 
                 public void run() {
                     for (int i = 0; i < cols; i++) {
-                        nMatrix.mat[r][c] += mat[r][i] * m2.mat[i][c];
+                        for (int c = 0; c < m2.cols; c++) {
+                            nMatrix.mat[r][c] += mat[r][i] * m2.mat[i][c];
+                        }
                     }
                 }
             }
@@ -145,10 +146,8 @@ public class Matrix implements Serializable {
             ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
 
             for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < m2.cols; c++) {
-                    Runnable rn = new CalcSingle(r, c);
-                    pool.execute(rn);
-                }
+                Runnable rn = new CalcSingle(r);
+                pool.execute(rn);
             }
 
             pool.shutdown();
@@ -160,8 +159,8 @@ public class Matrix implements Serializable {
             }
         } else {
             for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < m2.cols; c++) {
-                    for (int i = 0; i < cols; i++) {
+                for (int i = 0; i < cols; i++) {
+                    for (int c = 0; c < m2.cols; c++) { // Swapped (https://stackoverflow.com/a/4300744)
                         nMatrix.mat[r][c] += mat[r][i] * m2.mat[i][c];
                     }
                 }
