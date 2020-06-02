@@ -5,6 +5,11 @@ import me.yixqiao.jlearn.activations.ReLU;
 import me.yixqiao.jlearn.activations.Sigmoid;
 import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.settings.Settings;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Basic fully-connected layer.
@@ -49,6 +54,7 @@ public class Dense extends Layer {
     @Override
     public Matrix forwardPropagate(Matrix input) {
         inputNeurons = input.clone();
+
         Matrix output = input.dot(weights);
         for (int row = 0; row < output.rows; row++) {
             for (int col = 0; col < output.cols; col++) {
@@ -90,13 +96,53 @@ public class Dense extends Layer {
     @Override
     public void update(Matrix errors, double learningRate) {
         Matrix bChanges = new Matrix(1, errors.cols);
-        for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
-            for (int prevN = 0; prevN < inSize; prevN++) {
-                for (int nextN = 0; nextN < outSize; nextN++) {
-                    weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN] * (inputNeurons.mat[inputNum][prevN]);
+
+        if (inSize * outSize >= Settings.THREADING_MIN_OPS) {
+            // System.out.println(inSize * outSize + ", " + errors.rows);
+
+            class CalcInput implements Runnable {
+                private final int inputNum;
+
+                public CalcInput(int inputNum) {
+                    this.inputNum = inputNum;
+                }
+
+                public void run() {
+                    for (int prevN = 0; prevN < inSize; prevN++) {
+                        for (int nextN = 0; nextN < outSize; nextN++) {
+                            weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN]
+                                    * (inputNeurons.mat[inputNum][prevN]);
+                        }
+                    }
                 }
             }
 
+            ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
+
+            for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
+                Runnable rn = new CalcInput(inputNum);
+                pool.execute(rn);
+            }
+
+            pool.shutdown();
+
+            try {
+                pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
+                for (int prevN = 0; prevN < inSize; prevN++) {
+                    for (int nextN = 0; nextN < outSize; nextN++) {
+                        weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN] * (inputNeurons.mat[inputNum][prevN]);
+                    }
+                }
+            }
+        }
+
+        for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
             for (int nextN = 0; nextN < outSize; nextN++) {
                 bChanges.mat[0][nextN] += errors.mat[inputNum][nextN];
             }
