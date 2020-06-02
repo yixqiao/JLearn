@@ -253,14 +253,13 @@ public class Model implements Serializable {
         int epochs = fb.epochs;
         int logInterval = fb.logInterval;
 
-
         int totalSamples = input.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
+
         learningRate *= Math.sqrt(batchSize);
 
         ArrayList<Matrix> errors;
-
 
         for (int epoch = 0; epoch < epochs; epoch++) {
             double lossA = 0;
@@ -288,10 +287,9 @@ public class Model implements Serializable {
                         batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
                     }
                 }
-                //System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
-                //batchInput.printMatrix();
+
                 Matrix batchOutput = forwardPropagate(batchInput);
-                // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
+
                 if ((epoch + 1) % logInterval == 0) {
                     lossA += getLoss(loss, batchOutput, batchExpected);
                     for (int i = 0; i < metrics.size(); i++)
@@ -305,27 +303,18 @@ public class Model implements Serializable {
                     String fitOutput = "";
 
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
-
                     fitOutput += String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
 
                     for (int i = 0; i < metrics.size(); i++)
                         fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
 
                     fitOutput += " - [";
-
                     int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
-
-
-                    for (int i = 0; i < progress; i++) {
+                    for (int i = 0; i < progress; i++)
                         fitOutput += "=";
-                    }
-
                     fitOutput += ">";
-
-                    for (int i = 0; i < 20 - progress - 1; i++) {
+                    for (int i = 0; i < 20 - progress - 1; i++)
                         fitOutput += ".";
-                    }
-
                     fitOutput += "]";
 
                     maxLineLen = Math.max(maxLineLen, fitOutput.length());
@@ -648,7 +637,7 @@ public class Model implements Serializable {
         /**
          * Create a new FitBuilder.
          *
-         * @param input training input
+         * @param input    training input
          * @param expected training correct values
          */
         public FitBuilder(Matrix input, Matrix expected) {
@@ -704,7 +693,7 @@ public class Model implements Serializable {
         /**
          * Set evaluation dataset.
          *
-         * @param evalInput evaluation input
+         * @param evalInput    evaluation input
          * @param evalExpected evaluation correct values
          * @return the instance for daisy chaining
          */
