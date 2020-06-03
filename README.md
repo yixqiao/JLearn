@@ -4,6 +4,7 @@ Java library for machine learning.
 Focuses on being easy to use and configure.
 
 *View demos at [JLearnDemos](https://github.com/yixqiao/JLearnDemos).*  
+*View releases at [releases](https://github.com/yixqiao/JLearn/releases).*  
 *View Javadocs at the [project page](https://yixqiao.github.io/JLearn/).*  
 *View To Do items at the [project](https://github.com/yixqiao/JLearn/projects/1).*
 
