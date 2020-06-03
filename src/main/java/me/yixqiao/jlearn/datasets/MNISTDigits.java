@@ -5,11 +5,28 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import java.io.*;
 import java.util.ArrayList;
 
-public class MNISTDigits {
+/**
+ * Class for the MNIST digits dataset.
+ */
+public final class MNISTDigits {
+    /**
+     * Load the data.
+     *
+     * @return the dataset
+     */
     public static DatasetTT load() {
         return load("datasets/mnist/data/");
     }
 
+    /**
+     * Load the data from a directory.
+     * <p>
+     * The directory must contain two files: test.dat and train.dat
+     * </p>
+     *
+     * @param directoryPath path to the data
+     * @return the dataset
+     */
     public static DatasetTT load(String directoryPath) {
         ArrayList<Matrix> inputsAL = new ArrayList<>();
         ArrayList<Matrix> outputsAL = new ArrayList<>();
