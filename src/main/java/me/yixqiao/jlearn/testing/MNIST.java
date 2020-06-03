@@ -37,7 +37,7 @@ public class MNIST {
      * Test outputs from dataset.
      */
     protected Matrix evalOutputs;
-    
+
     protected Model model;
     private ArrayList<Matrix> inputsALC = new ArrayList<>();
     private ArrayList<Matrix> outputsALC = new ArrayList<>();

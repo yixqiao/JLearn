@@ -57,32 +57,6 @@ public class Matrix implements Serializable {
     }
 
     /**
-     * Creates a new randomized matrix.
-     *
-     * <p>
-     * Randomizes with <code>random.nextGaussian() * rFactor</code>
-     * </p>
-     *
-     * @param rows    number of rows
-     * @param cols    number of columns
-     * @param rFactor factor to randomize by
-     * @deprecated use the Matrix.Init.Gaussian class instead
-     */
-    @Deprecated
-    public Matrix(int rows, int cols, double rFactor) {
-        this.rows = rows;
-        this.cols = cols;
-        mat = new double[rows][cols];
-        if (rFactor == 0)
-            return;
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                mat[r][c] = random.nextGaussian() * rFactor;
-            }
-        }
-    }
-
-    /**
      * Create a matrix from an existing 2d array of doubles.
      *
      * <p>
@@ -193,7 +167,7 @@ public class Matrix implements Serializable {
      */
     public void addIP(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
-            throw new MatrixMathException("Addition size mismatch");
+            throw new MatrixMathException(String.format("Addition size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -211,7 +185,7 @@ public class Matrix implements Serializable {
     public Matrix subtract(Matrix m2) {
         Matrix out = new Matrix(rows, cols);
         if (rows != m2.rows || cols != m2.cols)
-            throw new MatrixMathException("Subtraction size mismatch");
+            throw new MatrixMathException(String.format("Subtraction size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -258,7 +232,7 @@ public class Matrix implements Serializable {
      */
     public Matrix multiply(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
-            throw new MatrixMathException("Multiplication size mismatch");
+            throw new MatrixMathException(String.format("Multiplication size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
         Matrix out = clone();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -499,7 +473,7 @@ public class Matrix implements Serializable {
     @Deprecated
     public void crossOver(Matrix m2, double weightSelf) {
         if (rows != m2.rows || cols != m2.cols)
-            throw new MatrixMathException("Cross over size mismatch");
+            throw new MatrixMathException(String.format("Cross over size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 if (random.nextDouble() > weightSelf) {
