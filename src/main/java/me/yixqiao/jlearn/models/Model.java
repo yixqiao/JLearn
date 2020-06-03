@@ -92,15 +92,15 @@ public class Model implements Serializable {
      * @param fb FitBuilder instance
      */
     public void fit(FitBuilder fb) {
-        Matrix input = fb.trainX;
-        Matrix expected = fb.trainY;
+        Matrix trainX = fb.trainX;
+        Matrix trainY = fb.trainY;
         double learningRate = fb.learningRate;
         ArrayList<Metric> metrics = fb.metrics;
         int batchSize = fb.batchSize;
         int epochs = fb.epochs;
         int logInterval = fb.logInterval;
 
-        int totalSamples = input.rows;
+        int totalSamples = trainX.rows;
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
 
@@ -124,26 +124,26 @@ public class Model implements Serializable {
             }
 
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
-                Matrix batchInput = new Matrix(batchSize, input.cols);
-                Matrix batchExpected = new Matrix(batchSize, expected.cols);
+                Matrix batchX = new Matrix(batchSize, trainX.cols);
+                Matrix batchY = new Matrix(batchSize, trainY.cols);
                 for (int i = 0; i < batchSize; i++) {
-                    for (int j = 0; j < input.cols; j++) {
-                        batchInput.mat[i][j] = input.mat[indices.get(batchNum * batchSize + i)][j];
+                    for (int j = 0; j < trainX.cols; j++) {
+                        batchX.mat[i][j] = trainX.mat[indices.get(batchNum * batchSize + i)][j];
                     }
-                    for (int j = 0; j < expected.cols; j++) {
-                        batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
+                    for (int j = 0; j < trainY.cols; j++) {
+                        batchY.mat[i][j] = trainY.mat[indices.get(batchNum * batchSize + i)][j];
                     }
                 }
 
-                Matrix batchOutput = forwardPropagate(batchInput);
+                Matrix batchOut = forwardPropagate(batchX);
 
                 if ((epoch + 1) % logInterval == 0) {
-                    lossA += getLoss(loss, batchOutput, batchExpected);
+                    lossA += getLoss(loss, batchOut, batchY);
                     for (int i = 0; i < metrics.size(); i++)
-                        metricA[i] += getMetric(metrics.get(i), batchOutput, batchExpected);
+                        metricA[i] += getMetric(metrics.get(i), batchOut, batchY);
                 }
 
-                errors = backPropagate(batchExpected);
+                errors = backPropagate(batchY);
                 update(errors, learningRate);
 
                 if ((epoch + 1) % logInterval == 0) {
@@ -197,9 +197,9 @@ public class Model implements Serializable {
                 for (int i = 0; i < metrics.size(); i++)
                     metricA[i] /= (double) (totalSamples / batchSize);
 
-                Matrix evalOutput = null;
+                Matrix evalY = null;
                 if (fb.hasEval)
-                    evalOutput = forwardPropagate(fb.evalX);
+                    evalY = forwardPropagate(fb.evalX);
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
@@ -209,12 +209,12 @@ public class Model implements Serializable {
                     finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 if (fb.hasEval) {
-                    double evalLoss = getLoss(loss, evalOutput, fb.evalY);
+                    double evalLoss = getLoss(loss, evalY, fb.evalY);
                     finalOutput += String.format(" - EL: %.5f", evalLoss);
 
                     for (Metric metric : metrics)
                         finalOutput += String.format((" - E" + metric.getFormatString()),
-                                getMetric(metric, evalOutput, fb.evalY));
+                                getMetric(metric, evalY, fb.evalY));
                 }
 
                 for (int i = 0; i < 3; i++) {
@@ -230,42 +230,42 @@ public class Model implements Serializable {
     /**
      * Train on a single batch of input and output.
      *
-     * @param input        input data to train on
-     * @param expected     expected outputs
+     * @param x            input data to train on
+     * @param y            expected outputs
      * @param learningRate learning rate of training
      */
-    public void trainOnBatch(Matrix input, Matrix expected, double learningRate) {
-        forwardPropagate(input);
-        ArrayList<Matrix> errors = backPropagate(expected);
+    public void trainOnBatch(Matrix x, Matrix y, double learningRate) {
+        forwardPropagate(x);
+        ArrayList<Matrix> errors = backPropagate(y);
         update(errors, learningRate);
     }
 
     /**
      * Predict on a batch of input.
      *
-     * @param input input data to feed forward
+     * @param x input data to feed forward
      * @return prediction of model for input
      */
-    public Matrix predict(Matrix input) {
-        return forwardPropagate(input);
+    public Matrix predict(Matrix x) {
+        return forwardPropagate(x);
     }
 
     /**
      * Evaluate the performance of the model.
      *
-     * @param input    input data
-     * @param expected expected outputs
-     * @param metrics  metrics to display
+     * @param x       input data
+     * @param y       expected outputs
+     * @param metrics metrics to display
      */
-    public void evaluate(Matrix input, Matrix expected, ArrayList<Metric> metrics) {
-        Matrix output = forwardPropagate(input);
+    public void evaluate(Matrix x, Matrix y, ArrayList<Metric> metrics) {
+        Matrix output = forwardPropagate(x);
 
-        double evalLoss = getLoss(loss, output, expected);
+        double evalLoss = getLoss(loss, output, y);
         System.out.printf("L: %.5f", evalLoss);
 
         for (int i = 0; i < metrics.size(); i++)
             System.out.printf((", " + metrics.get(i).getFormatString()),
-                    getMetric(metrics.get(i), output, expected));
+                    getMetric(metrics.get(i), output, y));
 
         System.out.println();
     }
@@ -273,11 +273,11 @@ public class Model implements Serializable {
     /**
      * Forward propagate a batch of input.
      *
-     * @param input input data to feed forward
+     * @param x input data to feed forward
      * @return result of model for input
      */
-    public Matrix forwardPropagate(Matrix input) {
-        Matrix activations = input.clone();
+    public Matrix forwardPropagate(Matrix x) {
+        Matrix activations = x.clone();
         for (int layerNum = 0; layerNum < layerCount; layerNum++) {
             activations = layers.get(layerNum).forwardPropagate(activations);
         }
@@ -287,14 +287,14 @@ public class Model implements Serializable {
     /**
      * Backpropagate model after forward propagating input.
      *
-     * @param expected expected output for model
+     * @param y expected output for model
      * @return errors for each layer from backpropagation
      */
-    public ArrayList<Matrix> backPropagate(Matrix expected) {
+    public ArrayList<Matrix> backPropagate(Matrix y) {
         ArrayList<Matrix> errors = new ArrayList<>();
         for (int layer = layerCount - 1; layer > 0; layer--) {
             if (layer == layerCount - 1) {
-                errors.add(layers.get(layer).getErrorsExpected(expected));
+                errors.add(layers.get(layer).getErrorsExpected(y));
                 errors.add(layers.get(layer).getErrors(errors.get(errors.size() - 1)));
             } else {
                 errors.add(layers.get(layer).getErrors(errors.get(errors.size() - 1)));
@@ -306,49 +306,49 @@ public class Model implements Serializable {
     /**
      * Get the loss.
      *
-     * @param loss     loss function to use
-     * @param output   actual output of model
-     * @param expected expected output
+     * @param loss loss function to use
+     * @param out  actual output of model
+     * @param y    expected output
      * @return loss of model
      */
-    public double getLoss(Loss loss, Matrix output, Matrix expected) {
-        return loss.getLoss(output, expected);
+    public double getLoss(Loss loss, Matrix out, Matrix y) {
+        return loss.getLoss(out, y);
     }
 
     /**
      * Get the loss.
      *
-     * @param loss     loss function to use
-     * @param output   actual output of model
-     * @param expected expected output
+     * @param loss loss function to use
+     * @param out  actual output of model
+     * @param y    expected output
      * @return loss of model
      */
-    public double getLoss(Loss loss, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
-        return loss.getLoss(output, expected);
+    public double getLoss(Loss loss, ArrayList<Matrix> out, ArrayList<Matrix> y) {
+        return loss.getLoss(out, y);
     }
 
     /**
      * Get a metric of the model.
      *
-     * @param metric   metric function to use
-     * @param output   actual output of model
-     * @param expected expected output
+     * @param metric metric function to use
+     * @param out    actual output of model
+     * @param y      expected output
      * @return calculated metric
      */
-    public double getMetric(Metric metric, Matrix output, Matrix expected) {
-        return metric.getMetric(output, expected);
+    public double getMetric(Metric metric, Matrix out, Matrix y) {
+        return metric.getMetric(out, y);
     }
 
     /**
      * Get a metric of the model.
      *
-     * @param metric   metric function to use
-     * @param output   actual output of model
-     * @param expected expected output
+     * @param metric metric function to use
+     * @param out    actual output of model
+     * @param y      expected output
      * @return calculated metric
      */
-    public double getMetric(Metric metric, ArrayList<Matrix> output, ArrayList<Matrix> expected) {
-        return metric.getMetric(output, expected);
+    public double getMetric(Metric metric, ArrayList<Matrix> out, ArrayList<Matrix> y) {
+        return metric.getMetric(out, y);
     }
 
     /**
