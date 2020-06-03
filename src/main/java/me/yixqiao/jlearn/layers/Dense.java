@@ -52,10 +52,10 @@ public class Dense extends Layer {
     }
 
     @Override
-    public Matrix forwardPropagate(Matrix input) {
-        inputNeurons = input.clone();
+    public Matrix forwardPropagate(Matrix x) {
+        inputNeurons = x.clone();
 
-        Matrix output = input.dot(weights);
+        Matrix output = x.dot(weights);
         for (int row = 0; row < output.rows; row++) {
             for (int col = 0; col < output.cols; col++) {
                 output.mat[row][col] += biases.mat[0][col];
@@ -81,12 +81,12 @@ public class Dense extends Layer {
     }
 
     @Override
-    public Matrix getErrorsExpected(Matrix expected) {
-        Matrix curError = new Matrix(expected.rows, outSize);
+    public Matrix getErrorsExpected(Matrix y) {
+        Matrix curError = new Matrix(y.rows, outSize);
         Matrix derivative = activation.getTransferDerivative().apply(outputNeurons);
-        for (int inputNum = 0; inputNum < expected.rows; inputNum++) {
+        for (int inputNum = 0; inputNum < y.rows; inputNum++) {
             for (int outN = 0; outN < outSize; outN++) {
-                curError.mat[inputNum][outN] += (expected.mat[inputNum][outN] - outputNeurons.mat[inputNum][outN]);
+                curError.mat[inputNum][outN] += (y.mat[inputNum][outN] - outputNeurons.mat[inputNum][outN]);
                 curError.mat[inputNum][outN] *= derivative.mat[0][outN];
             }
         }

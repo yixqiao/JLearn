@@ -46,7 +46,7 @@ public class Iris {
     private void train() {
         printPredictions();
 
-        ArrayList<Metric> metrics = new ArrayList<>(){{
+        ArrayList<Metric> metrics = new ArrayList<>() {{
             add(new Accuracy(true));
         }};
 

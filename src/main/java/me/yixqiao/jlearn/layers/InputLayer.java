@@ -51,12 +51,12 @@ public class InputLayer extends Layer {
     /**
      * No op forward propagation.
      *
-     * @param input input matrix
+     * @param x input matrix
      * @return the same input matrix
      */
     @Override
-    public Matrix forwardPropagate(Matrix input) {
-        return input;
+    public Matrix forwardPropagate(Matrix x) {
+        return x;
     }
 
     /**
@@ -73,11 +73,11 @@ public class InputLayer extends Layer {
     /**
      * No op.
      *
-     * @param expected expected outputs
+     * @param y expected outputs
      * @return null
      */
     @Override
-    public Matrix getErrorsExpected(Matrix expected) {
+    public Matrix getErrorsExpected(Matrix y) {
         return null;
     }
 

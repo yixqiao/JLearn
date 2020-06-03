@@ -23,24 +23,24 @@ public abstract class Loss extends Metric implements Serializable {
     /**
      * Get the loss.
      *
-     * @param output output of network
-     * @param expected correct output
+     * @param out output of network
+     * @param y   correct output
      * @return the loss
      */
-    public abstract double getLoss(ArrayList<Matrix> output, ArrayList<Matrix> expected);
+    public abstract double getLoss(ArrayList<Matrix> out, ArrayList<Matrix> y);
 
     /**
      * Get the loss.
      *
-     * @param output output of network
-     * @param expected correct output
+     * @param out output of network
+     * @param y   correct output
      * @return the loss
      */
-    public double getLoss(Matrix output, Matrix expected) {
+    public double getLoss(Matrix out, Matrix y) {
         ArrayList<Matrix> outputAL = new ArrayList<>();
-        outputAL.add(output);
+        outputAL.add(out);
         ArrayList<Matrix> expectedAL = new ArrayList<>();
-        expectedAL.add(expected);
+        expectedAL.add(y);
         return getLoss(outputAL, expectedAL);
     }
 }

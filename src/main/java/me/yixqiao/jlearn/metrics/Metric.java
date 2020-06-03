@@ -12,18 +12,18 @@ public abstract class Metric implements Serializable {
     /**
      * Get the value of the metric.
      *
-     * @param output output of network
+     * @param output   output of network
      * @param expected expected output
      * @return the metric value
      */
-    public abstract double getMetric (ArrayList<Matrix> output, ArrayList<Matrix> expected);
+    public abstract double getMetric(ArrayList<Matrix> output, ArrayList<Matrix> expected);
 
     /**
      * Get the string to format the metric.
      * <p>
-     *     Return a string that can be used with printf in conjunction with the metric.
-     *     <br>
-     *     Example: <code>"M: %.2f"</code>
+     * Return a string that can be used with printf in conjunction with the metric.
+     * <br>
+     * Example: <code>"M: %.2f"</code>
      * </p>
      *
      * @return the string
@@ -33,15 +33,15 @@ public abstract class Metric implements Serializable {
     /**
      * Get the value of the metric.
      *
-     * @param output output of network
-     * @param expected expected output
+     * @param out output of network
+     * @param y   expected output
      * @return the metric value
      */
-    public double getMetric(Matrix output, Matrix expected) {
+    public double getMetric(Matrix out, Matrix y) {
         ArrayList<Matrix> outputAL = new ArrayList<>();
-        outputAL.add(output);
+        outputAL.add(out);
         ArrayList<Matrix> expectedAL = new ArrayList<>();
-        expectedAL.add(expected);
+        expectedAL.add(y);
         return getMetric(outputAL, expectedAL);
     }
 }

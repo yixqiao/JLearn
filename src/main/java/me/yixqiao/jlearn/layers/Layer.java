@@ -34,10 +34,10 @@ public abstract class Layer implements Serializable {
     /**
      * Forward propagate a batch of input.
      *
-     * @param input input matrix
+     * @param x input matrix
      * @return output matrix
      */
-    public abstract Matrix forwardPropagate(Matrix input);
+    public abstract Matrix forwardPropagate(Matrix x);
 
     /**
      * Get backpropagated errors.
@@ -50,10 +50,10 @@ public abstract class Layer implements Serializable {
     /**
      * Get errors from output layer.
      *
-     * @param expected expected outputs
+     * @param y expected outputs
      * @return matrix of errors
      */
-    public abstract Matrix getErrorsExpected(Matrix expected);
+    public abstract Matrix getErrorsExpected(Matrix y);
 
     /**
      * Update the layer after calculating errors.
