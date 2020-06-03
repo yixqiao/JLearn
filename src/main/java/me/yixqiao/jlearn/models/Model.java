@@ -224,6 +224,8 @@ public class Model implements Serializable {
 
                 System.out.println();
             }
+
+            onEpochEnd(epoch);
         }
     }
 
@@ -357,7 +359,7 @@ public class Model implements Serializable {
      * @param errors       errors obtained from backpropagation
      * @param learningRate learning rate of updating
      */
-    private void update(ArrayList<Matrix> errors, double learningRate) {
+    protected void update(ArrayList<Matrix> errors, double learningRate) {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
             layers.get(layer).update(errors.get(eLayer), learningRate);
@@ -388,6 +390,18 @@ public class Model implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Method that is called at the end of every epoch.
+     * <p>
+     * Subclasses of Model can easily override this method to do something once each epoch ends.
+     * </p>
+     *
+     * @param epoch epoch number (0-indexed)
+     */
+    protected void onEpochEnd(int epoch) {
+        // Do anything here
     }
 
     /**
