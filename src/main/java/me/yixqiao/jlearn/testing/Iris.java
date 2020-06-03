@@ -26,6 +26,11 @@ public class Iris {
     private Matrix inputs;
     private Matrix outputs;
 
+    /**
+     * Run.
+     *
+     * @param args args
+     */
     public static void main(String[] args) {
         Iris iris = new Iris();
         iris.initInputs();

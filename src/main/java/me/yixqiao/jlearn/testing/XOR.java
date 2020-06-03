@@ -17,6 +17,11 @@ public class XOR {
     private ArrayList<Matrix> inputs;
     private ArrayList<Matrix> outputs;
 
+    /**
+     * Run.
+     *
+     * @param args args
+     */
     public static void main(String[] args) {
         XOR xor = new XOR();
         xor.initInputs();

@@ -37,11 +37,16 @@ public class MNIST {
      * Test outputs from dataset.
      */
     protected Matrix evalOutputs;
-
+    /**
+     * Model.
+     */
     protected Model model;
-    private ArrayList<Matrix> inputsALC = new ArrayList<>();
-    private ArrayList<Matrix> outputsALC = new ArrayList<>();
 
+    /**
+     * Run.
+     *
+     * @param args args
+     */
     public static void main(String[] args) {
         Settings.THREAD_COUNT /= 2; // Use physical core count
 
@@ -51,6 +56,9 @@ public class MNIST {
         mnist.train();
     }
 
+    /**
+     * Initialize inputs.
+     */
     protected void initInputs() {
         DatasetTT data = MNISTDigits.load();
         inputs = data.train.x;
@@ -59,6 +67,9 @@ public class MNIST {
         evalOutputs = data.test.y;
     }
 
+    /**
+     * Build model.
+     */
     protected void buildModel() {
         model = new Model();
         model.addLayer(new InputLayer(28 * 28))
@@ -71,6 +82,9 @@ public class MNIST {
         model.printSummary();
     }
 
+    /**
+     * Train model.
+     */
     protected void train() {
         // printPredictions();
 
@@ -94,6 +108,9 @@ public class MNIST {
         afterTrain();
     }
 
+    /**
+     * Evaluate model.
+     */
     protected void evaluateModel() {
         ArrayList<Metric> metrics = new ArrayList<Metric>() {{
             add(new Accuracy());
@@ -102,10 +119,16 @@ public class MNIST {
         model.evaluate(evalInputs, evalOutputs, metrics);
     }
 
+    /**
+     * Method to be overriden.
+     */
     protected void afterTrain() {
         // Override in subclass
     }
 
+    /**
+     * Print predictions.
+     */
     protected void printPredictions() {
         model.comparePredictions(inputs, outputs, 5);
     }

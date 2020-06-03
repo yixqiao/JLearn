@@ -63,5 +63,10 @@ public abstract class Layer implements Serializable {
      */
     public abstract void update(Matrix errors, double learningRate);
 
+    /**
+     * Get a string representation.
+     *
+     * @return the string
+     */
     public abstract String toString();
 }

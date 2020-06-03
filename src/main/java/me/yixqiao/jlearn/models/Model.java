@@ -18,8 +18,17 @@ import java.util.zip.GZIPOutputStream;
  */
 
 public class Model implements Serializable {
+    /**
+     * Layers.
+     */
     protected final ArrayList<Layer> layers;
+    /**
+     * Number of layers (including input).
+     */
     protected int layerCount;
+    /**
+     * Loss function for model.
+     */
     protected Loss loss;
 
     /**
@@ -78,6 +87,9 @@ public class Model implements Serializable {
         this.loss = loss;
     }
 
+    /**
+     * Print a summary of the model.
+     */
     public void printSummary() {
         System.out.printf("\nModel with %d layers:\n", layerCount);
         for (Layer l : layers) {
@@ -252,6 +264,13 @@ public class Model implements Serializable {
         return forwardPropagate(x);
     }
 
+    /**
+     * Print predictions and compare to correct.
+     *
+     * @param input    input
+     * @param output   correct output
+     * @param printNum number of items to print
+     */
     public void comparePredictions(Matrix input, Matrix output, int printNum) {
         Matrix x = new Matrix(printNum, input.cols);
         int skip = input.rows / printNum;

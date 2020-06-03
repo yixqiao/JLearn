@@ -73,7 +73,10 @@ public final class MNISTDigits {
         return new DatasetTT(trainX, trainY, testX, testY);
     }
 
-    public void writeDataset() {
+    /**
+     * Write the data from csv files to a Java object dataset.
+     */
+    public static void writeDataset() {
         // Flattens all images
         try {
             BufferedReader br = new BufferedReader(new FileReader("datasets/mnist/csv/mnist_train.csv"));
