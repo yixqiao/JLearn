@@ -2,6 +2,8 @@ package me.yixqiao.jlearn.testing;
 
 import jdk.jshell.spi.ExecutionControl;
 import me.yixqiao.jlearn.activations.*;
+import me.yixqiao.jlearn.datasets.DatasetTT;
+import me.yixqiao.jlearn.datasets.MNISTDigits;
 import me.yixqiao.jlearn.losses.MeanSquaredError;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
@@ -173,6 +175,14 @@ public class MNIST {
     }
 
     protected void initInputs() {
+        DatasetTT data = MNISTDigits.load();
+        inputs = data.train.x;
+        outputs = data.train.y;
+        evalInputs = data.test.x;
+        evalOutputs = data.test.y;
+    }
+
+    protected void initInputsOld() {
         ArrayList<Matrix> inputsAL = new ArrayList<>();
         ArrayList<Matrix> outputsAL = new ArrayList<>();
 
