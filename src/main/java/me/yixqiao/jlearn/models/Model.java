@@ -252,6 +252,34 @@ public class Model implements Serializable {
         return forwardPropagate(x);
     }
 
+    public void comparePredictions(Matrix input, Matrix output, int printNum) {
+        Matrix x = new Matrix(printNum, input.cols);
+        int skip = input.rows / printNum;
+
+        for (int i = 0; i < printNum; i++) {
+            for (int j = 0; j < input.cols; j++) {
+                x.mat[i][j] = input.mat[i * skip][j];
+            }
+        }
+
+        Matrix y = forwardPropagate(x);
+
+        for (int i = 0; i < printNum; i++) {
+            for (int j = 0; j < y.cols; j++) {
+                System.out.print(String.format("%.3f", y.mat[i][j]));
+                if (j != y.cols - 1) System.out.print("\t");
+            }
+
+            System.out.print("\t-\t");
+            for (int j = 0; j < output.cols; j++) {
+                System.out.print(String.format("%.3f", output.mat[i][j]));
+                if (j != output.cols - 1) System.out.print("\t");
+            }
+
+            System.out.println();
+        }
+    }
+
     /**
      * Evaluate the performance of the model.
      *
