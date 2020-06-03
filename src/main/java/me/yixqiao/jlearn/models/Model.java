@@ -9,7 +9,6 @@ import me.yixqiao.jlearn.metrics.Metric;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -90,163 +89,11 @@ public class Model implements Serializable {
     /**
      * Train the model on data.
      *
-     * @param input        input data to train on
-     * @param expected     expected outputs
-     * @param evalInput    input of evaluation set
-     * @param evalExpected expected outputs of evaluation set
-     * @param learningRate learning rate of training
-     * @param batchSize    size of each minibatch
-     * @param epochs       number of epochs to train for
-     * @param logInterval  log every n epochs
-     * @param metrics      metrics to display
-     * @deprecated Use FitBuilder.
-     */
-    @Deprecated
-    public void fit(Matrix input, Matrix expected, Matrix evalInput, Matrix evalExpected,
-                    double learningRate, int batchSize, int epochs, int logInterval, ArrayList<Metric> metrics) {
-        int totalSamples = input.rows;
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < totalSamples; i++) indices.add(i);
-        learningRate *= Math.sqrt(batchSize);
-
-        ArrayList<Matrix> errors;
-        if (metrics == null)
-            metrics = new ArrayList<>();
-
-
-        for (int epoch = 0; epoch < epochs; epoch++) {
-            double lossA = 0;
-            double[] metricA = new double[metrics.size()];
-
-            long epochStart = System.nanoTime();
-
-            Collections.shuffle(indices);
-
-            FitPrint fp = null;
-            int maxLineLen = 0;
-            if ((epoch + 1) % logInterval == 0) {
-                fp = new FitPrint();
-                fp.start();
-            }
-
-            for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
-                Matrix batchInput = new Matrix(batchSize, input.cols);
-                Matrix batchExpected = new Matrix(batchSize, expected.cols);
-                for (int i = 0; i < batchSize; i++) {
-                    for (int j = 0; j < input.cols; j++) {
-                        batchInput.mat[i][j] = input.mat[indices.get(batchNum * batchSize + i)][j];
-                    }
-                    for (int j = 0; j < expected.cols; j++) {
-                        batchExpected.mat[i][j] = expected.mat[indices.get(batchNum * batchSize + i)][j];
-                    }
-                }
-                //System.out.println("\n\n\n\n\n\n\n\n\n\n\n");
-                //batchInput.printMatrix();
-                Matrix batchOutput = forwardPropagate(batchInput);
-                // System.out.println(batchNum + " " + batchOutput.mat[0][0]);
-                if ((epoch + 1) % logInterval == 0) {
-                    lossA += getLoss(loss, batchOutput, batchExpected);
-                    for (int i = 0; i < metrics.size(); i++)
-                        metricA[i] += getMetric(metrics.get(i), batchOutput, batchExpected);
-                }
-
-                errors = backPropagate(batchExpected);
-                update(errors, learningRate);
-
-                if ((epoch + 1) % logInterval == 0) {
-                    String fitOutput = "";
-
-                    double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
-
-                    fitOutput += String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
-
-                    for (int i = 0; i < metrics.size(); i++)
-                        fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
-
-                    fitOutput += " - [";
-
-                    int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
-
-
-                    for (int i = 0; i < progress; i++) {
-                        fitOutput += "=";
-                    }
-
-                    fitOutput += ">";
-
-                    for (int i = 0; i < 20 - progress - 1; i++) {
-                        fitOutput += ".";
-                    }
-
-                    fitOutput += "]";
-
-                    maxLineLen = Math.max(maxLineLen, fitOutput.length());
-
-                    fp.setOutput(fitOutput);
-                }
-            }
-
-            if ((epoch + 1) % logInterval == 0) {
-                fp.stopThread();
-
-                try {
-                    fp.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                String toPrint = String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
-                        lossA / (double) (totalSamples / batchSize));
-
-                for (int i = 0; i < metrics.size(); i++)
-                    toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
-
-                toPrint += " - Evaluating...";
-
-                for (int i = toPrint.length(); i < maxLineLen; i++)
-                    toPrint += " ";
-
-                System.out.print(toPrint);
-
-                // Matrix output = forwardPropagate(input);
-                // output.printMatrix();
-                lossA /= (double) (totalSamples / batchSize);
-                for (int i = 0; i < metrics.size(); i++)
-                    metricA[i] /= (double) (totalSamples / batchSize);
-                Matrix evalOutput = forwardPropagate(evalInput);
-
-                double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
-
-                String finalOutput = String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA);
-
-                for (int i = 0; i < metrics.size(); i++)
-                    finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
-
-                double evalLoss = getLoss(loss, evalOutput, evalExpected);
-                finalOutput += String.format(" - EL: %.5f", evalLoss);
-
-                for (Metric metric : metrics)
-                    finalOutput += String.format((" - E" + metric.getFormatString()),
-                            getMetric(metric, evalOutput, evalExpected));
-
-                for (int i = 0; i < 3; i++) {
-                    System.out.print(finalOutput);
-                    System.out.flush();
-                }
-
-                System.out.println();
-            }
-        }
-    }
-
-    /**
-     * Train the model on data.
-     *
      * @param fb FitBuilder instance
      */
     public void fit(FitBuilder fb) {
-        Matrix input = fb.input;
-        Matrix expected = fb.expected;
+        Matrix input = fb.trainX;
+        Matrix expected = fb.trainY;
         double learningRate = fb.learningRate;
         ArrayList<Metric> metrics = fb.metrics;
         int batchSize = fb.batchSize;
@@ -345,14 +192,14 @@ public class Model implements Serializable {
                     toPrint += " ";
 
                 System.out.print(toPrint);
-                
+
                 lossA /= (double) (totalSamples / batchSize);
                 for (int i = 0; i < metrics.size(); i++)
                     metricA[i] /= (double) (totalSamples / batchSize);
 
                 Matrix evalOutput = null;
                 if (fb.hasEval)
-                    evalOutput = forwardPropagate(fb.evalInput);
+                    evalOutput = forwardPropagate(fb.evalX);
 
                 double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
 
@@ -362,12 +209,12 @@ public class Model implements Serializable {
                     finalOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i]);
 
                 if (fb.hasEval) {
-                    double evalLoss = getLoss(loss, evalOutput, fb.evalExpected);
+                    double evalLoss = getLoss(loss, evalOutput, fb.evalY);
                     finalOutput += String.format(" - EL: %.5f", evalLoss);
 
                     for (Metric metric : metrics)
                         finalOutput += String.format((" - E" + metric.getFormatString()),
-                                getMetric(metric, evalOutput, fb.evalExpected));
+                                getMetric(metric, evalOutput, fb.evalY));
                 }
 
                 for (int i = 0; i < 3; i++) {
@@ -594,11 +441,11 @@ public class Model implements Serializable {
         /**
          * Training input.
          */
-        protected Matrix input;
+        protected Matrix trainX;
         /**
          * Training correct values.
          */
-        protected Matrix expected;
+        protected Matrix trainY;
         /**
          * Learning rate.
          */
@@ -622,11 +469,11 @@ public class Model implements Serializable {
         /**
          * Evaluation input.
          */
-        protected Matrix evalInput;
+        protected Matrix evalX;
         /**
          * Evaluation correct values.
          */
-        protected Matrix evalExpected;
+        protected Matrix evalY;
         /**
          * Log to console every n epochs.
          */
@@ -635,12 +482,12 @@ public class Model implements Serializable {
         /**
          * Create a new FitBuilder.
          *
-         * @param input    training input
-         * @param expected training correct values
+         * @param trainX training input
+         * @param trainY training correct values
          */
-        public FitBuilder(Matrix input, Matrix expected) {
-            this.input = input;
-            this.expected = expected;
+        public FitBuilder(Matrix trainX, Matrix trainY) {
+            this.trainX = trainX;
+            this.trainY = trainY;
         }
 
         /**
@@ -691,13 +538,13 @@ public class Model implements Serializable {
         /**
          * Set evaluation dataset.
          *
-         * @param evalInput    evaluation input
-         * @param evalExpected evaluation correct values
+         * @param evalX evaluation input
+         * @param evalY evaluation correct values
          * @return the instance for daisy chaining
          */
-        public FitBuilder eval(Matrix evalInput, Matrix evalExpected) {
-            this.evalInput = evalInput;
-            this.evalExpected = evalExpected;
+        public FitBuilder eval(Matrix evalX, Matrix evalY) {
+            this.evalX = evalX;
+            this.evalY = evalY;
             hasEval = true;
             return this;
         }
