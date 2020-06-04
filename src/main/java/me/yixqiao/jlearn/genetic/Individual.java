@@ -12,12 +12,14 @@ public class Individual {
     /**
      * Layers.
      */
-    protected final ArrayList<Layer> layers;
+    public final ArrayList<Layer> layers;
 
     /**
      * Number of layers (including input).
      */
     protected int layerCount;
+
+    public double score;
 
     public Individual() {
         layers = new ArrayList<>();

@@ -8,12 +8,15 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.models.Model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
-public class Population {
+public abstract class Population {
     protected final int indivCount;
     protected final ArrayList<Layer> layers;
     protected Individual[] individuals;
     protected int layerCount;
+
+    public int generation = 0;
 
     public Population(int indivCount) {
         this.indivCount = indivCount;
@@ -27,7 +30,7 @@ public class Population {
         return this;
     }
 
-    public void initLayers() {
+    protected void initLayers() {
         layerCount = layers.size();
         if (!(layers.get(0) instanceof InputLayer)) {
             throw new NeuralNetworkException("First layer is not an input layer");
@@ -37,7 +40,8 @@ public class Population {
         }
     }
 
-    public void initPop() {
+    public void init() {
+        initLayers();
         for (int i = 0; i < indivCount; i++) {
             ArrayList<Layer> iLayers = new ArrayList<>();
             for (Layer l : layers)
@@ -46,9 +50,22 @@ public class Population {
         }
     }
 
-    public Matrix predict(int indivNum, Matrix x) {
+    public Matrix forwardPropagate(int indivNum, Matrix x) {
         return individuals[indivNum].forwardPropagate(x);
     }
 
+    public void oneGeneration(){
+        calcScores();
+        select();
+        generation++;
+    }
+
+    protected abstract void calcScores();
+
+    protected abstract void select();
+
+    protected abstract class SortIndivs implements Comparator<Individual> {
+        public abstract int compare(Individual a, Individual b);
+    }
 
 }
