@@ -22,6 +22,7 @@ public class Model implements Serializable {
      * Layers.
      */
     protected final ArrayList<Layer> layers;
+
     /**
      * Number of layers (including input).
      */

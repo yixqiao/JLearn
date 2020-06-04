@@ -3,7 +3,7 @@ package me.yixqiao.jlearn.settings;
 /**
  * Global settings for JLearn.
  */
-public final class Settings {
+public final class JLSettings {
     /**
      * Number of threads to use.
      */

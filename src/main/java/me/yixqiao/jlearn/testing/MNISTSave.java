@@ -1,11 +1,7 @@
 package me.yixqiao.jlearn.testing;
 
-import me.yixqiao.jlearn.metrics.Accuracy;
-import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
-import me.yixqiao.jlearn.settings.Settings;
-
-import java.util.ArrayList;
+import me.yixqiao.jlearn.settings.JLSettings;
 
 public class MNISTSave extends MNIST {
     /**
@@ -14,7 +10,7 @@ public class MNISTSave extends MNIST {
      * @param args args
      */
     public static void main(String[] args) {
-        Settings.THREAD_COUNT /= 2; // Use physical core count
+        JLSettings.THREAD_COUNT /= 2; // Use physical core count
         runTrain();
         runLoad();
     }

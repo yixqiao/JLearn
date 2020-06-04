@@ -1,10 +1,8 @@
 package me.yixqiao.jlearn.testing;
 
-import jdk.jshell.spi.ExecutionControl;
 import me.yixqiao.jlearn.activations.*;
 import me.yixqiao.jlearn.datasets.DatasetTT;
 import me.yixqiao.jlearn.datasets.MNISTDigits;
-import me.yixqiao.jlearn.losses.MeanSquaredError;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
@@ -12,9 +10,8 @@ import me.yixqiao.jlearn.losses.CrossEntropy;
 import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
-import me.yixqiao.jlearn.settings.Settings;
+import me.yixqiao.jlearn.settings.JLSettings;
 
-import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +45,7 @@ public class MNIST {
      * @param args args
      */
     public static void main(String[] args) {
-        Settings.THREAD_COUNT /= 2; // Use physical core count
+        JLSettings.THREAD_COUNT /= 2; // Use physical core count
 
         MNIST mnist = new MNIST();
         mnist.initInputs();

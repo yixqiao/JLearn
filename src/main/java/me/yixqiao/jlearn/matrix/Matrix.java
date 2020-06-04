@@ -1,7 +1,7 @@
 package me.yixqiao.jlearn.matrix;
 
 import me.yixqiao.jlearn.exceptions.MatrixMathException;
-import me.yixqiao.jlearn.settings.Settings;
+import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -81,7 +81,7 @@ public class Matrix implements Serializable {
         if (cols != m2.rows)
             throw new MatrixMathException(String.format("Dot mismatch of %d cols and %d rows", cols, m2.rows));
 
-        if (Settings.THREAD_COUNT == 1 || cols * m2.rows < Settings.THREADING_MIN_OPS)
+        if (JLSettings.THREAD_COUNT == 1 || cols * m2.rows < JLSettings.THREADING_MIN_OPS)
             return dot(m2, false);
         else
             return dot(m2, true);
@@ -117,7 +117,7 @@ public class Matrix implements Serializable {
                 }
             }
 
-            ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
+            ExecutorService pool = Executors.newFixedThreadPool(JLSettings.THREAD_COUNT);
 
             for (int r = 0; r < rows; r++) {
                 Runnable rn = new CalcSingle(r);
@@ -249,7 +249,7 @@ public class Matrix implements Serializable {
      * @return the resulting matrix
      */
     public Matrix applyEach(ToDoubleFunction<Double> function) {
-        if (Settings.THREAD_COUNT == 1 || rows * cols < Settings.THREADING_MIN_OPS)
+        if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
             return applyEach(function, false);
         else
             return applyEach(function, true);
@@ -278,7 +278,7 @@ public class Matrix implements Serializable {
                 }
             }
 
-            ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
+            ExecutorService pool = Executors.newFixedThreadPool(JLSettings.THREAD_COUNT);
 
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {
@@ -310,7 +310,7 @@ public class Matrix implements Serializable {
      * @param function the function to apply
      */
     public void applyEachIP(ToDoubleFunction<Double> function) {
-        if (Settings.THREAD_COUNT == 1 || rows * cols < Settings.THREADING_MIN_OPS)
+        if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
             applyEachIP(function, false);
         else
             applyEachIP(function, true);
@@ -337,7 +337,7 @@ public class Matrix implements Serializable {
                 }
             }
 
-            ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
+            ExecutorService pool = Executors.newFixedThreadPool(JLSettings.THREAD_COUNT);
 
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {

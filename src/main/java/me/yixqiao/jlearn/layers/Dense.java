@@ -1,11 +1,8 @@
 package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
-import me.yixqiao.jlearn.activations.ReLU;
-import me.yixqiao.jlearn.activations.Sigmoid;
-import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.matrix.Matrix;
-import me.yixqiao.jlearn.settings.Settings;
+import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,7 +94,7 @@ public class Dense extends Layer {
     public void update(Matrix errors, double learningRate) {
         Matrix bChanges = new Matrix(1, errors.cols);
 
-        if (inSize * outSize >= Settings.THREADING_MIN_OPS) {
+        if (inSize * outSize >= JLSettings.THREADING_MIN_OPS) {
             // System.out.println(inSize * outSize + ", " + errors.rows);
 
             class CalcInput implements Runnable {
@@ -117,7 +114,7 @@ public class Dense extends Layer {
                 }
             }
 
-            ExecutorService pool = Executors.newFixedThreadPool(Settings.THREAD_COUNT);
+            ExecutorService pool = Executors.newFixedThreadPool(JLSettings.THREAD_COUNT);
 
             for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
                 Runnable rn = new CalcInput(inputNum);
