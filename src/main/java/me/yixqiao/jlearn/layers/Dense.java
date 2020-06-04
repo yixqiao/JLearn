@@ -153,4 +153,11 @@ public class Dense extends Layer {
     public String toString() {
         return String.format("Dense: in: %d, out: %d, activation: %s", inSize, outSize, activation.toString());
     }
+
+    @Override
+    public Layer cloneSettings() {
+        Dense clone = new Dense(outSize, activation);
+        clone.initLayer(inSize, prevActivation);
+        return clone;
+    }
 }

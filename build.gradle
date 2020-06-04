@@ -8,7 +8,7 @@ group 'me.yixqiao'
 version '0.2.3'
 
 application {
-    mainClassName = "me.yixqiao.jlearn.testing.MNIST"
+    mainClassName = "me.yixqiao.jlearn.testing.Genetic"
 }
 
 configurations {

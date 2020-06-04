@@ -96,4 +96,10 @@ public class InputLayer extends Layer {
     public String toString() {
         return String.format("Input: size: %d", size);
     }
+
+    @Override
+    public InputLayer cloneSettings() {
+        return new InputLayer(size);
+    }
+
 }

@@ -4,21 +4,21 @@ import me.yixqiao.jlearn.exceptions.NeuralNetworkException;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.models.Model;
 
 import java.util.ArrayList;
 
 public class Population {
     protected final int indivCount;
-    protected ArrayList<Individual> individuals;
-
     protected final ArrayList<Layer> layers;
+    protected Individual[] individuals;
     protected int layerCount;
 
     public Population(int indivCount) {
         this.indivCount = indivCount;
-        individuals = new ArrayList<>();
         layers = new ArrayList<>();
+        individuals = new Individual[indivCount];
     }
 
 
@@ -27,7 +27,7 @@ public class Population {
         return this;
     }
 
-    public void prepLayers() {
+    public void initLayers() {
         layerCount = layers.size();
         if (!(layers.get(0) instanceof InputLayer)) {
             throw new NeuralNetworkException("First layer is not an input layer");
@@ -38,9 +38,17 @@ public class Population {
     }
 
     public void initPop() {
-        individuals = new ArrayList<>();
-        for(int i=0; i<indivCount; i++){
-            individuals.add(new Individual(layers)); // Clone layers
+        for (int i = 0; i < indivCount; i++) {
+            ArrayList<Layer> iLayers = new ArrayList<>();
+            for (Layer l : layers)
+                iLayers.add(l.cloneSettings());
+            individuals[i] = new Individual(iLayers);
         }
     }
+
+    public Matrix predict(int indivNum, Matrix x) {
+        return individuals[indivNum].forwardPropagate(x);
+    }
+
+
 }
