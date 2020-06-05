@@ -13,13 +13,11 @@ public class Individual {
      * Layers.
      */
     public final ArrayList<Layer> layers;
-
+    public double score;
     /**
      * Number of layers (including input).
      */
     protected int layerCount;
-
-    public double score;
 
     public Individual() {
         layers = new ArrayList<>();
@@ -36,5 +34,12 @@ public class Individual {
             activations = layers.get(layerNum).forwardPropagate(activations);
         }
         return activations;
+    }
+
+    public Individual cloneIndividual() {
+        ArrayList<Layer> newLayers = new ArrayList<>();
+        for (Layer l : layers)
+            newLayers.add(l.cloneLayer());
+        return new Individual(newLayers);
     }
 }

@@ -59,6 +59,11 @@ public class InputLayer extends Layer {
         return x;
     }
 
+    @Override
+    public Layer cloneLayer() {
+        return new InputLayer(size);
+    }
+
     /**
      * No op.
      *
