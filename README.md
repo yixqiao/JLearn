@@ -18,3 +18,4 @@ Fully polished library should be available in 1 week.
 - Fast implementation of matrices
 - Basic data processing
 - Various losses and optimizers
+- Genetic algorithms that are easy to integrate
