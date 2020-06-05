@@ -21,7 +21,7 @@ public class Genetic {
 
 
     public static void main(String[] args) {
-        Population p = new Pop(1000)
+        Pop p = (Pop) new Pop(1000)
                 .addLayer(new InputLayer(10))
                 .addLayer(new Dense(10, new Sigmoid()));
 
@@ -31,15 +31,20 @@ public class Genetic {
         // for (int i = 0; i < 10; i++)
         //     p.forwardPropagate(i, input).printMatrix();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 200; i++) {
             System.out.println(p.generation);
             p.oneGeneration();
         }
+        p.done();
     }
 
     private static class Pop extends Population {
         public Pop(int indivCount) {
             super(indivCount);
+        }
+
+        public void done() {
+            forwardPropagate(0, new Matrix(new double[][]{{1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1}})).printMatrix();
         }
 
         @Override
@@ -75,12 +80,10 @@ public class Genetic {
         }
 
         private void randomize(Individual ind) {
-            for (Layer l : ind.layers) {
-                if (l instanceof Dense) {
-                    ((Dense) l).weights.applyEachIP(x -> x + random.nextGaussian() * 0.05 * ((random.nextDouble() < 0.2) ? 1 : 0));
-                    ((Dense) l).biases.applyEachIP(x -> x + random.nextGaussian() * 0.05 * ((random.nextDouble() < 0.2) ? 1 : 0));
-                }
-            }
+            ind.applyWeightsIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
+            ind.applyBiasesIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
+            ind.applyWeightsIP(x -> (random.nextDouble() < 0.2) ? x + random.nextGaussian() * 0.05 : x);
+            ind.applyBiasesIP(x -> (random.nextDouble() < 0.2) ? x + random.nextGaussian() * 0.05 : x);
         }
 
         protected static class SortIndivs implements Comparator<Individual> {

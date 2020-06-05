@@ -1,12 +1,14 @@
 package me.yixqiao.jlearn.genetic;
 
 import me.yixqiao.jlearn.exceptions.NeuralNetworkException;
+import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.matrix.Matrix;
 
 import java.util.ArrayList;
+import java.util.function.ToDoubleFunction;
 
 public class Individual {
     /**
@@ -35,6 +37,19 @@ public class Individual {
         }
         return activations;
     }
+
+    public void applyWeightsIP(ToDoubleFunction<Double> function) {
+        for (Layer l : layers)
+            if (l instanceof Dense)
+                ((Dense) l).weights.applyEachIP(function);
+    }
+
+    public void applyBiasesIP(ToDoubleFunction<Double> function) {
+        for (Layer l : layers)
+            if (l instanceof Dense)
+                ((Dense) l).biases.applyEachIP(function);
+    }
+
 
     public Individual cloneIndividual() {
         ArrayList<Layer> newLayers = new ArrayList<>();
