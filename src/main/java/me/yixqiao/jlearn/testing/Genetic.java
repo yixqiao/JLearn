@@ -32,8 +32,9 @@ public class Genetic {
         //     p.forwardPropagate(i, input).printMatrix();
 
         for (int i = 0; i < 200; i++) {
+            System.out.print(p.generation + ": ");
             p.oneGeneration();
-            System.out.println(p.generation);
+            System.out.println();
         }
         p.done();
     }
@@ -56,19 +57,11 @@ public class Genetic {
         protected void select() {
             Arrays.sort(individuals, new SortIndivs());
 
-            printBest();
+            printBest(3);
 
             for (int i = 0; i < indivCount / 2; i++) {
                 individuals[indivCount / 2 + i] = individuals[i].cloneIndividual();
                 randomize(individuals[indivCount / 2 + i]);
-            }
-        }
-
-        private void printBest() {
-            for (int i = 0; i < 5; i++) {
-                System.out.print(individuals[i].score + "\t: ");
-                forwardPropagate(i, input).printMatrix();
-                System.out.println();
             }
         }
 

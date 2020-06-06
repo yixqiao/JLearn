@@ -69,4 +69,15 @@ public abstract class Population {
     protected abstract void calcScores();
 
     protected abstract void select();
+
+    protected void printBest(int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%.5f", individuals[i].score);
+            if(i<n-1)
+                System.out.print(", ");
+            // forwardPropagate(i, input).printMatrix();
+            // System.out.println();
+        }
+    }
+
 }
