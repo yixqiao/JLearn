@@ -1,6 +1,7 @@
 me.yixqiao.jlearn.activations
 me.yixqiao.jlearn.datasets
 me.yixqiao.jlearn.exceptions
+me.yixqiao.jlearn.genetic
 me.yixqiao.jlearn.layers
 me.yixqiao.jlearn.losses
 me.yixqiao.jlearn.matrix

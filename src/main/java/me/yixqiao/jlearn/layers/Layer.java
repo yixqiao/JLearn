@@ -70,7 +70,20 @@ public abstract class Layer implements Serializable {
      */
     public abstract String toString();
 
+    /**
+     * Clone the settings.
+     * <p>
+     * This will return a layer with the same size and activation, but with randomly initialized weights and biases.
+     * </p>
+     *
+     * @return the clone
+     */
     public abstract Layer cloneSettings();
 
+    /**
+     * Clone the layer, including weights and biases.
+     *
+     * @return the clone
+     */
     public abstract Layer cloneLayer();
 }

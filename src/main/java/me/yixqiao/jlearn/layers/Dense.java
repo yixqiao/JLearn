@@ -12,8 +12,15 @@ import java.util.concurrent.TimeUnit;
  * Basic fully-connected layer.
  */
 public class Dense extends Layer {
+    /**
+     * Weights.
+     */
+    public Matrix weights;
+    /**
+     * Biases.
+     */
+    public Matrix biases;
     private int inSize, outSize;
-    public Matrix weights, biases;
     private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;

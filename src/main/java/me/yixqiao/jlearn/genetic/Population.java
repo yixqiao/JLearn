@@ -3,32 +3,63 @@ package me.yixqiao.jlearn.genetic;
 import me.yixqiao.jlearn.exceptions.NeuralNetworkException;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.layers.Layer;
-import me.yixqiao.jlearn.losses.Loss;
 import me.yixqiao.jlearn.matrix.Matrix;
-import me.yixqiao.jlearn.models.Model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
+/**
+ * Population of individuals.
+ */
 public abstract class Population {
+    /**
+     * Number of individuals.
+     */
     protected final int indivCount;
+    /**
+     * ArrayList of layers as a template for individuals.
+     */
     protected final ArrayList<Layer> layers;
+    /**
+     * Which generation the population is on.
+     */
     public int generation = 0;
+    /**
+     * Array of individuals.
+     */
     protected Individual[] individuals;
+    /**
+     * Number of layers.
+     */
     protected int layerCount;
 
+    /**
+     * Create a new population.
+     *
+     * @param indivCount number of individuals
+     */
     public Population(int indivCount) {
         this.indivCount = indivCount;
         layers = new ArrayList<>();
         individuals = new Individual[indivCount];
     }
 
-
+    /**
+     * Add a layer to the general layer template.
+     *
+     * @param layer the layer
+     * @return the population itself to allow for daisy chaining
+     */
     public Population addLayer(Layer layer) {
         layers.add(layer);
         return this;
     }
 
+    /**
+     * Initialize all layers.
+     * <p>
+     * This function should not be called directly; the {@link #init() init} method does this already.
+     * </p>
+     */
     protected void initLayers() {
         layerCount = layers.size();
         if (!(layers.get(0) instanceof InputLayer)) {
@@ -39,6 +70,12 @@ public abstract class Population {
         }
     }
 
+    /**
+     * Initialize the population.
+     * <p>
+     * This must be run after adding all layers and before simulating.
+     * </p>
+     */
     public void init() {
         initLayers();
         for (int i = 0; i < indivCount; i++) {
@@ -49,10 +86,20 @@ public abstract class Population {
         }
     }
 
+    /**
+     * Forward propagate for a single individual.
+     *
+     * @param indivNum the individual
+     * @param x the input matrix
+     * @return the output
+     */
     public Matrix forwardPropagate(int indivNum, Matrix x) {
         return individuals[indivNum].forwardPropagate(x);
     }
 
+    /**
+     * Simulate one generation.
+     */
     public void oneGeneration() {
         resetScores();
         calcScores();
@@ -60,20 +107,34 @@ public abstract class Population {
         generation++;
     }
 
+    /**
+     * Reset scores. This is called within {@link #oneGeneration()} oneGeneration}.
+     */
     protected void resetScores() {
         for (int i = 0; i < indivCount; i++) {
             individuals[i].score = 0;
         }
     }
 
+    /**
+     * Calculate the scores for each network.
+     */
     protected abstract void calcScores();
 
+    /**
+     * Select and randomize networks for the next generation.
+     */
     protected abstract void select();
 
+    /**
+     * Print scores of the best networks.
+     *
+     * @param n number of networks to print
+     */
     protected void printBest(int n) {
         for (int i = 0; i < n; i++) {
             System.out.printf("%.5f", individuals[i].score);
-            if(i<n-1)
+            if (i < n - 1)
                 System.out.print(", ");
             // forwardPropagate(i, input).printMatrix();
             // System.out.println();
