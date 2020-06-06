@@ -108,7 +108,7 @@ public abstract class Population {
     }
 
     /**
-     * Reset scores. This is called within {@link #oneGeneration()} oneGeneration}.
+     * Reset scores. This is called within {@link #oneGeneration() oneGeneration}.
      */
     protected void resetScores() {
         for (int i = 0; i < indivCount; i++) {
