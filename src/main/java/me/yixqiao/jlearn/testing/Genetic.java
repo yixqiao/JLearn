@@ -32,8 +32,8 @@ public class Genetic {
         //     p.forwardPropagate(i, input).printMatrix();
 
         for (int i = 0; i < 200; i++) {
-            System.out.println(p.generation);
             p.oneGeneration();
+            System.out.println(p.generation);
         }
         p.done();
     }
@@ -43,18 +43,11 @@ public class Genetic {
             super(indivCount);
         }
 
-        public void done() {
-            forwardPropagate(0, input).printMatrix();
-        }
-
         @Override
         protected void calcScores() {
-            // Matrix good = new Matrix(new double[][]{{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9}});
-            // Matrix good = new Matrix(new double[][]{{0, 0.5, 1, 0, 0.5, 1, 0, 0.5, 1, 0}});
             Matrix good = new Matrix(new double[][]{{0, 1, 0, 1, 0, 1, 0, 1, 0, 1}});
             for (int i = 0; i < indivCount; i++) {
                 Matrix output = forwardPropagate(i, input);
-                // output.printMatrix();
                 individuals[i].score = new MeanSquaredError().getLoss(output, good);
             }
         }
@@ -62,20 +55,20 @@ public class Genetic {
         @Override
         protected void select() {
             Arrays.sort(individuals, new SortIndivs());
-            for (int i = 0; i < 10; i++) {
-                System.out.print(individuals[i].score + "\t: ");
-                forwardPropagate(i, input).printMatrix();
-                System.out.println();
-            }
+
+            printBest();
 
             for (int i = 0; i < indivCount / 2; i++) {
                 individuals[indivCount / 2 + i] = individuals[i].cloneIndividual();
-                // individuals[i + indivCount / 2] = new Individual(layers);
                 randomize(individuals[indivCount / 2 + i]);
             }
+        }
 
-            for (int i = 0; i < indivCount; i++) {
-                individuals[i].score = 0;
+        private void printBest() {
+            for (int i = 0; i < 5; i++) {
+                System.out.print(individuals[i].score + "\t: ");
+                forwardPropagate(i, input).printMatrix();
+                System.out.println();
             }
         }
 
@@ -84,6 +77,10 @@ public class Genetic {
             ind.applyBiasesIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
             ind.applyWeightsIP(x -> (random.nextDouble() < 0.2) ? x + random.nextGaussian() * 0.05 : x);
             ind.applyBiasesIP(x -> (random.nextDouble() < 0.2) ? x + random.nextGaussian() * 0.05 : x);
+        }
+
+        public void done() {
+            forwardPropagate(0, input).printMatrix();
         }
 
         protected static class SortIndivs implements Comparator<Individual> {

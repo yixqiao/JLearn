@@ -13,10 +13,9 @@ import java.util.Comparator;
 public abstract class Population {
     protected final int indivCount;
     protected final ArrayList<Layer> layers;
+    public int generation = 0;
     protected Individual[] individuals;
     protected int layerCount;
-
-    public int generation = 0;
 
     public Population(int indivCount) {
         this.indivCount = indivCount;
@@ -54,18 +53,20 @@ public abstract class Population {
         return individuals[indivNum].forwardPropagate(x);
     }
 
-    public void oneGeneration(){
+    public void oneGeneration() {
+        resetScores();
         calcScores();
         select();
         generation++;
     }
 
+    protected void resetScores() {
+        for (int i = 0; i < indivCount; i++) {
+            individuals[i].score = 0;
+        }
+    }
+
     protected abstract void calcScores();
 
     protected abstract void select();
-
-    protected abstract class SortIndivs implements Comparator<Individual> {
-        public abstract int compare(Individual a, Individual b);
-    }
-
 }
