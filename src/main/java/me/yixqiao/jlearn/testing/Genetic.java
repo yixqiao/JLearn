@@ -44,7 +44,7 @@ public class Genetic {
         }
 
         public void done() {
-            forwardPropagate(0, new Matrix(new double[][]{{1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1}})).printMatrix();
+            forwardPropagate(0, input).printMatrix();
         }
 
         @Override
@@ -64,7 +64,7 @@ public class Genetic {
             Arrays.sort(individuals, new SortIndivs());
             for (int i = 0; i < 10; i++) {
                 System.out.print(individuals[i].score + "\t: ");
-                forwardPropagate(i, new Matrix(new double[][]{{1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1}})).printMatrix();
+                forwardPropagate(i, input).printMatrix();
                 System.out.println();
             }
 
