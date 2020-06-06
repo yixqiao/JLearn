@@ -59,6 +59,11 @@ public class InputLayer extends Layer {
         return x;
     }
 
+    @Override
+    public Layer cloneLayer() {
+        return new InputLayer(size);
+    }
+
     /**
      * No op.
      *
@@ -96,4 +101,10 @@ public class InputLayer extends Layer {
     public String toString() {
         return String.format("Input: size: %d", size);
     }
+
+    @Override
+    public InputLayer cloneSettings() {
+        return new InputLayer(size);
+    }
+
 }

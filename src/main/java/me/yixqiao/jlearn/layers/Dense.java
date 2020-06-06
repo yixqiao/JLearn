@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Dense extends Layer {
     private int inSize, outSize;
-    private Matrix weights, biases;
+    public Matrix weights, biases;
     private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
@@ -152,5 +152,21 @@ public class Dense extends Layer {
     @Override
     public String toString() {
         return String.format("Dense: in: %d, out: %d, activation: %s", inSize, outSize, activation.toString());
+    }
+
+    @Override
+    public Layer cloneSettings() {
+        Dense clone = new Dense(outSize, activation);
+        clone.initLayer(inSize, prevActivation);
+        return clone;
+    }
+
+    @Override
+    public Layer cloneLayer() {
+        Dense clone = new Dense(outSize, activation);
+        clone.initLayer(inSize, prevActivation);
+        clone.weights = weights.clone();
+        clone.biases = biases.clone();
+        return clone;
     }
 }

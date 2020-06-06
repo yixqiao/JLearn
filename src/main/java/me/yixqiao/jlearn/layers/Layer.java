@@ -69,4 +69,8 @@ public abstract class Layer implements Serializable {
      * @return the string
      */
     public abstract String toString();
+
+    public abstract Layer cloneSettings();
+
+    public abstract Layer cloneLayer();
 }
