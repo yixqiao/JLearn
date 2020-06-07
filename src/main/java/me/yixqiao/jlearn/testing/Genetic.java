@@ -65,7 +65,7 @@ public class Genetic {
                 randomize(individuals[indivCount / 2 + i]);
             }
         }
-        
+
         private void randomize(Individual ind) {
             ind.applyWeightsIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
             ind.applyBiasesIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
@@ -73,6 +73,9 @@ public class Genetic {
             ind.applyBiasesIP(x -> (random.nextDouble() < 0.2) ? x + random.nextGaussian() * 0.05 : x);
         }
 
+        /**
+         * Method called when finished simulating.
+         */
         public void done() {
             forwardPropagate(0, input).printMatrix();
         }

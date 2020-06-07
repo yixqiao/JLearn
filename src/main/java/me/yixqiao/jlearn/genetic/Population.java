@@ -97,6 +97,11 @@ public abstract class Population {
         return individuals[indivNum].forwardPropagate(x);
     }
 
+    /**
+     * Simulate generations.
+     *
+     * @param generations number of generations
+     */
     public void simGenerations(int generations) {
         for (int g = 0; g < generations; g++) {
             oneGeneration();
