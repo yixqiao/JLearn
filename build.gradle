@@ -5,10 +5,10 @@ plugins {
 }
 
 group 'me.yixqiao'
-version '0.2.3'
+version '0.3.0'
 
 application {
-    mainClassName = "me.yixqiao.jlearn.testing.Genetic"
+    mainClassName = "me.yixqiao.jlearn.testing.MNIST"
 }
 
 configurations {
