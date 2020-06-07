@@ -29,16 +29,7 @@ public class Genetic {
 
         p.init();
 
-
-        // for (int i = 0; i < 10; i++)
-        //     p.forwardPropagate(i, input).printMatrix();
-
-        for (int i = 0; i < 200; i++) {
-            System.out.print(p.generation + ": ");
-            p.oneGeneration();
-            System.out.println();
-        }
-        p.done();
+        p.simGenerations(200);
     }
 
     private static class Pop extends Population {
@@ -56,17 +47,25 @@ public class Genetic {
         }
 
         @Override
+        public void simGenerations(int generations) {
+            super.simGenerations(generations);
+            done();
+        }
+
+        @Override
         protected void select() {
             Arrays.sort(individuals, new SortIndivs());
 
+            System.out.print(generation + ": ");
             printBest(3);
+            System.out.println();
 
             for (int i = 0; i < indivCount / 2; i++) {
                 individuals[indivCount / 2 + i] = individuals[i].cloneIndividual();
                 randomize(individuals[indivCount / 2 + i]);
             }
         }
-
+        
         private void randomize(Individual ind) {
             ind.applyWeightsIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);
             ind.applyBiasesIP(x -> (random.nextDouble() < 0.1) ? x * (1 + random.nextGaussian() * 0.02) : x);

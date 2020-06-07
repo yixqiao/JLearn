@@ -90,11 +90,17 @@ public abstract class Population {
      * Forward propagate for a single individual.
      *
      * @param indivNum the individual
-     * @param x the input matrix
+     * @param x        the input matrix
      * @return the output
      */
     public Matrix forwardPropagate(int indivNum, Matrix x) {
         return individuals[indivNum].forwardPropagate(x);
+    }
+
+    public void simGenerations(int generations) {
+        for (int g = 0; g < generations; g++) {
+            oneGeneration();
+        }
     }
 
     /**
