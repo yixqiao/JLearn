@@ -1,9 +1,8 @@
 package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
-import me.yixqiao.jlearn.initializations.He;
-import me.yixqiao.jlearn.initializations.Initialization;
-import me.yixqiao.jlearn.initializations.Xavier;
+import me.yixqiao.jlearn.initializers.He;
+import me.yixqiao.jlearn.initializers.Initializer;
 import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.settings.JLSettings;
 
@@ -27,7 +26,7 @@ public class Dense extends Layer {
     private Activation activation, prevActivation;
     private Matrix inputNeurons;
     private Matrix outputNeurons;
-    private Initialization init = new He();
+    private Initializer init = new He();
 
     /**
      * Create a new dense layer.
@@ -41,7 +40,7 @@ public class Dense extends Layer {
         this.activation = activation;
     }
 
-    public Dense(int outSize, Activation activation, Initialization init) {
+    public Dense(int outSize, Activation activation, Initializer init) {
         this(outSize, activation);
         this.init = init;
     }

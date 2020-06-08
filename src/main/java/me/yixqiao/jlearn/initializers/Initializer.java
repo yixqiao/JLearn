@@ -1,7 +1,7 @@
-package me.yixqiao.jlearn.initializations;
+package me.yixqiao.jlearn.initializers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
-public abstract class Initialization {
+public abstract class Initializer {
     public abstract Matrix.Init getInit(int inSize, int outSize);
 }
