@@ -2,6 +2,9 @@ package me.yixqiao.jlearn.initializers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * He initialization.
+ */
 public class He extends Initializer {
     @Override
     public Matrix.Init getInit(int inSize, int outSize) {

@@ -2,9 +2,17 @@ package me.yixqiao.jlearn.initializers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * Gaussian distribution initialization.
+ */
 public class GaussianInit extends Initializer {
-    private double deviation;
+    private final double deviation;
 
+    /**
+     * Create a new instance.
+     *
+     * @param deviation standard deviation
+     */
     public GaussianInit(double deviation) {
         this.deviation = deviation;
     }

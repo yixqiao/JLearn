@@ -40,6 +40,13 @@ public class Dense extends Layer {
         this.activation = activation;
     }
 
+    /**
+     * Create a new dense layer.
+     *
+     * @param outSize    size of output
+     * @param activation activation to use
+     * @param init       initialization method
+     */
     public Dense(int outSize, Activation activation, Initializer init) {
         this(outSize, activation);
         this.init = init;
