@@ -160,26 +160,24 @@ public class Model implements Serializable {
                 update(errors, learningRate);
 
                 if ((epoch + 1) % logInterval == 0) {
-                    String fitOutput = "";
+                    StringBuilder fitOutput = new StringBuilder();
 
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
-                    fitOutput += String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1));
+                    fitOutput.append(String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, timeElapsed, lossA / (batchNum + 1)));
 
                     for (int i = 0; i < metrics.size(); i++)
-                        fitOutput += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1));
+                        fitOutput.append(String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (batchNum + 1)));
 
-                    fitOutput += " - [";
+                    fitOutput.append(" - [");
                     int progress = (int) ((double) batchNum / ((double) totalSamples / batchSize) * 20);
-                    for (int i = 0; i < progress; i++)
-                        fitOutput += "=";
-                    fitOutput += ">";
-                    for (int i = 0; i < 20 - progress - 1; i++)
-                        fitOutput += ".";
-                    fitOutput += "]";
+                    fitOutput.append("=".repeat(progress));
+                    fitOutput.append(">");
+                    fitOutput.append(".".repeat(20 - progress - 1));
+                    fitOutput.append("]");
 
                     maxLineLen = Math.max(maxLineLen, fitOutput.length());
 
-                    fp.setOutput(fitOutput);
+                    fp.setOutput(fitOutput.toString());
                 }
             }
 
