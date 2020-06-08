@@ -190,17 +190,16 @@ public class Model implements Serializable {
                     e.printStackTrace();
                 }
 
-                String toPrint = String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
-                        lossA / (double) (totalSamples / batchSize));
+                StringBuilder toPrint = new StringBuilder(String.format("\rE: %d - T: %5.2fs - L: %.5f", epoch + 1, (double) (System.nanoTime() - epochStart) / 1e9,
+                        lossA / (double) (totalSamples / batchSize)));
 
                 for (int i = 0; i < metrics.size(); i++)
-                    toPrint += String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize));
+                    toPrint.append(String.format((" - " + metrics.get(i).getFormatString()), metricA[i] / (double) (totalSamples / batchSize)));
 
                 if (fb.hasEval)
-                    toPrint += " - Evaluating...";
+                    toPrint.append(" - Evaluating...");
 
-                for (int i = toPrint.length(); i < maxLineLen; i++)
-                    toPrint += " ";
+                toPrint.append(" ".repeat(Math.max(0, maxLineLen - toPrint.length())));
 
                 System.out.print(toPrint);
 
