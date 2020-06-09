@@ -151,7 +151,7 @@ public class Matrix implements Serializable {
      * @return new matrix
      */
     public Matrix add(double x) {
-        Matrix out = clone();
+        Matrix out = cloneMatrix();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 out.mat[r][c] = mat[r][c] + x;
@@ -202,7 +202,7 @@ public class Matrix implements Serializable {
      * @return the resulting matrix
      */
     public Matrix multiply(double x) {
-        Matrix out = clone();
+        Matrix out = cloneMatrix();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 out.mat[r][c] = mat[r][c] * x;
@@ -233,7 +233,7 @@ public class Matrix implements Serializable {
     public Matrix multiply(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException(String.format("Multiplication size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
-        Matrix out = clone();
+        Matrix out = cloneMatrix();
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 out.mat[r][c] = mat[r][c] * m2.mat[r][c];
@@ -263,7 +263,7 @@ public class Matrix implements Serializable {
      * @return the resulting matrix
      */
     public Matrix applyEach(ToDoubleFunction<Double> function, boolean useThreading) {
-        Matrix out = clone();
+        Matrix out = cloneMatrix();
         if (useThreading) {
             class CalcSingle implements Runnable {
                 private final int r, c;
@@ -501,7 +501,7 @@ public class Matrix implements Serializable {
      *
      * @return the clone
      */
-    public Matrix clone() {
+    public Matrix cloneMatrix() {
         Matrix out = new Matrix(rows, cols);
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {

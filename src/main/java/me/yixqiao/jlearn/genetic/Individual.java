@@ -41,7 +41,7 @@ public class Individual {
      * @return output
      */
     public Matrix forwardPropagate(Matrix x) {
-        Matrix activations = x.clone();
+        Matrix activations = x.cloneMatrix();
         for (int layerNum = 0; layerNum < layerCount; layerNum++) {
             activations = layers.get(layerNum).forwardPropagate(activations);
         }

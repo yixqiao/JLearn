@@ -72,7 +72,7 @@ public class Dense extends Layer {
 
     @Override
     public Matrix forwardPropagate(Matrix x) {
-        inputNeurons = x.clone();
+        inputNeurons = x.cloneMatrix();
 
         Matrix output = x.dot(weights);
         for (int row = 0; row < output.rows; row++) {
@@ -81,7 +81,7 @@ public class Dense extends Layer {
             }
         }
         activation.getActivation().accept(output);
-        outputNeurons = output.clone();
+        outputNeurons = output.cloneMatrix();
 
         return output;
     }
@@ -187,8 +187,8 @@ public class Dense extends Layer {
     public Layer cloneLayer() {
         Dense clone = new Dense(outSize, activation);
         clone.initLayer(inSize, prevActivation);
-        clone.weights = weights.clone();
-        clone.biases = biases.clone();
+        clone.weights = weights.cloneMatrix();
+        clone.biases = biases.cloneMatrix();
         return clone;
     }
 }
