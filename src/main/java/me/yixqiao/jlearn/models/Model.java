@@ -127,11 +127,14 @@ public class Model implements Serializable {
 
             long epochStart = System.nanoTime();
 
+            final boolean logEpoch = (epoch + 1) % logInterval == 0;
+
             Collections.shuffle(indices);
+
 
             FitPrint fp = null;
             int maxLineLen = 0;
-            if ((epoch + 1) % logInterval == 0) {
+            if (logEpoch) {
                 fp = new FitPrint();
                 fp.start();
             }
@@ -139,6 +142,8 @@ public class Model implements Serializable {
             for (int batchNum = 0; batchNum < totalSamples / batchSize; batchNum++) {
                 Matrix batchX = new Matrix(batchSize, trainX.cols);
                 Matrix batchY = new Matrix(batchSize, trainY.cols);
+
+                // Set batch data
                 for (int i = 0; i < batchSize; i++) {
                     for (int j = 0; j < trainX.cols; j++) {
                         batchX.mat[i][j] = trainX.mat[indices.get(batchNum * batchSize + i)][j];
@@ -150,7 +155,7 @@ public class Model implements Serializable {
 
                 Matrix batchOut = forwardPropagate(batchX);
 
-                if ((epoch + 1) % logInterval == 0) {
+                if (logEpoch) {
                     lossA += getLoss(loss, batchOut, batchY);
                     for (int i = 0; i < metrics.size(); i++)
                         metricA[i] += getMetric(metrics.get(i), batchOut, batchY);
@@ -159,7 +164,7 @@ public class Model implements Serializable {
                 errors = backPropagate(batchY);
                 update(errors, learningRate);
 
-                if ((epoch + 1) % logInterval == 0) {
+                if (logEpoch) {
                     StringBuilder fitOutput = new StringBuilder();
 
                     double timeElapsed = (double) (System.nanoTime() - epochStart) / 1e9;
@@ -181,7 +186,7 @@ public class Model implements Serializable {
                 }
             }
 
-            if ((epoch + 1) % logInterval == 0) {
+            if (logEpoch) {
                 fp.stopThread();
 
                 try {

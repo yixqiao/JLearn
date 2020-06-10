@@ -75,9 +75,9 @@ public class Dense extends Layer {
         inputNeurons = x.cloneMatrix();
 
         Matrix output = x.dot(weights);
-        for (int row = 0; row < output.rows; row++) {
-            for (int col = 0; col < output.cols; col++) {
-                output.mat[row][col] += biases.mat[0][col];
+        for (int r = 0; r < output.rows; r++) {
+            for (int c = 0; c < output.cols; c++) {
+                output.mat[r][c] += biases.mat[0][c];
             }
         }
         activation.getActivation().accept(output);
@@ -117,8 +117,6 @@ public class Dense extends Layer {
         Matrix bChanges = new Matrix(1, errors.cols);
 
         if (inSize * outSize >= JLSettings.THREADING_MIN_OPS) {
-            // System.out.println(inSize * outSize + ", " + errors.rows);
-
             class CalcInput implements Runnable {
                 private final int inputNum;
 
