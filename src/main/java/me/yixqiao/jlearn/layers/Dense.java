@@ -124,10 +124,10 @@ public class Dense extends Layer {
     @Override
     public void update(Matrix errors) {
         Matrix wChanges = new Matrix(inSize, outSize);
-
         Matrix bChanges = new Matrix(1, outSize);
 
-        if (inSize * outSize >= JLSettings.THREADING_MIN_OPS && false) { // TODO threading
+        if (inSize * outSize >= JLSettings.THREADING_MIN_OPS) {
+            Matrix finalWChanges = wChanges;
             class CalcInput implements Runnable {
                 private final int inputNum;
 
@@ -138,7 +138,7 @@ public class Dense extends Layer {
                 public void run() {
                     for (int prevN = 0; prevN < inSize; prevN++) {
                         for (int nextN = 0; nextN < outSize; nextN++) {
-                            weights.mat[prevN][nextN] += (1.0 / errors.rows) * errors.mat[inputNum][nextN]
+                            finalWChanges.mat[prevN][nextN] += (1.0 / errors.rows) * errors.mat[inputNum][nextN]
                                     * (inputNeurons.mat[inputNum][prevN]);
                         }
                     }
@@ -169,13 +169,13 @@ public class Dense extends Layer {
                     }
                 }
             }
+        }
 
-            wChanges = wOptimizer.apply(wChanges);
+        wChanges = wOptimizer.apply(wChanges);
 
-            for (int prevN = 0; prevN < inSize; prevN++) {
-                for (int nextN = 0; nextN < outSize; nextN++) {
-                    weights.mat[prevN][nextN] += wChanges.mat[prevN][nextN];
-                }
+        for (int prevN = 0; prevN < inSize; prevN++) {
+            for (int nextN = 0; nextN < outSize; nextN++) {
+                weights.mat[prevN][nextN] += wChanges.mat[prevN][nextN];
             }
         }
 
