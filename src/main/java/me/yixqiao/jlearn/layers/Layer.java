@@ -2,6 +2,7 @@ package me.yixqiao.jlearn.layers;
 
 import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.optimizers.Optimizer;
 
 import java.io.Serializable;
 
@@ -16,6 +17,8 @@ public abstract class Layer implements Serializable {
      * @param prevActivation activation function or previous layer
      */
     public abstract void initLayer(int prevSize, Activation prevActivation);
+
+    public abstract void setOptimizers(Optimizer wOptimizer, Optimizer bOptimizer);
 
     /**
      * Get the activation of the layer.

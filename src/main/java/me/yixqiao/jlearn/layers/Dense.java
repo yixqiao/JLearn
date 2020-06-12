@@ -4,6 +4,8 @@ import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.initializers.He;
 import me.yixqiao.jlearn.initializers.Initializer;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.optimizers.Optimizer;
+import me.yixqiao.jlearn.optimizers.SGD;
 import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.util.concurrent.ExecutorService;
@@ -27,6 +29,7 @@ public class Dense extends Layer {
     private Matrix inputNeurons;
     private Matrix outputNeurons;
     private Initializer init = new He();
+    private Optimizer wOptimizer = new SGD(), bOptimizer = new SGD();
 
     /**
      * Create a new dense layer.
@@ -53,12 +56,19 @@ public class Dense extends Layer {
     }
 
     @Override
+    public void setOptimizers(Optimizer wOptimizer, Optimizer bOptimizer) {
+        this.wOptimizer = wOptimizer;
+        this.bOptimizer = bOptimizer;
+    }
+
+    @Override
     public void initLayer(int inSize, Activation prevActivation) {
         this.inSize = inSize;
         weights = new Matrix(inSize, outSize, init.getInit(inSize, outSize));
         biases = new Matrix(1, outSize);
         this.prevActivation = prevActivation;
     }
+
 
     @Override
     public Activation getActivation() {
@@ -114,9 +124,11 @@ public class Dense extends Layer {
 
     @Override
     public void update(Matrix errors, double learningRate) {
-        Matrix bChanges = new Matrix(1, errors.cols);
+        Matrix wChanges = new Matrix(inSize, outSize);
 
-        if (inSize * outSize >= JLSettings.THREADING_MIN_OPS) {
+        Matrix bChanges = new Matrix(1, outSize);
+
+        if (inSize * outSize >= JLSettings.THREADING_MIN_OPS && false) { // TODO threading
             class CalcInput implements Runnable {
                 private final int inputNum;
 
@@ -153,9 +165,17 @@ public class Dense extends Layer {
             for (int inputNum = 0; inputNum < errors.rows; inputNum++) {
                 for (int prevN = 0; prevN < inSize; prevN++) {
                     for (int nextN = 0; nextN < outSize; nextN++) {
-                        weights.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN]
+                        wChanges.mat[prevN][nextN] += (learningRate / errors.rows) * errors.mat[inputNum][nextN]
                                 * (inputNeurons.mat[inputNum][prevN]);
                     }
+                }
+            }
+
+            wChanges = wOptimizer.apply(wChanges);
+
+            for (int prevN = 0; prevN < inSize; prevN++) {
+                for (int nextN = 0; nextN < outSize; nextN++) {
+                    weights.mat[prevN][nextN] += wChanges.mat[prevN][nextN];
                 }
             }
         }
@@ -166,6 +186,7 @@ public class Dense extends Layer {
             }
         }
         bChanges.applyEachIP(x -> x / errors.rows);
+        bChanges = bOptimizer.apply(bChanges);
         biases.addIP(bChanges.multiply(learningRate));
     }
 

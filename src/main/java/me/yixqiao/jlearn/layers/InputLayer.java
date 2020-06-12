@@ -3,6 +3,7 @@ package me.yixqiao.jlearn.layers;
 import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.activations.Linear;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.optimizers.Optimizer;
 
 /**
  * Layer for input.
@@ -57,6 +58,11 @@ public class InputLayer extends Layer {
     @Override
     public Matrix forwardPropagate(Matrix x) {
         return x;
+    }
+
+    @Override
+    public void setOptimizers(Optimizer wOptimizer, Optimizer bOptimizer) {
+        // TODO: Document
     }
 
     @Override
