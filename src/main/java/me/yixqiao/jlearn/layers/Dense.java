@@ -4,8 +4,8 @@ import me.yixqiao.jlearn.activations.Activation;
 import me.yixqiao.jlearn.initializers.He;
 import me.yixqiao.jlearn.initializers.Initializer;
 import me.yixqiao.jlearn.matrix.Matrix;
+import me.yixqiao.jlearn.optimizers.Momentum;
 import me.yixqiao.jlearn.optimizers.Optimizer;
-import me.yixqiao.jlearn.optimizers.SGD;
 import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.util.concurrent.ExecutorService;
@@ -29,7 +29,7 @@ public class Dense extends Layer {
     private Matrix inputNeurons;
     private Matrix outputNeurons;
     private Initializer init = new He();
-    private Optimizer wOptimizer = new SGD(), bOptimizer = new SGD();
+    private Optimizer wOptimizer = new Momentum(0.005, 0.9), bOptimizer = new Momentum(0.005, 0.9);
 
     /**
      * Create a new dense layer.

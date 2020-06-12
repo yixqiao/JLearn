@@ -93,7 +93,7 @@ public class MNIST {
         }};
 
         model.fit(new Model.FitBuilder(inputs, outputs)
-                .learningRate(0.005)
+                .learningRate(1)
                 .batchSize(64)
                 .epochs(10)
                 .metrics(metrics)
