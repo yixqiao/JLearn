@@ -1,15 +1,13 @@
 package me.yixqiao.jlearn.testing;
 
-import me.yixqiao.jlearn.activations.*;
+import me.yixqiao.jlearn.activations.ReLU;
+import me.yixqiao.jlearn.activations.Softmax;
 import me.yixqiao.jlearn.datasets.DatasetTT;
 import me.yixqiao.jlearn.datasets.MNISTDigits;
-import me.yixqiao.jlearn.initializers.GaussianInit;
-import me.yixqiao.jlearn.initializers.He;
-import me.yixqiao.jlearn.initializers.Xavier;
-import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Dense;
 import me.yixqiao.jlearn.layers.InputLayer;
 import me.yixqiao.jlearn.losses.CrossEntropy;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
@@ -72,11 +70,12 @@ public class MNIST {
      * Build model.
      */
     protected void buildModel() {
-        model = new Model();
-        model.addLayer(new InputLayer(28 * 28))
+        model = new Model()
+                .addLayer(new InputLayer(28 * 28))
                 .addLayer(new Dense(64, new ReLU()))
                 .addLayer(new Dense(32, new ReLU()))
-                .addLayer(new Dense(10, new Softmax()));
+                .addLayer(new Dense(10, new Softmax()))
+        ;
 
         model.buildModel(new CrossEntropy());
 
