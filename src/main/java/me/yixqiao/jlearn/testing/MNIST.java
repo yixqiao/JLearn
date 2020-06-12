@@ -13,6 +13,7 @@ import me.yixqiao.jlearn.losses.CrossEntropy;
 import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
+import me.yixqiao.jlearn.optimizers.Momentum;
 import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.util.ArrayList;
@@ -93,7 +94,7 @@ public class MNIST {
         }};
 
         model.fit(new Model.FitBuilder(inputs, outputs)
-                .learningRate(1)
+                .optimizer(new Momentum(0.005, 0.9))
                 .batchSize(64)
                 .epochs(10)
                 .metrics(metrics)

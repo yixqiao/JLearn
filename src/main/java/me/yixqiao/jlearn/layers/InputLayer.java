@@ -96,10 +96,9 @@ public class InputLayer extends Layer {
      * No op. Nothing is updated.
      *
      * @param errors       calculated errors
-     * @param learningRate learning rate of changes
      */
     @Override
-    public void update(Matrix errors, double learningRate) {
+    public void update(Matrix errors) {
 
     }
 

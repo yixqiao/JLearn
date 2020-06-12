@@ -13,6 +13,16 @@ public class Momentum extends Optimizer {
         this.momentum = momentum;
     }
 
+    @Override
+    public Optimizer cloneOptimizer() {
+        return new Momentum(learningRate, momentum);
+    }
+
+    @Override
+    public void multiplyLR(double d) {
+        this.learningRate *= d;
+    }
+
     private void init(Matrix g) {
         velocity = new Matrix(g.rows, g.cols);
         started = true;
@@ -27,6 +37,3 @@ public class Momentum extends Optimizer {
         return velocity;
     }
 }
-//
-// velocity = momentum * velocity - learning_rate * g
-//         w = w * velocity

@@ -56,7 +56,6 @@ public class Iris {
         }};
 
         model.fit(new Model.FitBuilder(inputs, outputs)
-                .learningRate(0.01)
                 .batchSize(32)
                 .epochs(1000)
                 .metrics(metrics)

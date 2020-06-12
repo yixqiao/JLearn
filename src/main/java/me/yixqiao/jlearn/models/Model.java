@@ -2,10 +2,11 @@ package me.yixqiao.jlearn.models;
 
 import me.yixqiao.jlearn.exceptions.NeuralNetworkException;
 import me.yixqiao.jlearn.layers.InputLayer;
-import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.layers.Layer;
 import me.yixqiao.jlearn.losses.Loss;
+import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.metrics.Metric;
+import me.yixqiao.jlearn.optimizers.Optimizer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -107,7 +108,8 @@ public class Model implements Serializable {
     public void fit(FitBuilder fb) {
         Matrix trainX = fb.trainX;
         Matrix trainY = fb.trainY;
-        double learningRate = fb.learningRate;
+        Optimizer optimizer = fb.optimizer;
+
         ArrayList<Metric> metrics = fb.metrics;
         int batchSize = fb.batchSize;
         int epochs = fb.epochs;
@@ -117,7 +119,10 @@ public class Model implements Serializable {
         ArrayList<Integer> indices = new ArrayList<>();
         for (int i = 0; i < totalSamples; i++) indices.add(i);
 
-        learningRate *= Math.sqrt(batchSize);
+        optimizer.multiplyLR(Math.sqrt(batchSize));
+        for (Layer l : layers) {
+            l.setOptimizers(optimizer.cloneOptimizer(), optimizer.cloneOptimizer());
+        }
 
         ArrayList<Matrix> errors;
 
@@ -162,7 +167,7 @@ public class Model implements Serializable {
                 }
 
                 errors = backPropagate(batchY);
-                update(errors, learningRate);
+                update(errors);
 
                 if (logEpoch) {
                     StringBuilder fitOutput = new StringBuilder();
@@ -254,7 +259,7 @@ public class Model implements Serializable {
     public void trainOnBatch(Matrix x, Matrix y, double learningRate) {
         forwardPropagate(x);
         ArrayList<Matrix> errors = backPropagate(y);
-        update(errors, learningRate);
+        update(errors);
     }
 
     /**
@@ -406,13 +411,12 @@ public class Model implements Serializable {
     /**
      * Update the model after backpropagation.
      *
-     * @param errors       errors obtained from backpropagation
-     * @param learningRate learning rate of updating
+     * @param errors errors obtained from backpropagation
      */
-    protected void update(ArrayList<Matrix> errors, double learningRate) {
+    protected void update(ArrayList<Matrix> errors) {
         for (int layer = 1; layer < layerCount; layer++) {
             int eLayer = layerCount - layer - 1;
-            layers.get(layer).update(errors.get(eLayer), learningRate);
+            layers.get(layer).update(errors.get(eLayer));
         }
     }
 
@@ -510,10 +514,8 @@ public class Model implements Serializable {
          * Training correct values.
          */
         protected Matrix trainY;
-        /**
-         * Learning rate.
-         */
-        protected double learningRate;
+
+        protected Optimizer optimizer;
         /**
          * Batch size.
          */
@@ -554,14 +556,8 @@ public class Model implements Serializable {
             this.trainY = trainY;
         }
 
-        /**
-         * Set learning rate.
-         *
-         * @param learningRate learning rate
-         * @return the instance for daisy chaining
-         */
-        public FitBuilder learningRate(double learningRate) {
-            this.learningRate = learningRate;
+        public FitBuilder optimizer(Optimizer optimizer) {
+            this.optimizer = optimizer;
             return this;
         }
 

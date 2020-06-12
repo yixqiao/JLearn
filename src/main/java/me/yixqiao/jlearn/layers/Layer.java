@@ -62,9 +62,8 @@ public abstract class Layer implements Serializable {
      * Update the layer after calculating errors.
      *
      * @param errors       calculated errors
-     * @param learningRate learning rate of changes
      */
-    public abstract void update(Matrix errors, double learningRate);
+    public abstract void update(Matrix errors);
 
     /**
      * Get a string representation.
