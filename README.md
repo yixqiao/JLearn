@@ -10,7 +10,7 @@ Focuses on being easy to use and configure.
 
 **STILL IN DEVELOPMENT.**  
 Library is located at [packages](https://github.com/yixqiao/JLearn/packages).  
-Fully polished library should be available in 1 week.
+Fully complete and ready-to-use library should be available in 1 week.
 
 ### Goals
 - Create and train a neural network in a few lines of intuitive code
