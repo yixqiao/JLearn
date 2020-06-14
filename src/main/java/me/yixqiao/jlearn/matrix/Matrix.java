@@ -242,6 +242,16 @@ public class Matrix implements Serializable {
         return out;
     }
 
+    public void divideIP(Matrix m2){
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException(String.format("Division size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] /= m2.mat[r][c];
+            }
+        }
+    }
+
     /**
      * Apply a function to each element.
      *
@@ -249,10 +259,11 @@ public class Matrix implements Serializable {
      * @return the resulting matrix
      */
     public Matrix applyEach(ToDoubleFunction<Double> function) {
-        if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
-            return applyEach(function, false);
-        else
-            return applyEach(function, true);
+        // if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
+        //     return applyEach(function, false);
+        // else
+        //     return applyEach(function, true);
+        return applyEach(function, false);
     }
 
     /**
@@ -310,10 +321,11 @@ public class Matrix implements Serializable {
      * @param function the function to apply
      */
     public void applyEachIP(ToDoubleFunction<Double> function) {
-        if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
-            applyEachIP(function, false);
-        else
-            applyEachIP(function, true);
+        // if (JLSettings.THREAD_COUNT == 1 || rows * cols < JLSettings.THREADING_MIN_OPS)
+        //     applyEachIP(function, false);
+        // else
+        //     applyEachIP(function, true);
+        applyEachIP(function, false);
     }
 
     /**

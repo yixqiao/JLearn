@@ -11,6 +11,7 @@ import me.yixqiao.jlearn.matrix.Matrix;
 import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
+import me.yixqiao.jlearn.optimizers.Adam;
 import me.yixqiao.jlearn.optimizers.Momentum;
 import me.yixqiao.jlearn.settings.JLSettings;
 
@@ -93,7 +94,7 @@ public class MNIST {
         }};
 
         model.fit(new Model.FitBuilder(inputs, outputs)
-                .optimizer(new Momentum(0.005, 0.9))
+                .optimizer(new Adam(0.005))
                 .batchSize(64)
                 .epochs(10)
                 .metrics(metrics)
