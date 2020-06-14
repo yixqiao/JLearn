@@ -15,7 +15,8 @@ Fully complete and ready-to-use library should be available in 1 week.
 ### Goals
 - Create and train a neural network in a few lines of intuitive code
 - Easily access and change internals of the neural network
-- Fast implementation of matrices
+- Decently fast implementation of matrices
 - Basic data processing
 - Various losses and optimizers
 - Genetic algorithms that are easy to integrate
+- Pure Java with no dependencies
