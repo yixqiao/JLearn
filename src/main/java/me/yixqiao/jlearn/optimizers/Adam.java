@@ -13,9 +13,15 @@ public class Adam extends Optimizer {
         this.learningRate = learningRate;
     }
 
+    public Adam(double learningRate, double beta1, double beta2) {
+        this.learningRate = learningRate;
+        this.beta1 = beta1;
+        this.beta2 = beta2;
+    }
+
     @Override
     public Optimizer cloneOptimizer() {
-        return new Adam(learningRate);
+        return new Adam(learningRate, beta1, beta2);
     }
 
     @Override
@@ -49,20 +55,5 @@ public class Adam extends Optimizer {
         out.divideIP(vc);
 
         return out;
-
-
     }
-
-    // while (1):					#till it gets converged
-    // 	t+=1
-    // 	g_t = grad_func(theta_0)		#computes the gradient of the stochastic function
-    // 	m_t = beta_1*m_t + (1-beta_1)*g_t	#updates the moving averages of the gradient
-    // 	v_t = beta_2*v_t + (1-beta_2)*(g_t*g_t)	#updates the moving averages of the squared gradient
-    // 	m_cap = m_t/(1-(beta_1**t))		#calculates the bias-corrected estimates
-    // 	v_cap = v_t/(1-(beta_2**t))		#calculates the bias-corrected estimates
-    // 	theta_0_prev = theta_0
-    // 	theta_0 = theta_0 - (alpha*m_cap)/(math.sqrt(v_cap)+epsilon)	#updates the parameters
-    // 	if(theta_0 == theta_0_prev):		#checks if it is converged or not
-    // 		break
-
 }

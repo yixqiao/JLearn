@@ -94,7 +94,7 @@ public class MNIST {
         }};
 
         model.fit(new Model.FitBuilder(inputs, outputs)
-                .optimizer(new Adam(0.005))
+                .optimizer(new Adam(0.0005))
                 .batchSize(64)
                 .epochs(10)
                 .metrics(metrics)
