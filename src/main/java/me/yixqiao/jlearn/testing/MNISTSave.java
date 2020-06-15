@@ -48,7 +48,8 @@ public class MNISTSave extends MNIST {
     }
 
     @Override
-    protected void afterTrain() {
+    protected void train() {
+        super.train();
         model.saveToFile("m.jlm");
         System.out.println("Finished saving model.\n");
     }

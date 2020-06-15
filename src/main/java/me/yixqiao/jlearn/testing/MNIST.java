@@ -12,7 +12,6 @@ import me.yixqiao.jlearn.metrics.Accuracy;
 import me.yixqiao.jlearn.metrics.Metric;
 import me.yixqiao.jlearn.models.Model;
 import me.yixqiao.jlearn.optimizers.Adam;
-import me.yixqiao.jlearn.optimizers.Momentum;
 import me.yixqiao.jlearn.settings.JLSettings;
 
 import java.util.ArrayList;
@@ -105,8 +104,6 @@ public class MNIST {
 
         System.out.println();
         evaluateModel();
-
-        afterTrain();
     }
 
     /**
@@ -118,13 +115,6 @@ public class MNIST {
         }};
         System.out.print("Eval: ");
         model.evaluate(evalInputs, evalOutputs, metrics);
-    }
-
-    /**
-     * Method to be overriden.
-     */
-    protected void afterTrain() {
-        // Override in subclass
     }
 
     /**
