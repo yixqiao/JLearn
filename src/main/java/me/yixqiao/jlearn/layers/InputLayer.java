@@ -8,7 +8,7 @@ import me.yixqiao.jlearn.optimizers.Optimizer;
 /**
  * Layer for input.
  * <p>
- * All functions are no-ops.
+ * Basically all functions are no-ops.
  * </p>
  */
 public class InputLayer extends Layer {
@@ -60,9 +60,15 @@ public class InputLayer extends Layer {
         return x;
     }
 
+    /**
+     * No op.
+     *
+     * @param wOptimizer optimizer for weights
+     * @param bOptimizer optimizer for biases
+     */
     @Override
     public void setOptimizers(Optimizer wOptimizer, Optimizer bOptimizer) {
-        // TODO: Document
+
     }
 
     @Override
@@ -95,7 +101,7 @@ public class InputLayer extends Layer {
     /**
      * No op. Nothing is updated.
      *
-     * @param errors       calculated errors
+     * @param errors calculated errors
      */
     @Override
     public void update(Matrix errors) {
