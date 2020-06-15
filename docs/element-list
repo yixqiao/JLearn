@@ -8,5 +8,6 @@ me.yixqiao.jlearn.losses
 me.yixqiao.jlearn.matrix
 me.yixqiao.jlearn.metrics
 me.yixqiao.jlearn.models
+me.yixqiao.jlearn.optimizers
 me.yixqiao.jlearn.settings
 me.yixqiao.jlearn.testing
