@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'me.yixqiao'
-version '0.3.0'
+version '0.4.0'
 
 application {
     mainClassName = "me.yixqiao.jlearn.testing.MNIST"
