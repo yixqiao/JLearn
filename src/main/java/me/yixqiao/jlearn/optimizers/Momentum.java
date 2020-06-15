@@ -2,19 +2,28 @@ package me.yixqiao.jlearn.optimizers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * Gradient descent with momentum.
+ */
 public class Momentum extends Optimizer {
     double learningRate;
     double momentum;
     boolean started = false;
     Matrix velocity;
 
+    /**
+     * Create a new instance.
+     *
+     * @param learningRate learning rate
+     * @param momentum     momentum (0-1, higher value means more momentum)
+     */
     public Momentum(double learningRate, double momentum) {
         this.learningRate = learningRate;
         this.momentum = momentum;
     }
 
     @Override
-    public Optimizer cloneOptimizer() {
+    public Optimizer cloneSettings() {
         return new Momentum(learningRate, momentum);
     }
 

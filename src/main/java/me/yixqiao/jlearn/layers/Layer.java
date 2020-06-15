@@ -18,6 +18,12 @@ public abstract class Layer implements Serializable {
      */
     public abstract void initLayer(int prevSize, Activation prevActivation);
 
+    /**
+     * Set optimizers for training the layer.
+     *
+     * @param wOptimizer optimizer for weights
+     * @param bOptimizer optimizer for biases
+     */
     public abstract void setOptimizers(Optimizer wOptimizer, Optimizer bOptimizer);
 
     /**

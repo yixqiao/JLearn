@@ -3,6 +3,9 @@ package me.yixqiao.jlearn.testing;
 import me.yixqiao.jlearn.models.Model;
 import me.yixqiao.jlearn.settings.JLSettings;
 
+/**
+ * Train a model on the MNIST dataset, then save it to a file and load it back to evaluate.
+ */
 public class MNISTSave extends MNIST {
     /**
      * Run.

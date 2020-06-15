@@ -2,15 +2,23 @@ package me.yixqiao.jlearn.optimizers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * Gradient descent optimizer.
+ */
 public class SGD extends Optimizer {
     double learningRate;
 
+    /**
+     * Create a new instance.
+     *
+     * @param learningRate learning rate
+     */
     public SGD(double learningRate) {
         this.learningRate = learningRate;
     }
 
     @Override
-    public Optimizer cloneOptimizer() {
+    public Optimizer cloneSettings() {
         return new SGD(learningRate);
     }
 

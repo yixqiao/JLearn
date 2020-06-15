@@ -2,6 +2,9 @@ package me.yixqiao.jlearn.optimizers;
 
 import me.yixqiao.jlearn.matrix.Matrix;
 
+/**
+ * Adam optimizer.
+ */
 public class Adam extends Optimizer {
     double learningRate;
     double beta1 = 0.9, beta2 = 0.999;
@@ -9,10 +12,22 @@ public class Adam extends Optimizer {
     int t = 0;
     Matrix m, v;
 
+    /**
+     * Initialize the optimizer.
+     *
+     * @param learningRate learning rate
+     */
     public Adam(double learningRate) {
         this.learningRate = learningRate;
     }
 
+    /**
+     * Initialize the optimizer.
+     *
+     * @param learningRate learning rate
+     * @param beta1 beta 1 (default is 0.9)
+     * @param beta2 beta 2 (default is 0.999)
+     */
     public Adam(double learningRate, double beta1, double beta2) {
         this.learningRate = learningRate;
         this.beta1 = beta1;
@@ -20,7 +35,7 @@ public class Adam extends Optimizer {
     }
 
     @Override
-    public Optimizer cloneOptimizer() {
+    public Optimizer cloneSettings() {
         return new Adam(learningRate, beta1, beta2);
     }
 

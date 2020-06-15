@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
+/**
+ * Run a genetic algorithm.
+ */
 public class Genetic {
     static Random random = new Random();
     static Matrix input = new Matrix(new double[][]{{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9}});

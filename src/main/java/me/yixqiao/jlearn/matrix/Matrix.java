@@ -242,6 +242,11 @@ public class Matrix implements Serializable {
         return out;
     }
 
+    /**
+     * Divide by another matrix element by element, in place.
+     *
+     * @param m2 other matrix
+     */
     public void divideIP(Matrix m2){
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException(String.format("Division size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));

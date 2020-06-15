@@ -121,7 +121,7 @@ public class Model implements Serializable {
 
         optimizer.multiplyLR(Math.sqrt(batchSize));
         for (Layer l : layers) {
-            l.setOptimizers(optimizer.cloneOptimizer(), optimizer.cloneOptimizer());
+            l.setOptimizers(optimizer.cloneSettings(), optimizer.cloneSettings());
         }
 
         ArrayList<Matrix> errors;
@@ -514,7 +514,9 @@ public class Model implements Serializable {
          * Training correct values.
          */
         protected Matrix trainY;
-
+        /**
+         * Optimizer.
+         */
         protected Optimizer optimizer;
         /**
          * Batch size.
@@ -556,6 +558,12 @@ public class Model implements Serializable {
             this.trainY = trainY;
         }
 
+        /**
+         * Set the optimizer.
+         *
+         * @param optimizer optimizer
+         * @return the instance for daisy chaining
+         */
         public FitBuilder optimizer(Optimizer optimizer) {
             this.optimizer = optimizer;
             return this;
