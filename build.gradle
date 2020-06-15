@@ -12,7 +12,6 @@ application {
 }
 
 configurations {
-// Other configuration lines might be in here
     javadocCoverage
 }
 
@@ -54,6 +53,7 @@ task javadocCoverageReport(type: Javadoc, dependsOn: javadoc) {
     options.docletpath = configurations.javadocCoverage.files.asType(List)
     options.doclet = "com.manoelcampos.javadoc.coverage.CoverageDoclet"
 }
+
 // Optionally you can add the dependsOn here so that when you generate the javadoc
 // jar, e.g. if you include the javadocJar in a publishing configuration, the javadoc
 // coverage report will be generated automatically.
