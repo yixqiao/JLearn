@@ -160,6 +160,27 @@ public class Matrix implements Serializable {
         return out;
     }
 
+    public void addIP(double x) {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] += x;
+            }
+        }
+    }
+
+    public Matrix add(Matrix m2) {
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException(String.format("Addition size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
+
+        Matrix out = cloneMatrix();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] += m2.mat[r][c];
+            }
+        }
+        return out;
+    }
+
     /**
      * Add another matrix element by element, in place.
      *
@@ -174,6 +195,16 @@ public class Matrix implements Serializable {
                 mat[r][c] += m2.mat[r][c];
             }
         }
+    }
+
+    public Matrix subtract(double x) {
+        Matrix out = cloneMatrix();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                out.mat[r][c] -= x;
+            }
+        }
+        return out;
     }
 
     /**
@@ -247,7 +278,7 @@ public class Matrix implements Serializable {
      *
      * @param m2 other matrix
      */
-    public void divideIP(Matrix m2){
+    public void divideIP(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException(String.format("Division size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
         for (int r = 0; r < rows; r++) {
