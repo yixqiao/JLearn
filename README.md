@@ -9,7 +9,7 @@ Focuses on being easy to use and configure.
 *View To Do items at the [project](https://github.com/yixqiao/JLearn/projects/1).*
 
 **STILL IN DEVELOPMENT.**  
-Library is located at [packages](https://github.com/yixqiao/JLearn/packages).  
+Library is located at [packages](https://github.com/yixqiao/JLearn/packages) (published using GitHub packages).  
 Fully complete and ready-to-use library should be available in 1 week.
 
 ### Goals
