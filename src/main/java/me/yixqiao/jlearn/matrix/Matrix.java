@@ -274,6 +274,21 @@ public class Matrix implements Serializable {
     }
 
     /**
+     * Multiply by another matrix element by element, in place.
+     *
+     * @param m2 other matrix with the same dimensions
+     */
+    public void multiplyIP(Matrix m2) {
+        if (rows != m2.rows || cols != m2.cols)
+            throw new MatrixMathException(String.format("Multiplication size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                mat[r][c] *= m2.mat[r][c];
+            }
+        }
+    }
+
+    /**
      * Divide by another matrix element by element, in place.
      *
      * @param m2 other matrix
@@ -453,26 +468,6 @@ public class Matrix implements Serializable {
             }
         }
         return out;
-    }
-
-    /**
-     * Randomize the matrix.
-     *
-     * @param rChance  chance to randomize
-     * @param rAmount  amount to randomize by
-     * @param rPAmount amount to add randomization by
-     * @deprecated As of v0.2.0, this method has no use.
-     */
-    @Deprecated
-    public void randomize(double rChance, double rAmount, double rPAmount) {
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (random.nextDouble() < rChance) {
-                    mat[r][c] *= random.nextDouble() * rAmount * 2 - rAmount + 1;
-                    mat[r][c] += random.nextDouble() * rPAmount * 2 - rPAmount;
-                }
-            }
-        }
     }
 
     /**
