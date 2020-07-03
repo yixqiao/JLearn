@@ -160,6 +160,11 @@ public class Matrix implements Serializable {
         return out;
     }
 
+    /**
+     * Add a scalar to all elements, in place.
+     *
+     * @param x number to add
+     */
     public void addIP(double x) {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -168,6 +173,12 @@ public class Matrix implements Serializable {
         }
     }
 
+    /**
+     * Add another matrix element by element.
+     *
+     * @param m2 other matrix with same dimensions
+     * @return new matrix
+     */
     public Matrix add(Matrix m2) {
         if (rows != m2.rows || cols != m2.cols)
             throw new MatrixMathException(String.format("Addition size mismatch of %dx%d and %dx%d", rows, cols, m2.rows, m2.cols));
@@ -197,6 +208,12 @@ public class Matrix implements Serializable {
         }
     }
 
+    /**
+     * Subtract a scalar from all elements.
+     *
+     * @param x number to subtract
+     * @return new matrix
+     */
     public Matrix subtract(double x) {
         Matrix out = cloneMatrix();
         for (int r = 0; r < rows; r++) {
